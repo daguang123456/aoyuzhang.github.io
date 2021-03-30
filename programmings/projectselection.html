@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	  <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+      #projectNetwork {
+        width: 700px;
+        height: 700px;
+        border: 1px solid lightgray;
+        margin: 0 auto;
+        background-color: coral;
+      }
+      #networkFlow{
+        width: 700px;
+        height: 700px;
+        border: 1px solid lightgray;
+        margin: 0 auto;
+        background-color: coral;
+      }
+			#residualNetwork{
+				width: 700px;
+				height: 700px;
+				border: 1px solid lightgray;
+				margin: 0 auto;
+				background-color: coral;
+			}
+
+		</style>
+
+	</head>
+
+	<body>
+		<h2>项目选择(Project Selection)(Algorithm Design By Jon Kleinberg, Eva Tardos, Section 7.11)</h2>
+    有一组项目\(P\)，并且\(P\)中的每个项目\(i\)都有一个相关的收入\(p_i\)，它可以是正数或负数。某些项目是其他项目的先决条件，我们通过有向无环图\(G = (P,E)\)对此进行建模。 \(G\)的顶点是项目，并且有一个有向边\((i,j)\)表示仅当也选择了项目\(j\)时才可以选择项目\(i\)。
+    如果子集中每个项目的先决条件也在子集中，则给定的项目子集是可行的。目标是在可行的项目子集中最大化所有项目的总利润。
+    <br><br>
+    There is a set \(P\) of projects, and each project \(i\) in \(P\) has an associated revenue \(p_i\), which can either be positive or negative(Think of them as revenue and invesment). Certain projects are prerequisites for other projects, and we model this by a directed acyclic graph \(G=(P,E)\).
+    The vertices of \(G\) are the projects, and there is a directed edge \((i,j)\) to indicate that project \(i\) can be selected only if project  \(j\) is selected as well.
+    A given subset of projects is feasible if the prerequisite of every project in the subset is also in the subset. The goal is to maximize the total profit of all projects in a feasible subset  of projects.
+
+    <hr>
+    <div class ="table1">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+      </style>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28"><label for="tagProject">项目名称(project name)</label></th>
+          <th class="tg-fv28"><input type="text" id = "tagProject" class="numbersonly" value="projectA"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28"><label for="tagProjectRevenue">项目收入(project revenue)</label></td>
+          <td class="tg-fv28"><input type="number" id = "tagProjectRevenue" step="0.01" class="numbersonly" value="2"></td>
+        </tr>
+        <tr>
+          <td class="tg-fv28"><label for="tagPrerequisiteProject">先决条件项目名称(prerequisite project name)</label></td>
+          <td class="tg-fv28"><input type="text" id = "tagPrerequisiteProject" class="numbersonly" value="projectB"><br></td>
+        </tr>
+        <tr>
+          <td class="tg-fv28"><label for="tagPrerequisiteProjectRevenue"><label for="tagFoodt">先决条件项目收入(prerequisite project revenue)</label></label></td>
+          <td class="tg-fv28"><input type="number" id = "tagPrerequisiteProjectRevenue" step ="0.01" class="numbersonly" value="3"></td>
+        </tr>
+        <tr>
+          <td class="tg-fv28"><input type="Button" onclick="addProjects()" value="添加项目(Add Projects)" /></td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+
+    <br>
+		<table class="tg">
+			<tbody>
+				<tr>
+					<td class="tg-fv28">项目依赖关系的对应网络图(The Corresponding Network diagram of the Projects)</td>
+				</tr>
+				<tr>
+					<td class="tg-fv28">  <div id="projectNetwork"></div></td>
+				</tr>
+				<tr>
+					<td class="tg-fv28"> <input type="Button" onclick="getFlowNetwork()" value="得到相应的流量网络(get the corresponding flow network)" /></div></td>
+				</tr>
+			</tbody>
+		</table>
+		<br>
+
+		<table class="tg">
+			<tbody>
+				<tr>
+					<td class="tg-fv28">优化问题的网络流表示(A network flow representation of our optimization problem)</td>
+					<td class="tg-fv28">残留网络(Residual Graph)</td>
+				</tr>
+				<tr>
+					<td class="tg-fv28">  <div id="networkFlow"></div></div></td>
+					<td class = "tg-fv28"><div id="residualNetwork"></div> </td>
+				</tr>
+				<tr>
+					<td><input type="Button" onclick="stepForwardFordFulkerson()" value="下一步(Next Step)" /></td>
+					<td><input type="Button" onclick="stepBackwardFordFulkerson()" value="前一步(Previous Step)" /></td>
+					<!-- <td class="tg-fv28"> <input type="Button" onclick="" value="找最打优子集(Compute Optimal Subset of Project)" /> </td> -->
+				</tr>
+			</tbody>
+		</table>
+		<br>
+    <table id="tagOutput">
+    </table>
+    <br>
+
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+    <script>
+			//var totalPositiveRevenue = 0;
+			//var nPeriod = 0, storageSpace = 0, periodPrices = [] , initStorage = 0, storageCost=0;
+			var optStep = 0;
+			var totalOptStep = 0;
+			var networkFlowStep = [];
+			var dualFlowStep = [];
+			var augmentingPathStep = [];
+			var bottleNeckStep = [];
+			var totalRevenue=0;
+			// var optimizingTable =[];
+			// var pivotsTable=[];
+
+		  const MAXIMUM_PROJECT = 10000;
+			class Queue{
+				constructor(){
+					this.elements = [];
+				}
+				enqueue(e) {
+   				this.elements.push(e);
+				}
+				dequeue() {
+    			return this.elements.shift();
+				}
+				isEmpty(){
+    			return this.elements.length === 0;
+				}
+				peek() {
+    			return !this.isEmpty() ? this.elements[0] : undefined;
+				}
+				length() {
+    			return this.elements.length;
+				}
+			}
+
+		  class ANetwork {
+		  	constructor(divName) {
+					this.divName = divName;
+					this.namesValueDict = {};
+					this.nodeIdSet = new Set();
+					this.nodeNamesSet = new Set();
+					this.namesIdDict = {};
+					this.idNamesDict = {};
+					// create an array with nodes
+					this.nodeSet = new Set();
+					this.nodes = new vis.DataSet([]);
+					// create an array with edges
+					this.edgesSet = new Set();
+					this.edges = new vis.DataSet([]);
+					// create a network
+					this.container = document.getElementById(divName);
+					this.data = {
+						nodes: this.nodes,
+						edges: this.edges,
+					};
+					this.options = {};
+					this.network = new vis.Network(this.container, this.data, this.options);
+		  	}
+				displayAgain(){
+					this.container = document.getElementById(this.divName);
+					this.data = {
+						nodes: this.nodes,
+						edges: this.edges,
+					};
+					this.options = {};
+					this.network = new vis.Network(this.container, this.data, this.options);
+				}
+				addNode(theLabel, profit){ // this method assume the label to be added dosen't exist in the network yet
+					var tempId = Math.floor(Math.random() * MAXIMUM_PROJECT);
+					while(this.nodeIdSet.has(tempId)){
+						tempId = Math.floor(Math.random() * MAXIMUM_PROJECT);
+					}
+					var nodeDisplayLabel = theLabel +":"+ profit;
+					var tempNode = { id: tempId, label: nodeDisplayLabel };
+					this.nodes.add(tempNode);
+					this.network.stabilize();
+					this.nodeIdSet.add(tempId);
+					this.nodeSet.add(tempNode);
+					this.namesIdDict[theLabel] = tempId;
+					this.idNamesDict[tempId] = theLabel;
+					this.namesValueDict[theLabel] = profit;
+					this.nodeNamesSet.add(theLabel);
+				}
+				removeNode(nodeId){
+					// this.nodes.remove({ id: nodeId });
+					// this.nodeIdSet.delete(nodeId);
+					// this.nodeNamesSet
+					// this.namesIdDict = {};
+					// this.idNamesDict = {};
+
+				}
+				removeEdge(edgeId){
+					this.edges.remove({id: edgeId})
+				}
+				addEdge(sLabel, dLabel){
+					var tempEdge = { from: this.namesIdDict[sLabel], to: this.namesIdDict[dLabel], arrows: "to", label: "To be done after"};
+					// console.log(getEdgeBetweenProjectNodes(projectNamesIdDict[sLabel],projectNamesIdDict[dLabel]));
+					this.edges.add(tempEdge);
+				  this.edgesSet.add(tempEdge)
+				}
+				addLabelledEdge(sLabel, dLabel, capacity, flow, color){ // ann nodes needs to be preset before adding the edge
+					var tempEdge = { from: this.namesIdDict[sLabel], to: this.namesIdDict[dLabel], arrows: "to", label: ""+flow+"/"+capacity, color: color};
+					// console.log(getEdgeBetweenProjectNodes(projectNamesIdDict[sLabel],projectNamesIdDict[dLabel]));
+					this.edges.add(tempEdge);
+					this.edgesSet.add(tempEdge);
+
+				}
+				addResidueEdge(sLabel, dLabel, theLabel, color){ // ann nodes needs to be preset before adding the edge
+					//console.log(theLabel);
+					var tempEdge = { from: this.namesIdDict[sLabel], to: this.namesIdDict[dLabel], arrows: "to", label: theLabel+"", color: color};
+					// console.log(getEdgeBetweenProjectNodes(projectNamesIdDict[sLabel],projectNamesIdDict[dLabel]));
+					this.edges.add(tempEdge);
+					this.edgesSet.add(tempEdge);
+				}
+				getEdgeBetweenNodes(node1_id,node2_id) {
+					return this.edges.get().filter(function (edge) {
+				  	return (edge.from === node1_id && edge.to === node2_id );
+					});
+				}
+				getEdgesOfNode(nodeId) {
+				  return this.edges.get().filter(function (edge) {
+				    return edge.from === nodeId || edge.to === nodeId;
+				  });
+				}
+				getNodeByName(theName){
+					return this.nodes.get(this.namesIdDict[theName]);
+				}
+				reset(){
+					this.namesValueDict = {};
+					this.nodeIdSet = new Set();
+					this.nodeNamesSet = new Set();
+					this.namesIdDict = {};
+					this.idNamesDict = {};
+					// create an array with nodes
+					this.nodeSet = new Set();
+					this.nodes = new vis.DataSet([]);
+					// create an array with edges
+					this.edgesSet = new Set();
+					this.edges = new vis.DataSet([]);
+					// create a network
+					this.data = {
+						nodes: this.nodes,
+						edges: this.edges,
+					};
+					this.options = {};
+					//this.network = new vis.Network(this.container, this.data, this.options);
+					if (this.network != null) {
+						this.network.destroy();
+						this.network = new vis.Network(this.container, this.data, this.options);
+					}
+				}
+		  }
+
+			var projectNetwork = new ANetwork("projectNetwork");
+			//var flowNetwork = new ANetwork("networkFlow");
+			//var residualNetwork = new ANetwork("residualNetwork");
+
+
+			function addProjects() {
+				document.getElementById("tagMessage").innerHTML= "";
+			  var dependentProjectLabel = document.getElementById("tagProject").value;
+			  var dependentProjectProfit = parseFloat(document.getElementById("tagProjectRevenue").value);
+			  var requiredProjectLabel = document.getElementById("tagPrerequisiteProject").value;
+			  var requiredProjectProfit = parseFloat(document.getElementById("tagPrerequisiteProjectRevenue").value);
+				if(dependentProjectLabel === "" && requiredProjectLabel === ""){
+					//return -1;
+					document.getElementById("tagMessage").innerHTML= "error: both project labels are empty";
+				}
+				else if((dependentProjectLabel === "") && (requiredProjectLabel != "")){
+					if(!(projectNetwork.nodeNamesSet.has(requiredProjectLabel))){
+						projectNetwork.addNode(requiredProjectLabel, requiredProjectProfit);
+					}
+				}
+				else if((dependentProjectLabel != "") && (requiredProjectLabel === "")){
+					if(!(projectNetwork.nodeNamesSet.has(dependentProjectLabel))){
+						projectNetwork.addNode(dependentProjectLabel, dependentProjectProfit);
+					}
+				}
+				else{
+					if(projectNetwork.nodeNamesSet.has(dependentProjectLabel) && projectNetwork.nodeNamesSet.has(requiredProjectLabel) ){
+						if(projectNetwork.namesValueDict[dependentProjectLabel]=== dependentProjectProfit && projectNetwork.namesValueDict[requiredProjectLabel]=== requiredProjectProfit){
+							if(projectNetwork.getEdgeBetweenNodes(projectNetwork.namesIdDict[dependentProjectLabel],projectNetwork.namesIdDict[requiredProjectLabel]).length === 0){
+								projectNetwork.addEdge(dependentProjectLabel, requiredProjectLabel);
+							}
+						}
+					}
+					else if(projectNetwork.nodeNamesSet.has(dependentProjectLabel) && !(projectNetwork.nodeNamesSet.has(requiredProjectLabel))){
+						if(projectNetwork.namesValueDict[dependentProjectLabel]=== dependentProjectProfit){
+							projectNetwork.addNode(requiredProjectLabel, requiredProjectProfit);
+							projectNetwork.addEdge(dependentProjectLabel, requiredProjectLabel);
+						}
+					}
+					else if(!(projectNetwork.nodeNamesSet.has(dependentProjectLabel)) && projectNetwork.nodeNamesSet.has(requiredProjectLabel)){
+						if(projectNetwork.namesValueDict[requiredProjectLabel]=== requiredProjectProfit){
+							projectNetwork.addNode(dependentProjectLabel, dependentProjectProfit);
+							projectNetwork.addEdge(dependentProjectLabel, requiredProjectLabel);
+						}
+					}
+					else{
+						projectNetwork.addNode(dependentProjectLabel, dependentProjectProfit);
+						projectNetwork.addNode(requiredProjectLabel, requiredProjectProfit);
+						projectNetwork.addEdge(dependentProjectLabel, requiredProjectLabel);
+					}
+				}
+				return 1;
+			}
+
+			function getFlowNetwork(){
+				document.getElementById("tagMessage").innerHTML= "";
+				totalRevenue =0;
+				var flowNetwork = new ANetwork("networkFlow");
+				optStep = 0;
+				totalOptStep = 0;
+				networkFlowStep = [];
+				dualFlowStep = [];
+				augmentingPathStep = [];
+				bottleNeckStep = [];
+				flowNetwork.reset();
+				flowNetwork.addNode("source", 0);
+				flowNetwork.addNode("sink", 0);
+				for (var key in  projectNetwork.namesValueDict){
+					flowNetwork.addNode(key, projectNetwork.namesValueDict[key]);
+					if(projectNetwork.namesValueDict[key]>0){
+						flowNetwork.addLabelledEdge("source", key, projectNetwork.namesValueDict[key], 0, "blue");
+						//flowNetwork.addEdge("source", key, projectNetwork.namesValueDict[key],0);
+					}
+					if(projectNetwork.namesValueDict[key]<0){
+						flowNetwork.addLabelledEdge(key, "sink", -projectNetwork.namesValueDict[key], 0, "blue");
+						//flowNetwork.addEdge(key, "sink",-projectNetwork.namesValueDict[key],0);
+					}
+				}
+				for (let item of projectNetwork.edgesSet){
+					flowNetwork.addLabelledEdge(projectNetwork.idNamesDict[item.from], projectNetwork.idNamesDict[item.to], Number.MAX_SAFE_INTEGER, 0, "blue");
+				}
+				networkFlowStep.push(flowNetwork);
+				buildResidualGraph(flowNetwork);
+			}
+
+			function buildResidualGraph(flowNetwork){
+				var residualNetwork = new ANetwork("residualNetwork");
+				for (let item of flowNetwork.nodeNamesSet){
+					residualNetwork.addNode(item, flowNetwork.namesValueDict[item]);
+				}
+				for(let item of flowNetwork.edgesSet){
+					console.log(item);
+					var flow = parseFloat(item.label.split("/")[0]);
+					var capacity = parseFloat(item.label.split("/")[1]);
+					var diff = capacity - flow;
+					var fromId = item.from;
+					var toId = item.to;
+					if(diff > 0){
+						residualNetwork.addResidueEdge(flowNetwork.idNamesDict[fromId], flowNetwork.idNamesDict[toId], diff, "");
+					}
+					if(flow > 0){
+						residualNetwork.addResidueEdge(flowNetwork.idNamesDict[toId],flowNetwork.idNamesDict[fromId],  flow, "");
+					}
+				}
+				var parentNodeDict = {};
+				var aQueue = new Queue();
+				var visitedSet = new Set();
+				var sourceNode = residualNetwork.getNodeByName("source");
+				var tempBottleNeckVal = Number.MAX_SAFE_INTEGER;
+
+				visitedSet.add(residualNetwork.namesIdDict["source"]);
+				aQueue.enqueue(residualNetwork.namesIdDict["source"]);
+				while(!aQueue.isEmpty()){
+					var v = aQueue.dequeue();
+					var neighbhors = residualNetwork.getEdgesOfNode(v);
+					for(var i = 0 ; i < neighbhors.length ; i++){
+						if(neighbhors[i].from === v){ // edge orientation: v to its neightbhors
+							if(!(visitedSet.has(neighbhors[i].to))){// if neighbhor not visited
+								var edgeResidualFlow = parseFloat(neighbhors[i].label); // compute residual flow
+								parentNodeDict[flowNetwork.namesIdDict[residualNetwork.idNamesDict[neighbhors[i].to]]] = flowNetwork.namesIdDict[residualNetwork.idNamesDict[v]];
+								console.log(residualNetwork.idNamesDict[neighbhors[i].to]);
+								visitedSet.add(neighbhors[i].to);
+								aQueue.enqueue(neighbhors[i].to);
+							}
+						}
+					}
+				}
+				console.log(parentNodeDict);
+				//getting bottleneck
+				var aId = flowNetwork.namesIdDict["sink"];
+				if(!(aId in parentNodeDict)){
+					bottleNeckStep.push(-1);
+				}
+				else{
+					console.log("in here");
+					if(parentNodeDict[aId]=== undefined){
+						bottleNeckStep.push(-1);
+					}
+					// console.log(aId);
+					while(aId != undefined){
+						//console.log(parentNodeDict[aId]=== undefined);
+						if(parentNodeDict[aId] === undefined){
+							break;
+						}
+						//var nodeToParentEdge = residualNetwork.getEdgeBetweenNodes(residualNetwork.namesIdDict[flowNetwork.idNamesDict[aId]], residualNetwork.namesIdDict[flowNetwork.idNamesDict[parentNodeDict[aId]]])[0];
+						var parentToNodeEdge = residualNetwork.getEdgeBetweenNodes(residualNetwork.namesIdDict[flowNetwork.idNamesDict[parentNodeDict[aId]]], residualNetwork.namesIdDict[flowNetwork.idNamesDict[aId]])[0];
+						if(parentToNodeEdge != undefined){
+							if(tempBottleNeckVal > parseFloat(parentToNodeEdge.label)){
+								tempBottleNeckVal = parseFloat(parentToNodeEdge.label);
+							}
+						}
+						aId = parentNodeDict[aId];
+					}
+				}
+				console.log(tempBottleNeckVal)
+				dualFlowStep.push(residualNetwork);
+				augmentingPathStep.push(parentNodeDict);
+				bottleNeckStep.push(tempBottleNeckVal);
+			}
+
+			function augmentNetwork(aNetwork, divName, augPath, botneck){
+				var newFlowNetwork = new ANetwork(divName);
+				for (let item of aNetwork.nodeNamesSet){
+					newFlowNetwork.addNode(item, aNetwork.namesValueDict[item]);
+				}
+				var aId = aNetwork.namesIdDict["sink"];
+				while(aId != undefined){
+					if(augPath[aId] === undefined){
+						break;
+					}
+					var nodeToParentEdge = aNetwork.getEdgeBetweenNodes(aId, augPath[aId])[0];
+					var parentToNodeEdge = aNetwork.getEdgeBetweenNodes(augPath[aId], aId)[0];
+					if(parentToNodeEdge != undefined){
+						var flow = parseFloat(parentToNodeEdge.label.split("/")[0]);
+						var capacity = parentToNodeEdge.label.split("/")[1];
+					  newFlowNetwork.addLabelledEdge(aNetwork.idNamesDict[augPath[aId]],aNetwork.idNamesDict[aId],capacity,flow+botneck,"yellow");
+					}
+					if(nodeToParentEdge != undefined){
+						var flow = parseFloat(nodeToParentEdge.label.split("/")[0]);
+						var capacity = nodeToParentEdge.label.split("/")[1];
+						newFlowNetwork.addLabelledEdge(aNetwork.idNamesDict[aId],aNetwork.idNamesDict[augPath[aId]],capacity,flow+botneck,"yellow");
+					}
+					aId = augPath[aId];
+				}
+				for(let item of aNetwork.edgesSet){
+					console.log(item);
+					var flow = parseFloat(item.label.split("/")[0]);
+					var capacity = parseFloat(item.label.split("/")[1]);
+					var color = item.color;
+					var fromId = item.from;
+					var toId = item.to;
+					if(newFlowNetwork.getEdgeBetweenNodes(newFlowNetwork.namesIdDict[aNetwork.idNamesDict[fromId]], newFlowNetwork.namesIdDict[aNetwork.idNamesDict[toId]]).length===0){
+						newFlowNetwork.addLabelledEdge(aNetwork.idNamesDict[item.from], aNetwork.idNamesDict[item.to], capacity, flow, "blue");
+					}
+				}
+				return newFlowNetwork;
+			}
+			function getResult(){
+				var optResidual = dualFlowStep[totalOptStep];
+				var flowNetwork = networkFlowStep[totalOptStep];
+				totalRevenue = 0;
+				// var edgesOfSource = flowNetwork.getEdgesOfNode(flowNetwork.namesIdDict["source"]);
+				// for( var i =0 ; i < edgesOfSource.length; i++){
+				// 	totalRevenue = totalRevenue + parseFloat(edgesOfSource[i].label.split("/")[0]);
+				// }
+				// console.log(totalRevenue);
+
+				var aQueue = new Queue();
+				var visitedSet = new Set();
+				var optimalSet = new Set();
+				//var sourceNode = optResidual.getNodeByName()
+				visitedSet.add(optResidual.namesIdDict["source"]);
+				aQueue.enqueue(optResidual.namesIdDict["source"]);
+				while(!(aQueue.isEmpty())){
+					var v = aQueue.dequeue();
+					var neighbhors = optResidual.getEdgesOfNode(v);
+					for(var i = 0 ; i < neighbhors.length ; i++){
+						if(neighbhors[i].from === v){ // edge orientation: v to its neightbhors
+							if(!(visitedSet.has(neighbhors[i].to))){// if neighbhor not visited
+								var edgeResidualFlow = parseFloat(neighbhors[i].label); // compute residual flow
+								visitedSet.add(neighbhors[i].to);
+								optimalSet.add(neighbhors[i].to);
+								aQueue.enqueue(neighbhors[i].to);
+							}
+						}
+					}
+				}
+				console.log(optimalSet);
+				var optimalJobString ="";
+				for(let item of optimalSet){
+					optimalJobString = optimalJobString+"  "+optResidual.idNamesDict[item];
+					totalRevenue = totalRevenue + optResidual.namesValueDict[optResidual.idNamesDict[item]];
+				}
+
+				clearTable("tagOutput")
+				var resultTbl = document.getElementById("tagOutput");
+				var resultBody =  document.createElement("tbody");
+				resultBody.appendChild(createTitleRow("结果如下(The result is as follow)"));
+				resultBody.appendChild(createDescriptionRow("最佳收入是(Optimal revenue is)",totalRevenue));
+				resultBody.appendChild(createDescriptionRow("最佳的可行项目子集是(The optimal feasible subset of project is)",optimalJobString));
+				resultTbl.append(resultBody);
+			}
+
+			function stepForwardFordFulkerson(){
+				document.getElementById("tagMessage").innerHTML= "";
+				if(optStep === totalOptStep){
+					var bottleNeck = bottleNeckStep[optStep];
+					if(bottleNeck === -1){
+						getResult();
+						document.getElementById("tagMessage").innerHTML= "不能再继续：算法结束(Can't go futher: End of algorithm)";
+						return 1;
+					}
+					var augmentedPath = augmentingPathStep[optStep];
+					var previousNetwork = networkFlowStep[totalOptStep];
+					var newFlowNetwork = augmentNetwork( previousNetwork, "networkFlow", augmentedPath, bottleNeck);
+					buildResidualGraph(newFlowNetwork );
+					optStep++;
+					totalOptStep++;
+					networkFlowStep.push(newFlowNetwork);
+				}
+				else{
+					optStep++;
+					dualFlowStep[optStep].displayAgain();
+					networkFlowStep[optStep].displayAgain();
+				}
+				return 1;
+			}
+			function stepBackwardFordFulkerson(){
+				document.getElementById("tagMessage").innerHTML= "";
+				if(optStep-1 >= 0){
+					optStep--;
+					dualFlowStep[optStep].displayAgain();
+					networkFlowStep[optStep].displayAgain();
+				}
+				else{
+					document.getElementById("tagMessage").innerHTML= "不能退一步(Cannot Go Back A Step)";
+				}
+			}
+
+			function createDescriptionRow(label,description){
+				var constraintRow = document.createElement("tr");
+				constraintRow.appendChild(makecell(label));
+				constraintRow.appendChild(makecell(description));
+				return constraintRow;
+			}
+			function createTitleRow(str){
+				var titleRow = document.createElement("tr");
+				var titleCellTextNode = document.createTextNode(str);
+				titleRow.appendChild(titleCellTextNode);
+				return titleRow;
+			}
+			function clearTable(idstr){
+				var makovTable = document.getElementById(idstr);
+				while(makovTable.rows.length > 0) {
+					makovTable.deleteRow(0);
+				}
+			}
+			function makecell(str){
+				var nameCell = document.createElement("td");
+				var nameCellTextNode = document.createTextNode(str);
+				nameCell.appendChild(nameCellTextNode);
+				return nameCell;
+			}
+
+    </script>
+
+	</body>
+</html>

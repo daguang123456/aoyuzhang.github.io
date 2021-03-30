@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>最长连续序列(longest consecutive sequence)</h2>
+    给定一个未排序的整数数组，请找出最长的连续元素序列的长度。
+    <br>
+    Given an unsorted array of integers, find the length of the longest consecutive elements sequence.
+    <br>
+    例:
+    <div class ="table1">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+      </style>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">输入：</th>
+          <th class="tg-fv28">100、4、200、1、3、2</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">输出:</td>
+          <td class="tg-fv28">4</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">说明:</td>
+          <td class="tg-fv28">最长连续元素序列为[1、2、3、4]。因此，其长度为4。</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    Example:
+    <div>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">Input:</th>
+          <th class="tg-fv28">100、4、200、1、3、2</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">Output:</td>
+          <td class="tg-fv28">4</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">Explanation:</td>
+          <td class="tg-fv28">The longest consecutive elements sequence is <br>[1, 2, 3, 4]. Therefore its length is 4.</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <hr>
+    <label for="tagFoodt">请输入由逗号分隔的整数序列:(Please enter a sequence of integers separated by commas)</label><br>
+    <input type="text" id = "tagIntegerSequence" class="numbersonly" value="2"><br>
+    <input type="Button" onclick="computeResult()" value="找最长连续序列(Find Longest Continous Sequence)" /> <br>
+
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+    <script>
+      var inputSequenceString ; //声明一个变量，该变量用于存储用户输入的输入字符串(Declare a variable used to store the input string entered by the user)
+      var inputNumbersList = []; //声明一个变量以存储程序要使用的整数列表(declare a variavle to store the list of integers to be used by the program)
+      var inputIntegerSet;
+      var globalMaxLength = 0; //声明一个变量以存储迄今为止该算法找到的最长序列长度(Declare a variable to store the longest sequence length found by the algorithm so far)
+      var localMaxLength = 0; //声明一个变量以存储算法正在分析的序列长度 (Declare a variable to store the sequence length that is being analysed by the algorithm )
+      var initialNumberInMaxLengthSequence = 0;
+      /**
+       * 该方法用于将代表整数的字符串列表转换为整数列表(The method is used to transform a list of strings that represent integers to a list of intergers)
+       * @param {String List Object}     aStringList       The list of strings that needs to be converted into a list of integers.
+       * @param {字符串列表对象}        aStringList     需要转换为整数列表的字符串列表
+       */
+      function transformStringListToIntegerList(aStringList){
+        var theCorrepondingIntegerList = []; //声明一个变量，该变量包含一个空列表，该空列表将用于存储转换后的整数列表(Declare a variable that holds an empty list that will be used to store the transformed integer list.)
+        for(var index = 0 ; index < aStringList.length ; index++){ //通过使用for循环，我们遍历字符串列表中的所有元素，并对每个元素进行转换(By sing a for loop, we iterate over all elements in the list of string and perform the transformation to each of the elments)
+          theCorrepondingIntegerList.push(parseFloat(aStringList[index])); // 将字符串元素转换为整数元素，然后将结果附加到指定的整数列表中(transform the string element to an integer element and append the result into the designated integer list)
+        }
+        return theCorrepondingIntegerList;
+      }
+      /**
+        *
+       */
+      function computeResult(){
+        // 获取输入序列并检查输入的格式是否正确. (get input sequence and check if the input is valid)
+        var inputSequenceString = document.getElementById("tagIntegerSequence").value; //获取由其id字符串指定的html元素的值(get value of html element specified by its id string)
+        if(inputSequenceString.match('[^-, 0-9]')){  //检查输入字符串是否仅包含逗号和数字 (Check if the input string contains only commas and digits)
+            document.getElementById("tagMessage").innerHTML= "错误：输入的字符串只需要包含逗号或数字或负号(error: the input string needs to contain only commas or digits or negative sign)";
+            return -1;
+        }
+        var inputNumbersStringList = inputSequenceString.split(","); //通过使用字符串中的逗号将输入字符串分成多个元素，使输入字符串成为元素列表。结果列表是一个字符串列表，我们必须将其转换为数字(make the input string into a list of elements by separating the input string into elements using the commas in the string. The resulting list is a list of string that we'll have to convert into numbers)
+        inputNumbersList = transformStringListToIntegerList(inputNumbersStringList); //将字符串列表转换为整数列表(transform the list of string to list of integers).
+        //console.log(inputNumbersList);
+				initialNumberInMaxLengthSequence = inputNumbersList[0];
+        inputIntegerSet = new Set(inputNumbersList);
+        globalMaxLength = 1;
+        for (var number of inputIntegerSet){
+          localMaxLength = 1;
+          // console.log(item)
+          if(inputIntegerSet.has(number-1)){
+            continue;
+          }
+          var tempNum = number;
+          while(inputIntegerSet.has(tempNum+1)){
+            localMaxLength++;
+            tempNum++;
+          }
+          if(globalMaxLength < localMaxLength){
+            globalMaxLength = localMaxLength;
+            initialNumberInMaxLengthSequence = number;
+          }
+        }
+        console.log(globalMaxLength);
+        displayResult();
+
+      }
+      function displayResult(){
+        clearTable("tagOutput")
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("最长序列及其长度如下(The Longest Sequence And Its Length Is As Follow)"));
+        var longestSequenceStr = "["+initialNumberInMaxLengthSequence;
+        var tempNum = initialNumberInMaxLengthSequence;
+        while(inputIntegerSet.has(tempNum+1)){
+          longestSequenceStr = longestSequenceStr+","+(tempNum+1);
+          tempNum++;
+        }
+        longestSequenceStr = longestSequenceStr +"]";
+        resultBody.appendChild(createDescriptionRow("最长的数字序列是(The longest sequence of numbers are)",longestSequenceStr));
+        resultBody.appendChild(createDescriptionRow("其长度是(The length of the longest sequence of numbers is)",globalMaxLength));
+        resultTbl.append(resultBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>

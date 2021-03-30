@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="../styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+
+  <div class="lemma">
+  	(lemma 1)
+  Given graphs \(G,H,K\), we have \(G \times H \to K \iff H \to K^G\)
+  </div>
+  <div class="proof">
+  Let \( \phi: G \times H \to K \) be an homomorphism and we construct an homomorphism \(\gamma : H \to K^G\) as follow:
+  \[ \gamma(h) = \gamma_h, \gamma_h(a)= \phi((a,h)) \]
+  \(\gamma\) is indeed an homomorphism since:
+  <br> \((h_1,h_2) \in E(H), (g_1,g_2) \in E(G) \Rightarrow (\gamma_{h_1}(g_1),\gamma_{h_2}(g_2)) =(\phi((g_1,h_1)), \phi((g_2,h_2))) \in E(K)\)
+  <br>Therefore, \( H \to K^G\).
+  <br>Conversely, if we are given homomorphism \(\gamma : H \to K^G\), we can construct homomorphism \(\phi: G \times H \to K\) as:
+  \[ \phi((a,h))=\gamma(h)(a)\]
+  \(\phi\) is also an homomorphism because if we have \(((a_1,h_1),(a_2,h_2)) \in E(G \times H) \), then
+  <br> \( (\phi((a_1,h_1)), \phi((a_2,h_2)))=(\gamma(h_1)(a_1),\gamma(h_2)(a_2))\).
+  <br> Since \(\gamma\) is an homomorphism, \( (\gamma(h_1),\gamma(h_2)) \in E(K^G) \).
+  <br> Together with the fact that \((a_1,a_2) \in G\) we get \( (\gamma(h_1)(a_1),\gamma(h_2)(a_2)) \in E(K)\)
+  </div>
+
+</body>
+</html>

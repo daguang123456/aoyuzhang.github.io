@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="../../styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+
+  <style>
+.table1{
+	width: 500px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+.table2{
+	width: 300px;
+  height: 200px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+.table3{
+	width: 300px;
+  height: 200px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+.table4{
+	width:500px;
+	height:300px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+.table5{
+	width:500px;
+	height:300px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+.table6{
+	width:500px;
+	height:300px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+.table7{
+	width:500px;
+	height:200px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+.table8{
+	width:500px;
+	height:200px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+
+.table9{
+	width:500px;
+	height:200px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+.table10{
+	width:1000px;
+	height:200px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+.table11{
+	width:600px;
+	height:300px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+
+}
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+#mynetwork1 {
+  width: 1000px;
+  height: 800px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork7 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork2 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork3 {
+  width: 650px;
+  height: 550px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork4 {
+  width: 1050px;
+  height: 650px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork5 {
+  width: 750px;
+  height: 650px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork6 {
+  width: 750px;
+  height: 650px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+#mynetwork8 {
+  width: 650px;
+  height: 350px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork9 {
+  width: 650px;
+  height: 350px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+  <a href= "../../pdffiles/1808.02923.pdf">\(\textbf{THE CONWAY KNOT IS NOT SLICE}\)</a>
+  By Lisa Piccirillo
+  <br>
+
+<div class="definition">
+A knot is the image of an injective differentiable function from an unit circle to the closed unit ball in \(\mathbb{R}^3\).
+</div>
+
+Here is an example of knot:
+<div>
+<canvas id = "myCanvas" width="380" height="380"></canvas>
+</div>
+I'll draw some more knots late on. we are interested in classify knots and we try to find preperty of knots that differentiate them.
+<div class ="definition">
+The \(\textbf{unknot}\) is the circle \(S^1\) and is denoted by \(U\).
+</div>
+<div class = "Definition">
+the \(\textbf{unit 3-sphere}\) is denoted by \(S^3\) and is defined as:
+\[S^3 = \{(x_0,x_1,x_2,x_3) \in \mathbb{R}^4 | x_0^2+x_1^2+x_2^2+x_3^2 = 1\}\]. It is the unit ball in \(4\) dimentional space.
+</div>
+
+
+<div class ="definition">
+Two knots \(K_1, K_2\) are said to be \(\textbf{concordant}\), and denoted by \(K_1 \sim K_2\) if there is an embedding
+\[f : S^1 \times [0,1] \to S^3 \times [0,1] \] such that
+\[f(S^1 \times 0) =K_1, f(S^1 \times 1) = K_2\]
+</div>
+
+<div class ="theorem">
+A knot \(K\) is slice if and only if there is an embedding of the disc into \(B^4\) with boundary equal to \(K\).
+</div>
+
+
+<!-- <svg height="210" width="500">
+ <line x1="0" y1="0" x2="200" y2="200" style="stroke:rgb(255,0,0);stroke-width:2" />
+</svg>  -->
+
+	<script>
+	var canvas = document.getElementById("myCanvas");
+	var context = canvas.getContext("2d");
+	context.lineWidth =5;
+	context.moveTo(203,153);
+	context.lineTo(203,153);
+	context.lineTo(197,155);
+	context.lineTo(187,160);
+	context.lineTo(178,164);
+	context.lineTo(172,166);
+	context.lineTo(167,168);
+	context.lineTo(164,169);
+	context.lineTo(158,170);
+	context.lineTo(156,170);
+	context.lineTo(154,171);
+	context.lineTo(144,174);
+	context.lineTo(142,174);
+	context.lineTo(133,179);
+	context.lineTo(131,180);
+	context.lineTo(125,182);
+	context.lineTo(120,186);
+	context.lineTo(115,189);
+	context.lineTo(113,191);
+	context.lineTo(104,198);
+	context.lineTo(103,200);
+	context.lineTo(103,202);
+	context.lineTo(103,203);
+	context.lineTo(97,210);
+	context.lineTo(94,214);
+	context.lineTo(92,217);
+	context.lineTo(92,220);
+	context.lineTo(92,221);
+	context.lineTo(92,222);
+	context.lineTo(88,227);
+	context.lineTo(87,228);
+	context.lineTo(86,231);
+	context.lineTo(85,232);
+	context.lineTo(85,233);
+	context.lineTo(85,238);
+	context.lineTo(82,246);
+	context.lineTo(82,258);
+	context.lineTo(82,263);
+	context.lineTo(82,266);
+	context.lineTo(82,268);
+	context.lineTo(82,270);
+	context.lineTo(86,278);
+	context.lineTo(86,280);
+	context.lineTo(88,283);
+	context.lineTo(91,285);
+	context.lineTo(94,287);
+	context.lineTo(98,290);
+	context.lineTo(101,291);
+	context.lineTo(104,294);
+	context.lineTo(107,295);
+	context.lineTo(109,295);
+	context.lineTo(111,296);
+	context.lineTo(115,297);
+	context.lineTo(118,297);
+	context.lineTo(120,298);
+	context.lineTo(122,298);
+	context.lineTo(127,298);
+	context.lineTo(130,300);
+	context.lineTo(133,300);
+	context.lineTo(138,300);
+	context.lineTo(142,300);
+	context.lineTo(146,300);
+	context.lineTo(148,300);
+	context.lineTo(150,300);
+	context.lineTo(154,300);
+	context.lineTo(157,300);
+	context.lineTo(159,300);
+	context.lineTo(160,300);
+	context.lineTo(161,300);
+	context.lineTo(163,300);
+	context.lineTo(164,300);
+	context.lineTo(165,300);
+	context.lineTo(165,300);
+	context.lineTo(166,299);
+	context.lineTo(167,299);
+	context.lineTo(169,298);
+	context.lineTo(169,298);
+	context.lineTo(170,298);
+	context.lineTo(172,297);
+	context.lineTo(173,296);
+	context.lineTo(175,295);
+	context.lineTo(175,294);
+	context.lineTo(179,293);
+	context.lineTo(181,290);
+	context.lineTo(187,287);
+	context.lineTo(190,283);
+	context.lineTo(193,281);
+	context.lineTo(198,276);
+	context.lineTo(199,275);
+	context.lineTo(200,273);
+	context.lineTo(203,271);
+	context.lineTo(204,270);
+	context.lineTo(207,267);
+	context.lineTo(210,264);
+	context.lineTo(215,260);
+	context.lineTo(218,258);
+	context.lineTo(221,255);
+	context.lineTo(227,252);
+	context.lineTo(231,249);
+	context.lineTo(232,249);
+	context.lineTo(237,245);
+	context.lineTo(239,243);
+	context.lineTo(242,242);
+	context.lineTo(244,241);
+	context.lineTo(249,238);
+	context.lineTo(251,237);
+	context.lineTo(256,235);
+	context.lineTo(257,235);
+	context.lineTo(260,235);
+	context.lineTo(262,231);
+	context.lineTo(263,230);
+	context.lineTo(265,227);
+	context.lineTo(268,225);
+	context.lineTo(274,214);
+	context.lineTo(275,211);
+	context.lineTo(276,209);
+	context.lineTo(280,202);
+	context.lineTo(280,200);
+	context.lineTo(281,198);
+	context.lineTo(283,194);
+	context.lineTo(283,193);
+	context.lineTo(283,192);
+	context.lineTo(285,189);
+	context.lineTo(286,183);
+	context.lineTo(286,182);
+	context.lineTo(286,181);
+	context.lineTo(287,178);
+	context.lineTo(288,176);
+	context.lineTo(289,173);
+	context.lineTo(289,173);
+	context.lineTo(289,171);
+	context.lineTo(290,170);
+	context.moveTo(291,151);
+	context.lineTo(291,151);
+	context.lineTo(291,150);
+	context.lineTo(291,150);
+	context.lineTo(290,149);
+	context.lineTo(290,148);
+	context.lineTo(289,146);
+	context.lineTo(285,130);
+	context.lineTo(285,129);
+	context.lineTo(285,128);
+	context.lineTo(284,126);
+	context.lineTo(284,124);
+	context.lineTo(282,119);
+	context.lineTo(282,118);
+	context.lineTo(282,117);
+	context.lineTo(282,116);
+	context.lineTo(282,115);
+	context.lineTo(282,113);
+	context.lineTo(282,112);
+	context.lineTo(280,107);
+	context.lineTo(279,105);
+	context.lineTo(277,103);
+	context.lineTo(276,103);
+	context.lineTo(272,96);
+	context.lineTo(271,94);
+	context.lineTo(270,93);
+	context.lineTo(270,92);
+	context.lineTo(268,91);
+	context.lineTo(268,91);
+	context.lineTo(266,89);
+	context.lineTo(260,84);
+	context.lineTo(259,84);
+	context.lineTo(259,84);
+	context.lineTo(257,82);
+	context.lineTo(254,80);
+	context.lineTo(252,79);
+	context.lineTo(249,77);
+	context.lineTo(248,77);
+	context.lineTo(247,77);
+	context.lineTo(244,76);
+	context.lineTo(243,76);
+	context.lineTo(238,75);
+	context.lineTo(235,74);
+	context.lineTo(231,72);
+	context.lineTo(230,72);
+	context.lineTo(229,72);
+	context.lineTo(228,72);
+	context.lineTo(227,72);
+	context.lineTo(222,73);
+	context.lineTo(222,74);
+	context.lineTo(222,75);
+	context.lineTo(220,78);
+	context.lineTo(218,81);
+	context.lineTo(218,82);
+	context.lineTo(218,85);
+	context.lineTo(217,86);
+	context.lineTo(217,87);
+	context.lineTo(217,88);
+	context.lineTo(217,91);
+	context.lineTo(217,92);
+	context.lineTo(217,93);
+	context.lineTo(217,94);
+	context.lineTo(217,95);
+	context.lineTo(217,97);
+	context.lineTo(217,97);
+	context.lineTo(217,99);
+	context.lineTo(217,102);
+	context.lineTo(217,102);
+	context.lineTo(217,103);
+	context.lineTo(217,104);
+	context.lineTo(217,109);
+	context.lineTo(217,112);
+	context.lineTo(217,118);
+	context.lineTo(217,122);
+	context.lineTo(217,123);
+	context.lineTo(217,124);
+	context.lineTo(217,128);
+	context.lineTo(217,129);
+	context.lineTo(217,133);
+	context.lineTo(217,137);
+	context.lineTo(217,140);
+	context.lineTo(217,144);
+	context.lineTo(217,145);
+	context.lineTo(217,146);
+	context.lineTo(217,148);
+	context.lineTo(217,150);
+	context.lineTo(217,151);
+	context.lineTo(216,152);
+	context.lineTo(216,153);
+	context.lineTo(215,154);
+	context.lineTo(215,154);
+	context.lineTo(214,155);
+	context.lineTo(214,155);
+	context.lineTo(214,156);
+	context.lineTo(214,156);
+	context.lineTo(213,156);
+	context.lineTo(213,157);
+	context.lineTo(213,157);
+	context.lineTo(212,157);
+	context.lineTo(211,158);
+	context.lineTo(210,159);
+	context.lineTo(209,159);
+	context.lineTo(208,161);
+	context.lineTo(207,162);
+	context.lineTo(207,163);
+	context.lineTo(206,164);
+	context.lineTo(206,165);
+	context.lineTo(205,166);
+	context.lineTo(205,167);
+	context.lineTo(205,168);
+	context.lineTo(204,169);
+	context.lineTo(202,173);
+	context.lineTo(200,175);
+	context.lineTo(199,176);
+	context.lineTo(199,178);
+	context.lineTo(198,180);
+	context.lineTo(198,181);
+	context.lineTo(198,182);
+	context.lineTo(197,186);
+	context.lineTo(196,188);
+	context.lineTo(196,189);
+	context.lineTo(194,191);
+	context.lineTo(194,192);
+	context.lineTo(194,193);
+	context.lineTo(193,194);
+	context.lineTo(193,195);
+	context.lineTo(192,196);
+	context.lineTo(192,197);
+	context.lineTo(192,199);
+	context.lineTo(192,200);
+	context.lineTo(191,201);
+	context.lineTo(191,203);
+	context.lineTo(190,204);
+	context.lineTo(189,207);
+	context.lineTo(189,208);
+	context.lineTo(188,210);
+	context.lineTo(188,210);
+	context.lineTo(188,211);
+	context.lineTo(187,215);
+	context.lineTo(187,219);
+	context.lineTo(187,221);
+	context.lineTo(187,222);
+	context.lineTo(186,225);
+	context.lineTo(186,226);
+	context.lineTo(186,229);
+	context.lineTo(186,232);
+	context.lineTo(186,235);
+	context.lineTo(186,237);
+	context.lineTo(186,238);
+	context.lineTo(186,240);
+	context.lineTo(186,241);
+	context.lineTo(186,243);
+	context.lineTo(186,244);
+	context.lineTo(186,245);
+	context.lineTo(186,246);
+	context.lineTo(186,246);
+	context.lineTo(186,247);
+	context.lineTo(186,248);
+	context.lineTo(186,249);
+	context.lineTo(186,249);
+	context.lineTo(186,250);
+	context.lineTo(186,250);
+	context.moveTo(186,250);
+	context.lineTo(186,250);
+	context.moveTo(186,250);
+	context.lineTo(186,250);
+	context.lineTo(186,253);
+	context.lineTo(186,255);
+	context.lineTo(186,257);
+	context.lineTo(186,258);
+	context.lineTo(186,259);
+	context.lineTo(186,260);
+	context.lineTo(186,261);
+	context.lineTo(186,262);
+	context.lineTo(186,263);
+	context.lineTo(186,264);
+	context.moveTo(203,296);
+	context.lineTo(203,296);
+	context.lineTo(207,296);
+	context.lineTo(210,296);
+	context.lineTo(214,296);
+	context.lineTo(216,297);
+	context.lineTo(220,297);
+	context.lineTo(223,297);
+	context.lineTo(227,299);
+	context.lineTo(231,299);
+	context.lineTo(233,299);
+	context.lineTo(234,299);
+	context.lineTo(238,301);
+	context.lineTo(239,301);
+	context.lineTo(242,301);
+	context.lineTo(243,302);
+	context.lineTo(245,302);
+	context.lineTo(246,302);
+	context.lineTo(248,302);
+	context.lineTo(252,302);
+	context.lineTo(253,302);
+	context.lineTo(254,302);
+	context.lineTo(255,302);
+	context.lineTo(257,302);
+	context.lineTo(260,302);
+	context.lineTo(261,302);
+	context.lineTo(265,302);
+	context.lineTo(268,302);
+	context.lineTo(270,301);
+	context.lineTo(271,301);
+	context.lineTo(273,301);
+	context.lineTo(274,301);
+	context.lineTo(275,300);
+	context.lineTo(277,300);
+	context.lineTo(279,300);
+	context.lineTo(280,299);
+	context.lineTo(281,299);
+	context.lineTo(282,299);
+	context.lineTo(284,298);
+	context.lineTo(285,297);
+	context.lineTo(286,296);
+	context.lineTo(287,296);
+	context.lineTo(288,296);
+	context.lineTo(288,296);
+	context.lineTo(288,295);
+	context.lineTo(290,293);
+	context.lineTo(291,292);
+	context.lineTo(292,290);
+	context.lineTo(293,290);
+	context.lineTo(294,289);
+	context.lineTo(294,287);
+	context.lineTo(295,286);
+	context.lineTo(296,286);
+	context.lineTo(297,285);
+	context.lineTo(298,282);
+	context.lineTo(299,281);
+	context.lineTo(300,281);
+	context.lineTo(301,280);
+	context.lineTo(301,279);
+	context.lineTo(302,279);
+	context.lineTo(303,277);
+	context.lineTo(304,277);
+	context.lineTo(305,277);
+	context.lineTo(305,277);
+	context.lineTo(305,277);
+	context.lineTo(306,277);
+	context.lineTo(307,275);
+	context.lineTo(308,274);
+	context.lineTo(308,274);
+	context.lineTo(309,272);
+	context.lineTo(310,272);
+	context.lineTo(310,271);
+	context.lineTo(311,271);
+	context.lineTo(312,270);
+	context.lineTo(312,270);
+	context.lineTo(313,268);
+	context.lineTo(314,267);
+	context.lineTo(314,266);
+	context.lineTo(315,266);
+	context.lineTo(315,265);
+	context.lineTo(316,265);
+	context.lineTo(316,264);
+	context.lineTo(316,264);
+	context.lineTo(316,262);
+	context.lineTo(316,261);
+	context.lineTo(316,260);
+	context.lineTo(316,259);
+	context.lineTo(316,258);
+	context.lineTo(317,250);
+	context.lineTo(320,241);
+	context.lineTo(320,240);
+	context.lineTo(321,235);
+	context.lineTo(321,230);
+	context.lineTo(321,229);
+	context.lineTo(321,228);
+	context.lineTo(322,224);
+	context.lineTo(322,218);
+	context.lineTo(322,217);
+	context.lineTo(322,216);
+	context.lineTo(322,215);
+	context.lineTo(322,213);
+	context.lineTo(322,212);
+	context.lineTo(322,211);
+	context.lineTo(322,210);
+	context.lineTo(322,198);
+	context.lineTo(322,197);
+	context.lineTo(322,196);
+	context.lineTo(322,192);
+	context.lineTo(322,187);
+	context.lineTo(322,186);
+	context.lineTo(322,185);
+	context.lineTo(322,184);
+	context.lineTo(322,182);
+	context.lineTo(322,181);
+	context.lineTo(322,180);
+	context.lineTo(322,179);
+	context.lineTo(322,179);
+	context.lineTo(322,177);
+	context.lineTo(322,174);
+	context.lineTo(322,170);
+	context.lineTo(322,169);
+	context.lineTo(322,168);
+	context.lineTo(321,167);
+	context.lineTo(320,167);
+	context.lineTo(320,167);
+	context.lineTo(319,167);
+	context.lineTo(318,167);
+	context.lineTo(317,167);
+	context.lineTo(317,167);
+	context.lineTo(316,167);
+	context.lineTo(315,167);
+	context.lineTo(314,167);
+	context.lineTo(314,167);
+	context.lineTo(313,167);
+	context.lineTo(312,167);
+	context.lineTo(311,167);
+	context.lineTo(311,167);
+	context.lineTo(309,167);
+	context.lineTo(308,167);
+	context.lineTo(307,167);
+	context.lineTo(306,167);
+	context.lineTo(305,167);
+	context.lineTo(305,167);
+	context.lineTo(304,167);
+	context.lineTo(303,167);
+	context.lineTo(302,167);
+	context.lineTo(301,166);
+	context.lineTo(300,166);
+	context.lineTo(298,165);
+	context.lineTo(297,165);
+	context.lineTo(296,165);
+	context.lineTo(295,165);
+	context.lineTo(293,165);
+	context.lineTo(293,165);
+	context.lineTo(292,165);
+	context.lineTo(289,164);
+	context.lineTo(288,164);
+	context.lineTo(286,164);
+	context.lineTo(283,163);
+	context.lineTo(282,163);
+	context.lineTo(280,163);
+	context.lineTo(276,163);
+	context.lineTo(273,163);
+	context.lineTo(270,162);
+	context.lineTo(268,162);
+	context.lineTo(266,162);
+	context.lineTo(263,162);
+	context.lineTo(262,162);
+	context.lineTo(260,162);
+	context.lineTo(259,162);
+	context.lineTo(257,162);
+	context.lineTo(256,162);
+	context.lineTo(255,162);
+	context.lineTo(255,162);
+	context.lineTo(253,162);
+	context.lineTo(251,162);
+	context.lineTo(250,162);
+	context.lineTo(249,162);
+	context.lineTo(248,162);
+	context.lineTo(247,162);
+	context.lineTo(243,162);
+	context.lineTo(240,161);
+	context.lineTo(239,161);
+	context.lineTo(238,161);
+	context.lineTo(238,161);
+	context.lineTo(236,160);
+	context.lineTo(233,160);
+	context.lineTo(231,159);
+	context.lineTo(231,158);
+	context.lineTo(230,157);
+	context.lineTo(229,157);
+	context.lineTo(228,156);
+	context.lineTo(227,156);
+	context.lineTo(227,156);
+	context.lineTo(226,156);
+	context.lineTo(225,156);
+	context.lineTo(225,156);
+	context.lineTo(224,156);
+	context.lineTo(224,156);
+	context.lineTo(223,155);
+	context.lineTo(222,155);
+	context.lineTo(222,155);
+	context.moveTo(203,296);
+	context.lineTo(203,296);
+	context.lineTo(203,295);
+	context.lineTo(202,294);
+	context.lineTo(201,294);
+	context.lineTo(201,293);
+	context.lineTo(200,293);
+	context.lineTo(199,291);
+	context.lineTo(198,291);
+	context.lineTo(198,291);
+	context.lineTo(197,291);
+	context.lineTo(196,291);
+	context.lineTo(196,291);
+	context.lineTo(195,291);
+	context.moveTo(186,255);
+	context.lineTo(186,255);
+	context.lineTo(186,256);
+	context.lineTo(186,257);
+	context.lineTo(186,257);
+	context.lineTo(186,258);
+	context.lineTo(187,259);
+	context.lineTo(187,259);
+	context.lineTo(187,260);
+	context.lineTo(187,261);
+	context.lineTo(187,262);
+	context.lineTo(187,262);
+	context.lineTo(187,263);
+	context.lineTo(187,264);
+	context.lineTo(187,265);
+	context.lineTo(187,266);
+	context.lineTo(187,268);
+	context.lineTo(187,269);
+	context.lineTo(187,269);
+	context.lineTo(187,270);
+	context.lineTo(187,270);
+	context.lineTo(187,271);
+	context.lineTo(187,272);
+	context.lineTo(187,272);
+	context.lineTo(187,273);
+	context.lineTo(187,273);
+	context.lineTo(187,274);
+
+	context.stroke();
+	</script>
+
+
+</body>
+</html>

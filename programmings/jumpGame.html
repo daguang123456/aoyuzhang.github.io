@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>跳跃游戏(Jump Game)</h2>
+    给定一个非负整数数组，您最初位于该数组的第一个索引处。
+    数组中的每个元素代表该位置的最大跳转长度。
+    您的目标是在最少的跳数中达到最后的索引。
+    <br><br>
+    Given an array of non-negative integers, you are initially positioned at the first index of the array.
+    Each element in the array represents your maximum jump length at that position.
+    Your goal is to reach the last index in the minimum number of jumps.
+    <hr>
+    例:
+    <div class ="table1">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+      </style>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">输入：</th>
+          <th class="tg-fv28">2,3,1,1,4</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">输出:</td>
+          <td class="tg-fv28">2</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">说明:</td>
+          <td class="tg-fv28">到达最后一个索引的最小跳转数为2。
+            从索引0到1跳1步，然后跳3步到最后一个索引。</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    Example:
+    <div>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">Input:</th>
+          <th class="tg-fv28">2,3,1,1,4</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">Output:</td>
+          <td class="tg-fv28">2</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">Explanation:</td>
+          <td class="tg-fv28">The minimum number of jumps to reach the last index is 2.
+    Jump 1 step from index 0 to 1, then 3 steps to the last index.</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <hr>
+    <label for="tag=tagPDNA">输入数字序列(Enter The Number Sequence)</label><br>
+    <input type="text" id = "tagPDNA" class="numbersonly" value="2,3,4,2,3,1,4,0,2,3"><br>
+    <input type="Button" onclick="computeResult()" value="查找最小跳数(Find minimum number of jumps)" /> <br>
+
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+    <div>
+      <table id="tagSeq">
+      </table>
+
+    </div><br>
+
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+    暗示(Hint):
+    <br>
+    这里的解决方案是考虑对可能的跳转路径形成的图进行广度优先搜索。(Here the solution is to think of doing breadth first search on the graph formed by the possible jump paths. )
+
+    <script>
+			var pString;
+			var resultt = 0;
+      var choices = [];
+      var choicesRev = [];
+      var valuesList = [];
+
+      function computeResult(){
+        resultt = 0;
+        choices = [];
+				pString = "";
+				valuesList = [];
+				//numberOfDays = 0
+				document.getElementById("tagMessage").innerHTML= "";
+				pString =  document.getElementById("tagPDNA").value;
+				if ( pString.match('[^ ,0-9]') ){
+					document.getElementById("tagMessage").innerHTML= "错误：输入格式无效(error: invalid input sequence format)"; // Put the error message inside the msg element in HTML.
+					return false;
+				}
+				valuesList = transformStringListToIntegerList(pString.split(","));
+        console.log(valuesList);
+
+        var q = [];
+        var parent = [];
+        for(var i = 0; i< valuesList.length ; i++){
+          parent.push(-1);
+        }
+        console.log(parent);
+        var visited = new Set();
+        q.push(0);
+        visited.add(0);
+        while(q.length != 0){
+          var v = q.shift();
+          // if(v === valuesList.length-1){
+          //   return v
+          // }
+          for(var k = v+1; k<=v+valuesList[v] && k< valuesList.length; k++){
+            if (!visited.has(k)){
+              visited.add(k);
+              q.push(k);
+              parent[k] = v;
+            }
+          }
+        }
+        console.log(parent);
+        resultt =0 ;
+        choices = [];
+        choices.push(valuesList.length-1);
+        var prev = valuesList.length-1;
+        if(parent[prev]===-1){
+          resultt = -1;
+          displayResult();
+        }
+        else{
+          while(prev !=0){
+            choices.push(parent[prev]);
+            prev = parent[prev];
+            resultt++;
+          }
+          console.log(choices);
+          choicesRev = []
+          for(var i =0; i< choices.length; i++){
+            choicesRev[i]=choices[choices.length-1-i];
+          }
+          console.log(choicesRev);
+          displayResult();
+          //2,3,4,2,3,1,1,0,2,3 dosen't work
+        }
+      }
+      function transformStringListToIntegerList(aStringList){
+        var theCorrepondingIntegerList = [];
+        for(var index = 0 ; index < aStringList.length ; index++){ 
+          theCorrepondingIntegerList.push(parseFloat(aStringList[index])); 
+        }
+        return theCorrepondingIntegerList;
+      }
+
+      function displayResult(){
+    //     clearTable("tagOutput");
+    //     var resultTbl = document.getElementById("tagOutput");
+    //     var resultBody =  document.createElement("tbody");
+    //     resultBody.appendChild(createTitleRow("结果如下(The result is as follow)"));
+				// resultBody.appendChild(createDescriptionRow("最小跳数为(minimum number of jumps is)",resultt));
+    //     resultBody.appendChild(createDescriptionRow("跳到位置(Jump to the positions",choicesRev));
+				// resultTbl .append(resultBody);
+
+        clearTable("tagOutput");
+        clearTable("tagSeq");
+        var seqTable = document.getElementById("tagSeq");
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("结果如下(The result is as follow)"));
+        resultBody.appendChild(createDescriptionRow("最小跳数为(minimum number of jumps is)",resultt));
+        resultBody.appendChild(createDescriptionRow("跳到位置(Jump to the positions",choicesRev));
+        resultTbl .append(resultBody);
+
+        var seqBody = document.createElement("tbody");
+        var aRow = document.createElement("tr");
+        var indexSet = new Set(choicesRev);
+        console.log(indexSet);
+        for(var i = 0; i< valuesList.length ; i++){
+          var nameCell = document.createElement("td");
+          var nameCellTextNode = document.createTextNode(valuesList[i]+"");
+          nameCell.appendChild(nameCellTextNode);
+          if(indexSet.has(i)){
+            nameCell.style.backgroundColor = "green";
+          }
+          aRow.appendChild(nameCell);
+          //console.log(aRow);
+        }
+        seqBody.appendChild(aRow);
+        seqTable.append(seqBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>

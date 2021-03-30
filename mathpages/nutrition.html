@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<h2> Optimizing food managements for the animals</h2>
+		On an animal farm, we have \(n\) types of food, one unit of each type of food contains some amount of \(k\) different nutrients.
+		We have the cost per unit of each type of food, the requirement of quantity of each nutrient for all animals each week. We also have, for one unit of any type of food, the amount of nutrients of each type it contains. We want to minimize the cost of food expenses for each week while satisfying the amount of nutrients needed for the animals.
+		The question is to find the amount of each type of food to buy each week.
+		<hr>
+		<div>
+		Here, the unit for input is one unit of whatever it means:<br>
+		<!-- Create input element and label element for the input element, for the user to input the number of different types of nutrients -->
+		<label for="nNutrient">How many nutrients are there:</label><br>
+		<input type="number" id = "nNutrient" class="numbersonly" name="nnNutrient"  value="2"><br>
+		<!-- Create input element and label element for the input element, for the user to input the number of different types of food -->
+		<label for="nfoodt">How many types of food are there:</label><br>
+		<input type="number" id = "nfoodt" class="numbersonly" name="nnfoodt"  value="2"><br>
+		<!-- Create a submit button so that when it is clicked, it will create three new forms about the cost of the food and the amount of food of each type a animal need and the amount of nutrient in each type of food. The forms will be filled by the user to be send to our program to compute the result -->
+		<input type="Button" onclick="generateForms()" value="Create Form" /> <br>
+		<!-- This will be the table to hold the form about the animal needs that will be created based on the number of types of food -->
+		<div>
+			<table id="animNeedsTableElement">
+			</table>
+		</div><Br>
+		<!-- This will be the table to hold the form about the animal needs that will be created based on the number of animals -->
+		<div>
+			<table id="foodCostTableElement">
+			</table>
+		</div><br>
+
+		<div>
+			<table id="nutrientPerFoodTable">
+			</table>
+		</div>
+		<!-- This will be a button when clicked, will create a mathematical model of the optimization problem -->
+		<!-- <input type="Button" onclick="generateModel()" value="Generate Math Model" /> <br> -->
+		<br>
+		<div>
+			<table id="mathModel">
+			</table>
+		</div>
+		<br>
+		<div>
+			<table id="dualModel">
+			</table>
+		</div>
+		<br>
+		<div>
+			<table id="solvingTable">
+			</table>
+		</div>
+
+		<!-- <input type="Button" onclick="addEdges()" value="Optimize it" /> <br> -->
+		<br>
+		<p> Message: <span id = "msg"></span></p><br>
+
+		<script>
+			var numberOfFood = 0, numberOfNuitrients = 0, foodList = [], nutrientList = [],
+			foodPrice = [], animalRowFoodColumnTable =[], neededNutrients =[] , optimizingTable = [], computationSteps = [];
+			var constraintCounter = 0;
+			var optStep=0, totalOptStep = 0; // use to count the number of step towards solution
+
+			function generateModel(){
+				clearTable("mathModel"); // clear the table
+				clearTable("dualModel");
+				clearTable("solvingTable");
+
+				foodPrice = [];
+				neededNutrients =[];
+				animalRowFoodColumnTable =[];
+				//We first get the data from the form that use has filled.
+				//We firts get the cost of the foods.
+
+				for(var i = 0 ; i < numberOfFood ; i++){ // iterating over the type of food to get their cost
+					var cost = parseFloat(document.getElementById("f"+i).value);
+					if(isNaN(cost)){
+						document.getElementById("msg").innerHTML= "error: food"+i+" cost is not a number.";
+						return -1;
+					}
+					else{
+						foodPrice.push(cost);
+					}
+				}
+				console.log(foodPrice);
+				// We then get the amount of nutrients needed by the animals
+				for( var j = 0; j < numberOfNuitrients ; j++){
+					var amount = parseFloat(document.getElementById("n"+j).value);
+					if(isNaN(amount)){
+						document.getElementById("msg").innerHTML= "error: nutrient"+j+" amount is not a number.";
+						return -1;
+					}
+					else{
+						neededNutrients.push(amount);
+					}
+				}
+				console.log(neededNutrients);
+				// We then get the amount of nutrient of each type in one unit of each type of food.
+				for(var i = 0; i < numberOfNuitrients ; i++){
+					var tempRow = []
+					for(var j = 0 ; j < numberOfFood ; j++){
+						var amountNutiFoodj = parseFloat(document.getElementById("npf"+i+""+j).value);
+						if(isNaN(amountNutiFoodj)){
+							document.getElementById("msg").innerHTML= "error: amount of nutrient"+i+" in food"+j+" is not a number.";
+							return -1;
+						}
+						else{
+							tempRow.push(amountNutiFoodj);
+						}
+					}
+					animalRowFoodColumnTable.push(tempRow);
+				}
+				console.log(animalRowFoodColumnTable);
+
+				//We now create the mathematical model:
+				var mathModelTable = document.getElementById("mathModel"); // Get the math model table
+				var mathModelTableBody = document.createElement("tbody"); // Create an animal body for the table.
+				// Now we add the optimization function in the first row of math model table.
+				mathModelTableBody.appendChild(createTitleRow("Here is the math model for these settings:"));
+				var optimizationEquRow = document.createElement("tr"); // Create the row to add the optimization function.
+				var optFuncString = ""; // create the opt function string
+				for(var i = 0 ; i < numberOfFood ; i++){
+					optFuncString = optFuncString +""+ foodPrice[i]+"x["+i+"]";
+					if(i != numberOfFood -1){
+						optFuncString = optFuncString +"+";
+					}
+				}
+				console.log(optFuncString);
+				optimizationEquRow.appendChild(makecell("Minimize"));
+				optimizationEquRow.appendChild(makecell(optFuncString));
+				mathModelTableBody.appendChild(optimizationEquRow);
+
+				//Now we add the constraints imposed by the animals needs.
+				for(var i = 0; i < numberOfNuitrients ; i++){
+					var constraintRow = document.createElement("tr"); //
+					constraintRow.appendChild(makecell("Constraint "+i));
+					var constraintString = "";
+					for(var j = 0 ; j < numberOfFood ; j++){
+						constraintString = constraintString + ""+animalRowFoodColumnTable[i][j]+"x["+j+"]";
+						if(j != numberOfFood -1){
+							constraintString = constraintString + "+";
+						}
+					}
+					//constraintString = constraintString +"-s["+i+"] = "+neededNutrients[i];
+					constraintString = constraintString +">= "+neededNutrients[i];
+					constraintRow.appendChild(makecell(constraintString));
+					mathModelTableBody.appendChild(constraintRow);
+				}
+				//Now we add constrain of no negativity to the food count variables
+				for(var i = 0; i < numberOfFood ; i++){
+					var constraintRow = document.createElement("tr"); //
+					constraintRow.appendChild(makecell("Constraint "+(i+numberOfNuitrients)));
+					constraintRow.appendChild(makecell("x"+"["+i+"] >= 0"));
+					mathModelTableBody.appendChild(constraintRow);
+				}
+
+				//Now we add constrain of no negativity to the slack variables
+				// for(var i = 0; i < numberOfNuitrients ; i++){
+				// 	var constraintRow = document.createElement("tr"); //
+				// 	var nameCell = document.createElement("td"); //Create the cell to hold the label for the constraints.
+				// 	var constraintCell = document.createElement("td");  // Create the cell for the constraints.
+				// 	var nameCellTextNode = document.createTextNode("Constraint "+(i+numberOfNuitrients+numberOfFood));
+				// 	nameCell.appendChild(nameCellTextNode);
+				// 	constraintRow.appendChild(nameCell);
+				// 	var constraintString = "";
+				// 	constraintString = constraintString + "s"+"["+i+"] >= 0";
+				// 	var constraintTexNode = document.createTextNode(constraintString); //create constraint text node
+				// 	constraintCell.appendChild(constraintTexNode);
+				// 	constraintRow.appendChild(constraintCell);
+				// 	mathModelTableBody.appendChild(constraintRow);
+				// }
+
+				mathModelTableBody.appendChild(createSubmitRow("Generate Dual Model", generateDualModel));
+
+				mathModelTable.append(mathModelTableBody);
+			}
+
+			function generateDualModel(){
+				clearTable("dualModel"); // clear the table
+				clearTable("solvingTable");
+				var dualTable = document.getElementById("dualModel"); // Get the math model table
+				var dualTableBody = document.createElement("tbody"); // Create an animal body for the table.
+				dualTableBody.appendChild(createTitleRow("Here is the dual model for these settings:"));
+
+				var optimizationEquRow = document.createElement("tr"); // Create the row to add the optimization function.
+
+				var optFuncString = ""; // create the opt function string
+				for(var i = 0 ; i < numberOfNuitrients ; i++){
+					optFuncString = optFuncString +""+ neededNutrients[i]+"y["+i+"]";
+					if(i != numberOfNuitrients -1){
+						optFuncString = optFuncString +"+";
+					}
+				}
+				optimizationEquRow.appendChild(makecell("Maximize"));
+				optimizationEquRow.appendChild(makecell(optFuncString));
+				dualTableBody.appendChild(optimizationEquRow);
+
+				//Now we add the constraints imposed by the animals needs.
+				for(var i = 0; i < numberOfFood ; i++){
+					var constraintRow = document.createElement("tr"); //
+					constraintRow.appendChild(makecell("Constraint "+i));
+					var constraintString = "";
+					for(var j = 0 ; j < numberOfNuitrients ; j++){
+						constraintString = constraintString + "" +animalRowFoodColumnTable[j][i]+"y["+j+"]";
+						if(j != numberOfFood -1){
+							constraintString = constraintString + "+";
+						}
+					}
+					constraintString = constraintString +"<= "+foodPrice[i];
+					constraintRow.appendChild(makecell(constraintString));
+					dualTableBody.appendChild(constraintRow);
+				}
+				//Now we add constrain of no negativity to the food count variables
+				for(var i = 0; i < numberOfNuitrients ; i++){
+					var constraintRow = document.createElement("tr"); //
+					constraintRow.appendChild(makecell("Constraint "+(i+numberOfNuitrients)));
+					constraintRow.appendChild(makecell("y"+"["+i+"] >= 0"));
+					dualTableBody.appendChild(constraintRow);
+				}
+				dualTableBody.appendChild(createSubmitRow("Optimize Using Simplex", optimizeIt));
+				dualTable.append(dualTableBody);
+			}
+
+			function makeLabelRow(){
+				//table variables row
+				//td cell
+				var optimizationEquRow = document.createElement("tr");
+				optimizationEquRow.appendChild(makecell("v.d"));
+				//main variable cells
+				for(var i = 0 ; i < numberOfNuitrients ; i++){
+					optimizationEquRow.appendChild(makecell("y["+i+"]"));
+				}
+				// slack varaibles cells
+				for(var i = 0; i < numberOfFood ; i++){
+					optimizationEquRow.appendChild(makecell("z["+i+"]"));
+				}
+				// optmization variable cell
+				optimizationEquRow.appendChild(makecell("-z"));
+				optimizationEquRow.appendChild(makecell("td"));
+				return optimizationEquRow
+			}
+			function optimizeIt(){
+				//reset
+				clearTable("solvingTable");
+				optStep = 0;
+				totalOptStep = 0;
+				computationSteps = []
+				optimizingTable =[];
+				//table name row:
+				var solveTable = document.getElementById("solvingTable");
+				var solveTableBody = document.createElement("tbody");
+				solveTableBody.appendChild(createTitleRow("Step"+ optStep));
+				solveTableBody.appendChild(makeLabelRow());
+
+				//Now we add the constraints imposed by the animals needs.
+				for(var i = 0; i < numberOfFood ; i++){
+					var aRow = document.createElement("tr");
+					aRow.appendChild(makecell("Z["+i+"]"));
+					var tempRow = []; // use to build solvertable
+					for(var j = 0 ; j < numberOfNuitrients ; j++){
+						aRow.appendChild(makecell(""+animalRowFoodColumnTable[j][i]));
+						tempRow.push(animalRowFoodColumnTable[j][i]);
+					}
+					for(var j = 0; j < numberOfFood ; j++){
+						if( j===i ){
+							aRow.appendChild(makecell(1+""));
+							tempRow.push(1);
+						}
+						else{
+							aRow.appendChild(makecell(0+""));
+							tempRow.push(0);
+						}
+					}
+					tempRow.push(0);
+					aRow.appendChild(makecell(0+""));
+					solveTableBody.appendChild(aRow);
+
+					tempRow.push(foodPrice[i]);
+					aRow.appendChild(makecell(""+foodPrice[i]));
+					solveTableBody.appendChild(aRow);
+					optimizingTable.push(tempRow);
+					console.log("hello");
+					console.log(i+""+optimizingTable);
+				}
+
+				var tempRow = [];
+				var aRow = document.createElement("tr");
+				aRow.appendChild(makecell("-z"));
+				for(var j = 0 ; j < numberOfNuitrients ; j++){
+					aRow.appendChild(makecell(""+(0-neededNutrients[j])));
+					tempRow.push(-neededNutrients[j]);
+				}
+				for(var j = 0; j < numberOfFood ; j++){
+					aRow.appendChild(makecell(""+0));
+					tempRow.push(0);
+					console.log("temp Row is now" + tempRow);
+				}
+				// z variable cell
+				aRow.appendChild(makecell(""+1));
+				tempRow.push(1);
+				// const variable cell
+
+				var c = makecell(""+0);
+				c.style.backgroundColor = "yellow";
+				aRow.appendChild(c);
+				tempRow.push(0);
+				optimizingTable.push(tempRow);
+				console.log(optimizingTable);
+				solveTableBody.appendChild(aRow);
+
+				computationSteps.push(optimizingTable);
+				console.log(computationSteps);
+
+				var submitRow = document.createElement("tr");
+				var ginputElem = document.createElement("input");
+				ginputElem.type = "Button";
+				ginputElem.onclick = function() {renderSimplexTable(optimizingTable , 2)};
+				ginputElem.value = "Next Step";
+				submitRow.appendChild(ginputElem);
+				solveTableBody.appendChild(submitRow);
+				solveTable.append(solveTableBody);
+			}
+			function deep2dCopy(arr){
+				var nrow = arr.length;
+				var ncolumns = arr[0].length;
+				var temp = [];
+				for(var i = 0 ; i< nrow; i++){
+					temparr = []
+					for(var j = 0 ; j< ncolumns ; j++){
+						temparr.push(arr[i][j]);
+					}
+					temp.push(temparr);
+				}
+				return temp;
+			}
+
+			var mt = [ [1,12,15,1,0,0,0,4],[8,13,16,0,1,0,0,5],[9,14,17,0,0,1,0,6],[-1,-2,-3,0,0,0,1,0]]
+			function mikegod(tbll){
+				var computationTable = deep2dCopy(tbll);
+
+				var numRow = computationTable.length;
+				var numcolum = computationTable[0].length;
+				var objectiveRow = computationTable[numRow - 1];
+				// console.log("objective row is"+objectiveRow);
+				var minIndex = 0;
+				var min = Number.MAX_SAFE_INTEGER;
+				for(var i  =0 ; i < objectiveRow.length ; i++){
+					if(min > objectiveRow[i]){
+						min = objectiveRow[i];
+						minIndex = i;
+					}
+				}
+				if(min>=0){
+					//console.log("solved");
+					return [11,computationTable , -1, -1];
+				}
+				else{
+					var numberOfaijlesequlzero = 0;
+					var minEnter = Number.MAX_SAFE_INTEGER;
+					var minEnterIndex =-1;
+					for(var i = 0 ; i < computationTable.length-1 ; i++){
+						if(computationTable[i][minIndex] <= 0 ){
+							numberOfaijlesequlzero++;
+							continue;
+						}
+						var division = computationTable[i][numcolum-1] / computationTable[i][minIndex];
+						//console.log(division);
+						if(minEnter >  division && division >= 0){
+							minEnterIndex = i;
+							minEnter = division;
+						}
+					}
+					if(numberOfaijlesequlzero === computationTable.length-1){
+						console.log("unbounded solutions");
+						return [111,computationTable , -1, -1];
+					}
+					if( minEnterIndex === -1 ){
+						console.log("bad");
+						return [1111,computationTable , -1, -1]; // no ssolution
+					}
+					// console.log("enter variable is"+minEnter);
+					// console.log("enter variable row index is"+minEnterIndex);
+
+					//update enter variable row:
+					var pivot = computationTable[minEnterIndex][minIndex];
+					for(var i = 0 ; i < numcolum ; i++){
+						computationTable[minEnterIndex][i] = computationTable[minEnterIndex][i]/pivot;
+					}
+					//console.log(computationTable);
+					//update the rest of rows
+					for(var i =0 ; i < numRow ; i++){
+						if(i != minEnterIndex){
+							var miketheGreate = computationTable[i][minIndex];
+							for(var j =0 ; j < numcolum ; j++){
+								computationTable[i][j] = computationTable[i][j] - computationTable[minEnterIndex][j]* miketheGreate ;
+							}
+						}
+					}
+					// console.log("in computing step:");
+					// console.log(computationTable);
+					return [1,computationTable, minIndex, minEnterIndex]
+				}
+			}
+			function renderSimplexTable(tbl,pon){ // p o n is to specify previous or next 1 is previous 2 is next
+				console.log("before adding computation step");
+				console.log(tbl);
+				if(pon === 1){
+					console.log("in previous step");
+					optStep= optStep -2;
+					console.log("optstep is "+optStep);
+				}
+				if(optStep === -1){
+					optimizeIt();
+				}
+				else{
+					//reset
+					clearTable("solvingTable");
+					var nextt = mikegod(tbl);
+					if(nextt[0] === 11){
+						optStep++;
+						console.log("optimizing complete");
+						//table name row:
+						var solveTable = document.getElementById("solvingTable");
+						var solveTableBody = document.createElement("tbody");
+						solveTableBody.appendChild(createTitleRow("Optimal Solution Reached by Simplex"));
+						//get the solutions:
+						var solTable = nextt[1];
+						// console.log("the value of sol table is");
+						// console.log(solTable);
+						// var nutrits = [];
+						// for(var i =0 ; i < numberOfNuitrients ; i++){
+						// 	if(solTable[numberOfFood][i] != 0){
+						// 		nutrits.push(0);
+						// 	}
+						// 	else{
+						// 		for(var m = 0 ; m < numberOfFood ;m++){
+						// 			if(solTable[m][i] === 1){
+						// 				nutrits.push(solTable[m][solTable[0].length -1]);
+						// 			}
+						// 		}
+						// 	}
+						// }
+						// console.log("the values of each variables is:"+nutrits);
+
+						for( var i = 0 ; i <  numberOfFood ; i++){
+							var aRow = document.createElement("tr");
+							aRow.appendChild(makecell("Optimal unit of food of type"+i+" to buy is:"));
+							// var evalTemp = 0 ;
+							// for(var m = 0 ; m < numberOfNuitrients; m++){
+							// 	evalTemp = evalTemp + animalRowFoodColumnTable[m][i]*nutrits[m];
+							// }
+							// console.log("evaltemp is"+evalTemp);
+							// aRow.appendChild(makecell(""+(foodPrice[i] / evalTemp).toFixed(2)));
+							aRow.appendChild(makecell((solTable[solTable.length-1][i+numberOfNuitrients]).toFixed(2)));
+							solveTableBody.appendChild(aRow);
+						}
+						var aRow = document.createElement("tr");
+						aRow.appendChild(makecell("Optimal cost is:"));
+						aRow.appendChild(makecell(""+(solTable[solTable.length-1][solTable[0].length-1]).toFixed(2)));
+						solveTableBody.appendChild(aRow);
+
+						var prevButtonRow = document.createElement("tr");
+						var inp = document.createElement("input");
+						inp.type = "Button";
+						inp.onclick = function() {renderSimplexTable(computationSteps[optStep-2], 1)};
+						inp.value = "Previous Step";
+						prevButtonRow.appendChild(inp);
+						solveTableBody.appendChild(prevButtonRow);
+						solveTable.append(solveTableBody);
+					}
+					else{
+						var nextTable = nextt[1];
+						if(optStep < totalOptStep){
+							optStep++;
+						}
+						else{
+							optStep++;
+							totalOptStep++;
+							computationSteps.push(nextTable);
+						}
+						//table name row:
+						var solveTable = document.getElementById("solvingTable");
+						var solveTableBody = document.createElement("tbody");
+						solveTableBody.appendChild(createTitleRow("Step"+ optStep));
+						solveTableBody.appendChild(makeLabelRow());
+
+						//Now we add the constraints imposed by the animals needs.
+						for(var i = 0; i < numberOfFood ; i++){
+							var aRow = document.createElement("tr");
+							var indexOfPivot = -1;
+							for(var j = 0 ; j < numberOfNuitrients ; j++){
+								if(nextTable[i][j] === 1){
+									indexOfPivot = j;
+								}
+							}
+							if(indexOfPivot != -1){
+								aRow.appendChild(makecell("y["+indexOfPivot+"]"));
+							}
+							else{
+								for(var j = 0; j < numberOfFood ; j++){
+									if(nextTable[i][j+numberOfNuitrients] === 1){
+										indexOfPivot = j;
+									}
+								}
+								aRow.appendChild(makecell("z["+indexOfPivot+"]"));
+							}
+							for(var j = 0 ; j < nextTable[0].length ; j++){
+								var c = makecell(""+nextTable[i][j].toFixed(2));
+								if( j === nextt[2] && i === nextt[3]){
+									c.style.backgroundColor = "green";
+								}
+								aRow.appendChild(c);
+								// aRow.appendChild(makecell(""+nextTable[i][j].toFixed(2)));
+							}
+							solveTableBody.appendChild(aRow);
+						}
+						var aRow = document.createElement("tr");
+						aRow.appendChild(makecell("-z"));
+						for(var j = 0 ; j < nextTable[0].length ; j++){
+							var c = makecell(""+nextTable[numberOfFood][j].toFixed(2));
+							if( j === nextTable[0].length - 1){
+								c.style.backgroundColor = "yellow";
+							}
+							aRow.appendChild(c);
+						}
+						solveTableBody.appendChild(aRow);
+
+
+						var submitRow = document.createElement("tr");
+						var ginputElemp = document.createElement("input");
+						ginputElemp.type = "Button";
+						ginputElemp.onclick = function() {renderSimplexTable(computationSteps[optStep-2], 1)};
+						ginputElemp.value = "Previous Step";
+						submitRow.appendChild(ginputElemp);
+
+						var ginputElem = document.createElement("input");
+						ginputElem.type = "Button";
+						ginputElem.onclick = function() {renderSimplexTable(nextTable , 2 )};
+						ginputElem.value = "Next Step";
+						submitRow.appendChild(ginputElem);
+						solveTableBody.appendChild(submitRow);
+						solveTable.append(solveTableBody);
+					}
+				}
+
+			}
+			/* *
+			 * This method is used to generate a form to be fill out by the user
+			 * Based on the number of type of nutrients and the number of types of food that they have entered.
+			 */
+			function generateForms(){
+				console.log("in generateForms");
+				if(isFirstQuantityInputOk()){
+					clearTable("mathModel"); // clear the table
+					clearTable("dualModel");
+					clearTable("solvingTable");
+					foodList = [];
+					nutrientList = [];
+					foodPrice = [];
+					animalRowFoodColumnTable =[]
+					neededNutrients =[]
+					makeAnimalNeedsTable();
+					makeFoodCostTable();
+					makeNutPerFoodTbl();
+					return 1;
+				}
+				else{
+					return -1;
+				}
+			}
+			function isFirstQuantityInputOk(){
+				//Get the number of different types of foods and number of type of nuitrients from the designated HTML inputs
+				numberOfFood = parseFloat(document.getElementById("nfoodt").value); // Get the number of food from the HTML nfoodt input element.
+				numberOfNuitrients = parseFloat(document.getElementById("nNutrient").value); // Get the number of type of nutrients from the HTML nNutrient input element.
+				if(isNaN(numberOfFood)){ //If number of food entered is not a number, display an an explainatory error message.
+					document.getElementById("msg").innerHTML= "error: number of different type of food entered is not a number."; // Put the error message inside the msg element in HTML.
+					return false;
+				}
+				else if(isNaN(numberOfNuitrients)){ //If the number of animal entered by the user is not a number, display an error message.
+					document.getElementById("msg").innerHTML= "error: number of different type of nutrients entered is not a number.";
+					return false;
+				}
+				else if(numberOfNuitrients <= 0 || numberOfFood <=0){ //If the number of type of food or the number of type of nutrients entered is a negetive number, display an error message.
+					document.getElementById("msg").innerHTML= "error: number of type of foods or number of type of nutrients need to be positive.";
+					return false;
+				}
+				else if(!(Number.isInteger(numberOfNuitrients)) || !(Number.isInteger(numberOfFood))){ //If the number of food or animal entered is not an integer number, display an error message.
+					console.log(numberOfNuitrients);
+					console.log(numberOfFood);
+					document.getElementById("msg").innerHTML= "error: number of type of nutrients or number of type of food need to be an Integer.";
+					return false;
+				}
+				else{
+					return true;
+				}
+			}
+			function makeAnimalNeedsTable(){
+				// Get the animal needs table and food cost table from the designated HTML input elements
+				var animalNeedsTable = document.getElementById("animNeedsTableElement"); // Get the animNeeds table element from HTML.
+				clearTable("animNeedsTableElement"); // clear the table first
+				// Create the animal needs table form that will be fill out by the user.
+				var animalNeedsTableBody = document.createElement("tbody"); // Create a body for the animal needs table.
+				animalNeedsTableBody.appendChild(createTitleRow("Please enter the amount of units of each nutrients the animal needs in a week:"));
+				for(var i = 0 ; i < numberOfNuitrients ; i++){ // Iterate over all possible nuitrients
+					animalNeedsTableBody.appendChild(createInputRow("How many unit of nutrient "+i+":","n"+i));
+				}
+				animalNeedsTable.append(animalNeedsTableBody); // put the table body in the animal needs table.
+			}
+			function makeFoodCostTable(){
+				// Create the food cost table form that will be fill out by the user.
+				var foodCostTable = document.getElementById("foodCostTableElement"); // Get the foodCost table element from HTML.
+				clearTable("foodCostTableElement"); // clear the table first
+				var foodCostTableBody = document.createElement("tbody"); // Create a body for the food cost table.
+				foodCostTableBody.appendChild(createTitleRow("Please specify the cost of an unit of each Food:"));
+
+				for(var i = 0 ; i < numberOfFood ; i++){ // Iterate over all possible foods
+					foodCostTableBody.appendChild(createInputRow("Cost of food type "+i+":","f"+i));
+				}
+				foodCostTable.append(foodCostTableBody);
+			}
+			function makeNutPerFoodTbl(){
+				console.log("in makeNutPerFoodTbl method");
+				var nutrientPerFoodTable = document.getElementById("nutrientPerFoodTable");
+				clearTable("nutrientPerFoodTable"); // clear the table first
+				// Create the animal needs table form that will be fill out by the user.
+				var nutrientPerFoodTableBody = document.createElement("tbody"); // Create a body for the animal needs table.
+				nutrientPerFoodTableBody.appendChild(createTitleRow("Please specify how many nutrients of each type that each type of food contains:"));
+				//Create the first row of this table that onsists of the name of the different types of food.
+				var headerRow = document.createElement("tr"); // Create the header row to hold name of foods
+				// first, we add an empty cell because the column for this cell is used for names of the nitrients.
+				headerRow.appendChild(makecell(" "));
+				console.log(headerRow);
+				// next we add the names of the foods
+				for(var i = 0; i < numberOfFood ; i++){
+					headerRow.appendChild(makecell("Food "+i));
+				}
+				nutrientPerFoodTableBody.appendChild(headerRow);
+				// next we add the rows for each nuitrient, and input to get the among of nuitrient each food has.
+				for(var i = 0 ; i < numberOfNuitrients ; i++){ // Iterate over all possible nuitrients
+					var aTableRow = document.createElement("tr");
+					aTableRow.appendChild(makecell("Nutrient "+i));
+					// We now add the input cell for each food
+					for(j = 0 ; j< numberOfFood ; j++){
+						aTableRow.appendChild(createInputCell("npf"+i+""+j));
+					}
+					nutrientPerFoodTableBody.appendChild(aTableRow);
+				}
+				nutrientPerFoodTableBody.appendChild(createSubmitRow("Generate Math Model", generateModel));
+				nutrientPerFoodTable.append(nutrientPerFoodTableBody);
+			}
+			function createTitleRow(str){
+				var titleRow = document.createElement("tr");
+				var titleCellTextNode = document.createTextNode(str);
+				titleRow.appendChild(titleCellTextNode);
+				return titleRow;
+			}
+			function createInputRow(strr,idd){
+				var oRow = document.createElement("tr");
+				oRow.appendChild(makecell(strr));
+				oRow.appendChild(createInputCell(idd));
+				return oRow;
+			}
+			function createSubmitRow(name, funName){
+        		var submitRow = document.createElement("tr");
+				var ginputElem = document.createElement("input");
+				ginputElem.type = "Button";
+				ginputElem.onclick = function() {funName()};
+				ginputElem.value = name;
+				submitRow.appendChild(ginputElem);
+				return submitRow;
+        	}
+			function createInputCell(inputcellid){
+        		var ginputCell = document.createElement("td");
+        		var ginputElem = document.createElement("input");
+        		ginputElem.id = inputcellid;
+        		ginputCell.appendChild(ginputElem);
+        		return ginputCell;
+        	}
+			function clearTable(idstr){
+				var makovTable = document.getElementById(idstr);
+				while(makovTable.rows.length > 0) {
+					makovTable.deleteRow(0);
+				}
+			}
+			function makecell(str){
+				var nameCell = document.createElement("td");
+				var nameCellTextNode = document.createTextNode(str);
+				nameCell.appendChild(nameCellTextNode);
+				return nameCell;
+			}
+			mikegod(mt);
+		</script>
+	</body>
+</html>
+
+
+
+
+
+
+
+
+
+<!--
+<label for="f1">Cost Of (1 unit)Food 1:</label>
+<input type="number" id = "f1" class="numbersonly" name="nf1"  value="6" ><br>
+<label for="f2">Cost of Food 2:</label>
+<input type="number" id = "f2" class="numbersonly" name="nf2"  value="0.3"><br>
+<label for="f3">Cost of Food 3:</label>
+<input type="number" id = "f3" class="numbersonly" name="nf3"  value="0.3"><br>
+<label for="f4">Cost of Food 4:</label>
+<input type="number" id = "f4" class="numbersonly" name="nf4"  value="0.3"><br>
+<br>
+<label for="f1a">(1 unit of)Food 1 contains how many nuitrient of type A?:</label>
+<input type="number" id = "f1a" class="numbersonly" name="nf1a"  value="0.3"><br>
+<label for="f1b">Food 1 contains how many nuitrient of type B?:</label>
+<input type="number" id = "f1b" class="numbersonly" name="nf1b"  value="0.3"><br>
+<label for="f1c">Food 1 contains how many nuitrient of type C?:</label>
+<input type="number" id = "f1c" class="numbersonly" name="nf1c"  value="0.3"><br>
+<label for="f1d">Food 1 contains how many nuitrient of type D?:</label>
+<input type="number" id = "f1a" class="numbersonly" name="nf1d"  value="0.3"><br>
+<br>
+<label for="f2a">Food 2 contains how many nuitrient of type A?:</label>
+<input type="number" id = "f2a" class="numbersonly" name="nf2a"  value="0.3"><br>
+<label for="f2b">Food 2 contains how many nuitrient of type B?:</label>
+<input type="number" id = "f2b" class="numbersonly" name="nf2b"  value="0.3"><br>
+<label for="f2c">Food 2 contains how many nuitrient of type C?:</label>
+<input type="number" id = "f2c" class="numbersonly" name="nf2c"  value="0.3"><br>
+<label for="f2d">Food 2 contains how many nuitrient of type D?:</label>
+<input type="number" id = "f2d" class="numbersonly" name="nf2d"  value="0.3"><br>
+<br>
+<label for="f3a">Food 3 contains how many nuitrient of type A?:</label>
+<input type="number" id = "f3a" class="numbersonly" name="nf3a"  value="0.3"><br>
+<label for="f3b">Food 3 contains how many nuitrient of type B?:</label>
+<input type="number" id = "f3b" class="numbersonly" name="nf3b"  value="0.3"><br>
+<label for="f3c">Food 3 contains how many nuitrient of type C?:</label>
+<input type="number" id = "f3c" class="numbersonly" name="nf3c"  value="0.3"><br>
+<label for="f3d">Food 3 contains how many nuitrient of type D?:</label>
+<input type="number" id = "f3d" class="numbersonly" name="nf3d"  value="0.3"><br>
+<br>
+<label for="f4a">Food 4 contains how many nuitrient of type A?:</label>
+<input type="number" id = "f4a" class="numbersonly" name="nf4a"  value="0.3"><br>
+<label for="f4b">Food 4 contains how many nuitrient of type B?:</label>
+<input type="number" id = "f4b" class="numbersonly" name="nf4b"  value="0.3"><br>
+<label for="f4c">Food 4 contains how many nuitrient of type C?:</label>
+<input type="number" id = "f4c" class="numbersonly" name="nf4c"  value="0.3"><br>
+<label for="f4d">Food 4 contains how many nuitrient of type D?:</label>
+<input type="number" id = "f4d" class="numbersonly" name="nf4d"  value="0.3"><br>
+
+<br>
+Now, specify how many unit of each type of nutrient the animals need:
+<br>
+<label for="a1a">Animals needs how many nuitrient of type A?:</label>
+<input type="number" id = "ana" class="numbersonly" name="nana"  value="0.3"><br>
+<label for="a1a">Animals needs how many nuitrient of type B?:</label>
+<input type="number" id = "anb" class="numbersonly" name="nanb"  value="0.3"><br>
+<label for="a1a">Animals needs how many nuitrient of type C?:</label>
+<input type="number" id = "anc" class="numbersonly" name="nanc"  value="0.3"><br>
+<label for="a1a">Animals needs how many nuitrient of type D?:</label>
+<input type="number" id = "and" class="numbersonly" name="nand"  value="0.3"><br>
+
+<button onclick="drawProject()">Calculate</button>
+
+<p> Messages:<span id = "rslt"></span></p>
+<p> The Optimization problem is:<span id = "opt"></span></p>
+<p> First constraint is:<span id = "cst1"></span></p>
+<p> Second constraint is:<span id = "cst2"></span></p>
+<p> Third constraint is:<span id = "cst3"></span></p>
+<p> Fourth constraint is:<span id = "cst4"></span></p>
+</div> -->

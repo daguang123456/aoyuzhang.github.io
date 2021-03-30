@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>编辑距离(Edit distance)</h2>
+    给定两个单词word1和word2，找到将word1转换为word2所需的最小操作数。
+    一个单词允许进行以下3种操作：
+    <ul>
+      <li>插入一个字符</li>
+      <li>删除字符</li>
+      <li>替换字符</li>
+    </ul>
+    Given two words word1 and word2, find the minimum number of operations required to convert word1 to word2.
+    You have the following 3 operations permitted on a word:
+    <ul>
+      <li>Insert a character</li>
+      <li>Delete a character</li>
+      <li>Replace a character</li>
+    </ul>
+
+    <br>
+    例:
+    <div class ="table1">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+      </style>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">输入：</th>
+          <th class="tg-fv28">word1 = "horse", word2 = "ros"</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">输出:</td>
+          <td class="tg-fv28">3</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">说明:</td>
+          <td class="tg-fv28">horse -> rorse (取代 'h' 成 'r')<br>
+                              rorse -> rose (删除 'r')<br>
+                              rose -> ros (删除 'e')</td>
+          </tr>
+      </tbody>
+      </table>
+    </div>
+    Example:
+    <div>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">Input:</th>
+          <th class="tg-fv28">word1 = "intention", word2 = "execution"</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">Output:</td>
+          <td class="tg-fv28">5</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">Explanation:</td>
+          <td class="tg-fv28">intention -> inention (remove 't')<br>
+                              inention -> enention (replace 'i' with 'e')<br>
+                              enention -> exention (replace 'n' with 'x')<br>
+                              exention -> exection (replace 'n' with 'c')<br>
+                              exection -> execution (insert 'u')</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <hr>
+    <label for="tagWord1">第一个词是:(First word is)</label><br>
+    <input type="text" id = "tagWord1" class="numbersonly" value="marhabaan"><br>
+    <label for="tagWord2">第二个词是:(Second word is)</label><br>
+    <input type="text" id = "tagWord2" class="numbersonly" value="Namaste"><br>
+    <input type="Button" onclick="computeResult()" value="计算编辑距离(Compute Edit Distance)" /> <br>
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+    <script>
+      var string1;
+      var string2;
+      var resultt;
+
+			function findMinEdit(str1,str2){
+				var dp = [];
+				for(var i = 0 ; i <= str1.length ; i++){
+					var tempRow = [];
+					for(var j = 0; j<= str2.length ; j++){
+						if(i===0){
+							tempRow.push(j);
+						}
+						else if(j===0){
+							tempRow.push(i);
+						}
+						else{
+							tempRow.push(0)
+						}
+					}
+					dp.push(tempRow);
+				}
+				for(var m = 1; m <= str1.length ; m++){
+					for(var n = 1; n <= str2.length ; n++){
+						if(str1.charAt(m-1) === str2.charAt(n-1)){
+							dp[m][n] = dp[m-1][n-1];
+						}
+						else{
+							dp[m][n] = 1+Math.min(dp[m][n-1], dp[m-1][n], dp[m-1][n-1]);
+						}
+					}
+				}
+				console.log(dp[str1.length][str2.length]);
+				return dp[str1.length][str2.length];
+
+			}
+      function computeResult(){
+        string1 = document.getElementById("tagWord1").value;
+				string2 = document.getElementById("tagWord2").value;
+				resultt = findMinEdit(string1,string2);
+				displayResult();
+      }
+      function displayResult(){
+        clearTable("tagOutput");
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("结果如下：(the result is as follow)"));
+        resultBody.appendChild(createDescriptionRow("最小编辑距离是(the minimum edit distance is)",resultt));
+        resultTbl.append(resultBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>

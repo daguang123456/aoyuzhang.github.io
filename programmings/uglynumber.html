@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>丑数(Ugly Number)</h2>
+    查找第n个丑数。丑数是正数，其主要因子仅包括2、3、5。<br>
+    <br>
+    Find the n-th ugly number. Ugly numbers are positive numbers whose prime factors only include 2, 3, 5.
+    <hr>
+    例:
+    <div class ="table1">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+      </style>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">输入：</th>
+          <th class="tg-fv28">10</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">输出:</td>
+          <td class="tg-fv28">12</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">说明:</td>
+          <td class="tg-fv28">1、2、3、4、5、6、8、9、10、12是前10个丑陋数字的序列。</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    Example:
+    <div>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">Input:</th>
+          <th class="tg-fv28">10</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">Output:</td>
+          <td class="tg-fv28">12</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">Explanation:</td>
+          <td class="tg-fv28">1, 2, 3, 4, 5, 6, 8, 9, 10, 12 is the sequence of the first 10 ugly numbers.</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <hr>
+    <label for="tagNthUglyNumber">输入\(n\)作为第\(n\)个丑数:(Enter \(n\) for the \(n^{th}\) ugly number)</label><br>
+    <input type="number" id = "tagNthUglyNumber" step = "1" min = "0" max= "50" class="numbersonly" value="2"><br>
+    <input type="Button" onclick="computeResult()" value="找出第n个丑数(find nth ugly number)" /> <br>
+
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+    <script>
+      var n = 0;
+			var result = 0;
+      function computeResult(){
+        n  = parseFloat(document.getElementById("tagNthUglyNumber").value);
+        if(isNaN(n)){ //If number of food entered is not a number, display an an explainatory error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的不是数字(error: n needs to be a number"; // Put the error message inside the msg element in HTML.
+          return false;
+        }
+        if(n < 0 || n > 200000){ //If the number of type of food or the number of type of nutrients entered is a negetive number, display an error message.
+          document.getElementById("tagMessage").innerHTML= "错误：数字必须在0到1690之间(error: number needs to be between 0 and 1690)";
+          return false;
+        }
+        if(!(Number.isInteger(n))){
+          document.getElementById("tagMessage").innerHTML= "错误：必须是整数(error:n needs to be integer)";
+          return false;
+        }
+
+				var index2 = 0, index3 = 0, index5 = 0;
+
+				var resultarr =[];
+				for(var i = 0 ; i < n+1; i++){
+					resultarr.push(1);
+				}
+				for(var i = 1; i< n+1; i++){
+					resultarr[i] = Math.min(Math.min(2*resultarr[index2], 3*resultarr[index3]),5*resultarr[index5])
+					if(resultarr[i] === 2*resultarr[index2]){
+						index2++;
+					}
+					if(resultarr[i] === 3*resultarr[index3]){
+						index3++;
+					}
+					if(resultarr[i] === 5*resultarr[index5]){
+						index5++;
+					}
+				}
+				result= resultarr[n-1];
+        displayResult();
+        return 1;
+
+
+      }
+      function displayResult(){
+        clearTable("tagOutput")
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("结果如下(The result is as follow)"));
+				var desc = "第"+n+"个丑数是(The "+n+"th ugly number is";
+        resultBody.appendChild(createDescriptionRow(desc,result));
+        resultTbl.append(resultBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>

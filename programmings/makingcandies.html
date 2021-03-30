@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>制作糖果(Making Candies)</h2>
+    卡尔喜欢在社交网站上玩游戏。
+    他目前最喜欢的是CandyMaker，其目标是制作糖果。
+    卡尔刚刚开始一场新的游戏。他必须积累\(n\)个糖果。
+    他从有\(m\)个机器和\(w\)个工人的条件下开始。
+    每次他可以一口气制作\(m \times w\)糖果。做完糖果以后，他可以决定是否花一些糖果来购买更多机器或雇用更多工人。
+    购买机器或雇用工人的成本单位为\(p\)个糖果，并且他可以拥有的机器数量或可以雇用的工人数量没有限制。
+    卡尔希望尽快获得所需的糖果数量。例如，卡尔从\(m=1\)台机器和\(w=2\)个工人开始。
+		购买或租用的成本为\(p=1\)，以及他需要积累的糖果为\(60\)。
+		他执行以下策略：
+		<ol>
+			<li>制作\(m \times w =1 \times 2 =2\)糖果。购买两台机器。</li>
+			<li>做\(3 \times 2 = 6\)糖果。购买\(3\)机器并雇用\(3\)工人。</li>
+			<li>做\(6\times5 =30\)糖果。保留所有糖果。</li>
+			<li>做\(6 \times 5 = 30\)糖果。通过上次的生产，卡尔有了\(60\)个糖果。</li>
+		</ol>
+			花了四次才能制成足够的糖果。。
+		<br>
+    <br>
+    Karl loves playing games on social networking sites.
+    His current favorite is CandyMaker, where the goal is to make candies.
+    Karl just started a level in which he must accumulate \(n\) candies starting with \(m\) machines and \(w\) workers.
+    In a single pass, he can make \(m \times w\) candies.
+    After each pass, he can decide whether to spend some of his candies to buy more machines or hire more workers.
+    Buying a machine or hiring a worker costs \(p\) units, and there is no limit to the number of machines he can own or workers he can employ.
+
+    Karl wants to minimize the number of passes to obtain the required number of candies at the end of a day. Determine that number of passes.
+
+    For example, Karl starts with \(m=1\) machine and \(w=2\)workers.
+		The cost to purchase or hire is \(p=1\), and he needs to accumulate \(60\)candies.
+		He executes the following strategy:
+		<ol>
+			<li>  Make \(m \times w =1 \times 2 =2\) candies. Purchase two machines. </li>
+    	<li>  Make \(3 \times 2 = 6\) candies. Purchase \(3\) machines and hire \(3\) workers.</li>
+    	<li>  Make \(6\times5 =30\) candies. Retain all candies. </li>
+    	<li>  Make \(6\times5 =30\) candies. With last round's production, Karl has \(60\) candies.</li>
+		</ol>
+    It took \(4\) passes to make enough candies.
+
+    <hr>
+    <label for="tagInitWorkers">初始工人数:(Initial number of workers)</label><br>
+    <input type="text" id = "tagInitWorkers" class="numbersonly" value="0.05,0.1,0.25,1,2"><br>
+    <label for="tagInitMachines">初始机器数:(Initial number of Machines)</label><br>
+    <input type="number" id = "tagInitMachines" class="numbersonly" value="138.35"><br>
+		<label for="tagCost">购买机器或雇用工人的成本:(Cost of buy a machine or hire a worker)</label><br>
+		<input type="number" id = "tagCost" class="numbersonly" value="138.35"><br>
+		<label for="tagDestCandies">所需糖果的数量:(Number of candies needed)</label><br>
+		<input type="number" id = "tagDestCandies" class="numbersonly" value="138.35"><br>
+    <input type="Button" onclick="computeResult()" value="计算最小回合(Compute minimum round needed)" /> <br>
+
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+    <script>
+      var inputSequenceString;
+      var resultt;
+      var inputNumbersList = [];
+      var totalMoney = 0;
+
+      function transformStringListToIntegerList(aStringList){
+        var theCorrepondingIntegerList = []; //声明一个变量，该变量包含一个空列表，该空列表将用于存储转换后的整数列表(Declare a variable that holds an empty list that will be used to store the transformed integer list.)
+        for(var index = 0 ; index < aStringList.length ; index++){ //通过使用for循环，我们遍历字符串列表中的所有元素，并对每个元素进行转换(By sing a for loop, we iterate over all elements in the list of string and perform the transformation to each of the elments)
+          theCorrepondingIntegerList.push(parseFloat(aStringList[index])); // 将字符串元素转换为整数元素，然后将结果附加到指定的整数列表中(transform the string element to an integer element and append the result into the designated integer list)
+        }
+        return theCorrepondingIntegerList;
+      }
+      function computeResult(){
+        var inputSequenceString = document.getElementById("tagCoins").value;
+        if(inputSequenceString.match('[^,. 0-9]')){
+            document.getElementById("tagMessage").innerHTML= "错误：输入的硬币的价值的格式是错的(error: Invalid coin value input string";
+            return -1;
+        }
+        var inputNumbersStringList = inputSequenceString.split(",");
+        inputNumbersList = transformStringListToIntegerList(inputNumbersStringList);
+
+        totalMoney = parseFloat(document.getElementById("tagTotalCoin").value);
+        if(isNaN(totalMoney)){ //If number of food entered is not a number, display an an explainatory error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的总金额不是数字(error: the money entered is not a number)"; // Put the error message inside the msg element in HTML.
+          return false;
+        }
+        if(totalMoney < 0 ){ //If the number of type of food or the number of type of nutrients entered is a negetive number, display an error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的总金额数必须非负(error: the money entered needs to be no negative)";
+          return false;
+        }
+
+        //console.log(inputNumbersList);
+        console.log(totalMoney);
+      }
+      function displayResult(){
+        clearTable("tagOutput")
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("我们向孩子们分发糖果的方法如下：(We distribute the candies to the children as follow)"));
+        var longestSequenceStr = "["+resultList[0];
+        var minimalValue = resultList[0];
+        var kidRank = "["+inputNumbersList[0];
+        for(var i = 1; i < resultList.length; i++){
+          minimalValue = minimalValue+resultList[i];
+          longestSequenceStr = longestSequenceStr + "," + resultList[i];
+          kidRank = kidRank + "," + inputNumbersList[i];
+        }
+        longestSequenceStr = longestSequenceStr +"]";//globalMaxLength
+        kidRank = kidRank +"]";
+        resultBody.appendChild(createDescriptionRow("分发糖果给孩子们的方式是(The way to distribute of the candies to the children is)",longestSequenceStr));
+        resultBody.appendChild(createDescriptionRow("孩子的评分值是(Rating values of the children is )",kidRank));
+        resultBody.appendChild(createDescriptionRow("所需的最小糖果数量为(Minimum number of candy needed is )",minimalValue));
+        resultTbl.append(resultBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>

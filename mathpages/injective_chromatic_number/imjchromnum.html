@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+
+#mynetwork1 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork2 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork3 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork4 {
+  width: 600px;
+  height: 400px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork5 {
+  width: 600px;
+  height: 400px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork6 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork7 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork8 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork9 {
+  width: 700px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork10 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork11 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork12 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork13 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+
+
+
+
+<h2><a href="../../pdffiles/inchrnum.pdf">On The Injective Chromatic Number Of Graphs</a></h2> By Gena Hahn, Jan Kratochvil, Jozef Siran, Dominique Sotteau
+<br>
+<br>
+The math theorem css has been provided by <a href="http://drz.ac/2013/01/17/latex-theorem-like-environments-for-the-web/">DRZ.ac</a>
+<br>
+The graph drawing tools has been provided by <a href="https://visjs.github.io/vis-network/examples/">Vis Network</a>
+<br>
+<br>
+\(\textbf{Preliminaries:}\)
+<br>
+<br>
+    <div class="definition">
+    A \(\textbf{graph}\) \(G\) is a set of interconnected nodes that is represented by
+    \(G=(V(G),E(G))\) where \(V(G),E(G)\) denote the vertex and edge set of \(G\) respectively.
+    </div>
+For example:
+
+<div id="mynetwork1"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "A" },
+    { id: 2, label: "B" },
+    { id: 3, label: "C" },
+    { id: 4, label: "D" },
+    { id: 5, label: "E" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 3 },
+    { from: 1, to: 2 },
+    { from: 2, to: 4 },
+    { from: 2, to: 5 },
+    { from: 3, to: 3 },
+    { from: 1, to: 3 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork1");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+We denote the above graph by \(G\) then \(V(G)=\{A,B,C,D,E\}\) and \(E(G)=\{(A,C),(A,B),(B,D),(B,E),(C,C),(A,C)\}\).
+<br>
+We note that the above graph has parallel edges and self loop.
+<div class="definition">
+ A graph is said to be \(\textbf{Simple}\), if it dosen't contain parallel edges or self loop.
+</div>
+<div class="definition">
+We call two connected vertices \(\textbf{adjacent}\), for example, in the above graph, \(A,C\) are adjacent, \(A,B\) are adjacent etc.
+</div>
+<div class="definition">
+The \(\textbf{open neighborhood}\) of a vertex \(v \in V(G)\), denoted by \(N(v)\) is the set of vertices conneceted to \(v\). For example, in the above graph, \(N(A)=\{C,B\}\). The \(\textbf{closed neighborhood}\) of \(v\) is \(N[v]=N(v) \cup \{v\}\).
+</div>
+<div class="definition">
+The \(\textbf{degree}\) of a vertex \(u \in G\), denoted by \(deg(u)\) is just the size of its neighbhor \(|N(u)|\)
+</div>
+<div class="definition">
+The \(\textbf{maximum degree}\) of a graph \(G\) is denoted by \(\Delta(G)\) is the maximum degree of any vertex in the graph.
+A \(\textbf{path}\) of legth \(n\) of the graph \(G\) is just a sequence of alternating vertex and edges that
+begins and end with a vertex and all vertices are distinct.
+The \(\textbf{lenght}\) of a path is the number of edges in the path.
+The \(\textbf{diameter}\) of a graph \(G\) is the length of the maximum length path in the graph.
+</div>
+For example, In the above graph where we remove self loop and parallel edges, we have:
+ \(\Delta(G)=3\),
+ The diamater of \(G\) is \(3\) because There are no path of length more than \(3\) and
+ \(C-A-B-E\) is a path of length \(3\).
+<div class="definition">
+Given a graph \(G\), the \(\textbf{independence number}\) of \(G\), denoted by \(\alpha(G)\)  is the size of the largest independent set of \(G\).
+an \(\textbf{independent set}\) of a graph \(G\) is a set of vertices that are mutually no-adjacecnt.
+</div>
+For example, in the above graph removing self loop and parallel edges, we have that the subset of the vertex set :
+\[\{E,D,C\}\] forms an independent set. The size of this independent set is also largest possible. Therefore \(\alpha(G)=3\)
+<div class="definition">
+  A map \(f:A \to B\) from a domain \(A\) to a codomain \(B\) is said to be \(\textbf{Bijective}\) if for every elements in \(B\),
+	there is an element in \(A\) that gets maps to it by \(f\) and distincts elements in \(A\) gets map to distinct elements in \(B\).
+</div>
+
+<div class="definition">
+A \(\textbf{graph coloring}\)
+A graph coloring is an assignment of colors to the vertices of the graph. A proper coloring of the graph is a coloring in which adjacent vertices receives different colors. A proper coloring with \(m\) colors can be thought of as a function:
+\[\varphi: V(G) \to [m], \text{ such that } \varphi(u) \neq \varphi(v) \text{ if u,v are adjacent} \]
+</div>
+
+From now on, the first graph in the article without a proper coloring of the above graph, ignoring the parallel edges and loops, could be:
+<div id="mynetwork2"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "A" , color: "rgb(170,243,200)"},
+    { id: 2, label: "B" , color: "yellow"},
+    { id: 3, label: "C" , color: "yellow"},
+    { id: 4, label: "D" , color: "rgb(170,243,200)"},
+    { id: 5, label: "E" , color: "rgb(170,243,200)"}
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 3 , color: "blue"},
+    { from: 1, to: 2 , color: "blue"},
+    { from: 2, to: 4 , color: "blue"},
+    { from: 2, to: 5 , color: "blue"}
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork2");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+<div class="definition">
+A \(\textbf{graph homomorphism}\) between two graphs \(G,H\) is a mapping \(\varphi\) between the vertex sets of the two graphs that preserve the adjacency relationship between vertices:
+\[ \varphi: V(G) \to V(H), (u,v) \in E(G) \Rightarrow (\varphi(u),\varphi(v)) \in E(H) \]
+We denote a homomorphism from \(G\) to \(H\) by \(G \to H\). We write \(G \nrightarrow H\) if there is no homomorphism from \(G\) to \(H\).
+</div>
+
+<div class="definition">
+	A subgraph \(H\) of a graph \(G\) is a retract of \(G\) if there is a homomorphism \(h: V(H) \to V(G) \) such that \(\forall v \in V(H) h(v)=v \)
+</div>
+We give an example of retract:
+
+
+<div id="mynetwork13"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "1" },
+    { id: 2, label: "2" },
+    { id: 3, label: "3" },
+    { id: 4, label: "4" },
+    { id: 5, label: "5" },
+		{ id: 6, label: "6" },
+		{ id: 7, label: "7" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 2, to: 3 },
+    { from: 1, to: 2 },
+    { from: 2, to: 4 },
+    { from: 2, to: 5 },
+    { from: 1, to: 4 },
+    { from: 5, to: 7 },
+		{ from: 5, to: 6 },
+		{ from: 6, to: 7 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork13");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+In the above picture, the subgraph consisting of the triangle with nodes \(\{1,2,4\}\) is a retract.
+We can see it by the homomorphism:
+\[ \begin{gather*}
+1 \to 1\\
+2 \to 2\\
+4 \to 4\\
+5 \to 4\\
+7 \to 1\\
+6 \to 2\\
+3 \to 4
+\end{gather*}
+\]
+
+
+<div class="definition">
+A \(\textbf{Complete graph}\) on \(n\) vertices or some times called a \(\textbf{clique}\) on \(n\) vertices, denoted by \(K_n\), is a graph on \(n\) vertices in which all possible edges between two vertices are present in the graph.
+For convention, we call \(K_3\) a triangle.
+</div>
+For example, \(K_5\) looks like:
+
+<div id="mynetwork3"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "A" },
+    { id: 2, label: "B" },
+    { id: 3, label: "C" },
+    { id: 4, label: "D" },
+    { id: 5, label: "E" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 1, to: 3 },
+    { from: 1, to: 4 },
+    { from: 1, to: 5 },
+    { from: 2, to: 3 },
+    { from: 2, to: 4 },
+    { from: 2, to: 5 },
+    { from: 3, to: 4 },
+    { from: 3, to: 5 },
+    { from: 4, to: 5 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork3");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+\(\textbf{Introduction:}\)
+Graph coloring problem can often be seen as graph homomorphism problem. An \(m\) proper coloring of a graph \(G\) can be thought of as a graph homomorphism:
+\[ \varphi: V(G) \to V(K_m) \]
+
+
+<div id="mynetwork4"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "A" , color: "rgb(170,243,200)"},
+    { id: 2, label: "B" , color: "yellow"},
+    { id: 3, label: "C" , color: "yellow"},
+    { id: 4, label: "D" , color: "rgb(170,243,200)"},
+    { id: 5, label: "E" , color: "rgb(170,243,200)"},
+    { id: 6, label: "F" },
+    { id: 7, label: "G" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 3 , color: "blue"},
+    { from: 1, to: 2 , color: "blue"},
+    { from: 2, to: 4 , color: "blue"},
+    { from: 2, to: 5 , color: "blue"},
+    { from: 6, to: 7 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork4");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+<br>
+In the above picture, given the proper \(2\)-coloring of the graph, we can construct a homomorphism between the two  by mapping all the yellow vertices of the first graph to the node \(F\) on the second graph and all the green nodes of the first graph to the node \(G\) on the second graph. And from an homomorphism of the two graphs, we can think of each node of \(K_2\) as a color and assign color to the nodes that gets map to them.
+
+But some times, a graph coloring problem does not have an equivalent graph homomorphism statement.
+<br>
+
+<div class="definition">
+Given a \(k\)-vertex coloring of a graph \(G\):
+<br>
+\( \varphi: V(G) \to [k], [k]=\{1,...,k\}\)
+<br>
+We say that the coloring is \(\textbf{injective}\) if the restriction of the coloring to any neighbohood of a vertex is injective(Recall that injective map is a map such that no two distinct elements gets map to the same image):
+\[ \forall w \in V(G), \forall u,v \in N(w), (\varphi(v) = \varphi(u)) \Rightarrow (u=v) \]
+<div>
+Here is an example of injective coloring of the first graph in this presentation where loops and parallel edges are removed:
+
+<div id="mynetwork8"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "A", color: "yellow" },
+    { id: 2, label: "B", color: "orange"  },
+    { id: 3, label: "C", color: "rgb(170,243,200)"  },
+    { id: 4, label: "D", color: "orange"  },
+    { id: 5, label: "E", color: "rgb(170,243,200)"  }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 3 , color: "blue"},
+    { from: 1, to: 2 , color: "blue"},
+    { from: 2, to: 4 , color: "blue"},
+    { from: 2, to: 5 , color: "blue"}
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork8");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+Notice that an injective coloring might not be a proper coloring.
+
+<br>
+The injective chromatic number of a graph \( \chi_i(G) \) is the smallest number of colors needed for an injective coloring of \(G\). Certainly, we have:
+
+\[\Delta(G) \leq \chi_i(G) \leq |V(G)| \]
+
+<div class="definition">
+Given a graph \(G\), the \(\textbf{common neighbhor graph}\) \(G^{(2)}\) of \(G \) is defined as:
+
+\[ V(G^{(2)})=V(G), E(G^{(2)})=\{(u,v)| \exists \text{ path } p \in G, |p|=2, p\text{ connect }u,v\} \]
+</div>
+Here is both the first graph in this article together with its common neighbor graph(in red):
+
+<div id="mynetwork9"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "A" },
+    { id: 2, label: "B" },
+    { id: 3, label: "C" },
+    { id: 4, label: "D" },
+    { id: 5, label: "E" },
+
+    { id: 6, label: "A'", color: "red" },
+    { id: 7, label: "B'", color: "red"  },
+    { id: 8, label: "C'", color: "red"  },
+    { id: 9, label: "D'", color: "red"  },
+    { id: 10, label: "E'", color: "red"  }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 3 },
+    { from: 1, to: 2 },
+    { from: 2, to: 4 },
+    { from: 2, to: 5 },
+
+    { from: 6, to: 10 },
+    { from: 6, to: 9 },
+    { from: 9, to: 10 },
+    { from: 7, to: 8 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork9");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+An different way of viewing the injective coloring of a graph \(G\) is to consider instead, a proper coloring of the \(\textbf{common neighbhor graph}\) \(G^{(2)}\) because \(\chi(G) = \chi_i(G^{(2)})\).
+<br>
+This is easy to understand: Each vertices \(u,v \in V(G)\) that are neighbhor of a third vertex \(w\) are connected by a path of lenght \(2\), namely, \(u-w-v\).
+And \(u,v\) are connected in the common neighbhor graph of \(G\) so they would receive different color
+in a proper coloring of the common neighbhor graph of \(G\). Hence indeed:
+
+\[\chi_i(G)= \chi(G^{(2)})\]
+
+We can have variant for the definition of coloring. A \(\textbf{strong coloring}\) requires that the restrictions for the coloring to the closed neighbohood of any vertex is injective. A generalization of the strong coloring is the \(\textbf{distance d coloring}\) where we have to have that any two vertices of distance at most \(d\) receives different colors.
+<br>
+<div class="definition">
+Given a finite set \(X\) and a subset \(S \subset 2^X\), A \(\textbf{cube-like graph}\) \(\mathcal{Q}_X(S)\) is defined as follow:
+ \[ V(\mathcal{Q}_X(S))=2^X, E(\mathcal{Q}_X(S))= \{(U,V) | U \triangle V \in S\} \]
+</div>
+A particular case is the distance graph \(\mathcal{Q}_n(D) \):
+
+\[V(\mathcal{Q}_n(D))= \{0,1\}^n, E(\mathcal{Q}_n(D))=\{(u,v)|d(u,v) \in D \subset [n]\} \]
+Where \(d(u,v)\) is the Hamming distance between the two strings \(u\) and \(v\).
+Namely, the vertices here are all possible binary string of length \(n\) and two vertices are connected to each other if their hamming distance is in the set \(D\).
+
+<br>
+Now, given an hypercube graph \(\mathcal{Q}_n\) defined as:
+
+\[V(\mathcal{Q}_n)= \{0,1\}^n, E(\mathcal{Q}_n)=\{(u,v)|d(u,v)=1\} \]
+Here is an example of \(\mathcal{Q}_3\):
+
+<div id="mynetwork10"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "000" },
+    { id: 2, label: "001" },
+    { id: 3, label: "010" },
+    { id: 4, label: "011" },
+    { id: 5, label: "100" },
+    { id: 6, label: "101" },
+    { id: 7, label: "110" },
+    { id: 8, label: "111" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 1, to: 3 },
+    { from: 1, to: 5 },
+    { from: 2, to: 4 },
+    { from: 2, to: 6 },
+    { from: 3, to: 4 },
+    { from: 3, to: 7 },
+    { from: 4, to: 8 },
+
+    { from: 5, to: 7 },
+    { from: 5, to: 6 },
+    { from: 6, to: 8 },
+    { from: 7, to: 8 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork10");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+then the common neighbhor graph of \(\mathcal{Q}_n \) is \(\mathcal{Q}_n(2)\).
+<br>
+Here is the common neighbhor graph of \(\mathcal(Q)_3\):
+
+<div id="mynetwork11"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "000" },
+    { id: 2, label: "001" },
+    { id: 3, label: "010" },
+    { id: 4, label: "011" },
+    { id: 5, label: "100" },
+    { id: 6, label: "101" },
+    { id: 7, label: "110" },
+    { id: 8, label: "111" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 2, to: 3 },
+    { from: 2, to: 8 },
+    { from: 2, to: 5 },
+    { from: 6, to: 4 },
+    { from: 6, to: 7 },
+    { from: 6, to: 1 },
+    { from: 1, to: 4 },
+    { from: 1, to: 7 },
+    { from: 5, to: 3 },
+    { from: 5, to: 8 },
+    { from: 7, to: 4 },
+    { from: 8, to: 3 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork11");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+Using these terminologies, it is proven by Jaeger that
+\[\chi_i(\mathcal{Q}_n(\{2\}) \leq 2^{\lceil lg n \rceil} \]
+
+And he conjectured that the inequality should be equality.
+<br>
+<div class="definition">
+ A graph \(G\) is said to be \(\textbf{d-regular}\) if all vertices of the graph have degree \(d\).
+</div>
+Here is an example of \(3\) regular graph:
+
+<div id="mynetwork12"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "1" },
+    { id: 2, label: "2" },
+    { id: 3, label: "3" },
+    { id: 4, label: "4" },
+    { id: 5, label: "5" },
+    { id: 6, label: "6" },
+    { id: 7, label: "7" },
+    { id: 8, label: "8" },
+		{ id: 9, label: "9" },
+		{ id: 10, label: "10" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 1, to: 3 },
+    { from: 2, to: 3 },
+    { from: 1, to: 5 },
+    { from: 5, to: 6 },
+    { from: 5, to: 7 },
+    { from: 7, to: 6 },
+    { from: 3, to: 4 },
+    { from: 4, to: 6 },
+    { from: 4, to: 8 },
+    { from: 9, to: 8 },
+    { from: 9, to: 10 },
+
+		{ from: 9, to: 7 },
+		{ from: 8, to: 10 },
+		{ from: 2, to: 10 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork12");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+<br>
+We give the following lemmas:
+<ul>
+  <li>
+    <div class="lemma">
+    \(\textbf{1) }\)Given \(d\) regular graph \(G\) with \(\chi_i(G)=d\) then \(d||V(G)|\)
+    </div>
+    <a href= "injchrnumlemma1.html">click here for proof</a>
+   </li>
+  <li>
+		<div class="lemma">
+			\(\textbf{2) }\) \(G\) is connected and not equals to \(K_2\), then \(\chi_(G) \leq \chi_i(G) \)
+		</div>
+		<div class="proof">
+    The proof is very simple as well. By Brook's theorem, \(\chi(G) \leq \triangle(G) \leq \chi_i(G)\) unless \(G\) is a complete graph or an odd cycle. In those cases, \(\chi(G)=\chi_i(G)\)
+	</div>
+</li>
+Here is apparently an unknow question according to the paper. We don't know if it is solved yet.
+Namely,consider the graph \(C_{6t}\) where we add all of the diagonals. We don't have a characterization of such a graph.
+we do know however that \(\chi(G)=\chi_i(G)=3\).
+  <li>
+		<div class="lemma">
+		\(\textbf{3) }\)	 If \(G\) is a graph of diameter \(2\) whose independence number is \( \alpha(G)=p\), then \(p \leq \chi_i(G)\).
+		 </div>
+     <a href= "injchnum_lemma2.html">click here for proof</a>
+</li>
+<li>
+  <div class="lemma">
+	\(\textbf{4) }\)	 Let \(G\) be an arbitary graph of order at least \(4\),meaning it has at least \(4\) vertices.
+		 Then \(\chi_i(G) = |V(G)|\) if and only if either \(G\) is complete or \(diam(G) =2\) and all edges of \(G\) is in some triangle.
+	 </div>
+	 <div class="proof">
+     By Brook's theorem, \(G^{(2)}\) is complete graph. This means that any pair of vertices \(u,v \in V(G)\) have a common neighbor.
+	 </div>
+</li>
+<li>
+<div class="lemma">
+\(\textbf{5) }\)	 \(\chi_i(G) \leq \Delta(\Delta-1)+1 \) where \(\Delta\) is the maximum degree of \(G\).
+ </div>
+<div class="proof">
+The proof follows from the fact that for \(v \in V(G^{(2)}) \), the number of vertices that are at distance at most \(2\) from \(v\) is bounded by \(\Delta(\Delta-1)\). And by brook's theorem, \(\chi_i(G)=\chi(G^{(2)}) \leq \Delta(\Delta-1)+1 \).
+</div>
+</li>
+<li>
+  <div class="lemma">
+  \(\textbf{6) }\)   Given a graph \(G\) where \(diam(G)=2\), then \(|V(G)| \leq \Delta(G)^2-\Delta(G)\).
+  </div>
+  <div class="proof">
+	Let's for simplicity, denote \(\Delta := \Delta(G)\).
+   Pick \(u \in G, \deg(u)=\Delta\). Label neighbors of \(u\) by \(u_i,1 \leq i \leq \Delta(G)\).
+	 Let \(V:= V(G)-N[u]\). Then for all \(u_i \in N(u) ,|N(u_i) \cap V| \leq \Delta-2\).
+	 This is because if not, then since \(deg(u_i)\leq \Delta\) and \(u_i\) has at least \(\Delta-1\) neighbhors
+	 not in \(N[v]\), so the neighbors of \(u_i\) in \(N[u]\) is only \(u\) and so the edge \((u-u_i)\) cannot be in any triangle.
+	 Since all \(v \in V\) are distance 2 away from \(u\)(\(diagm(G)=2\)), so \(v \in V\) are neighbhor to some \(u \in N(u)\) and we have the following:
+\[|V| \leq \sum_{i=1}^{\Delta} |N(u_i) \cap V| \leq (\Delta-2)\Delta \]
+ Now, assume for contradiction \(|V(G)| \geq \Delta^2-\Delta+1 \), then:
+  \[|V|=|V(G)|-|N[u]| \geq \Delta^2-\Delta+1-(\Delta+1) = \Delta(\Delta-2)\]
+Hence \(|V|=\Delta(\Delta-2)\).This means that each \(u_i\) satisfy \(|N(u_i) \cap V|=\Delta-2\),
+Futhermore, \((N(u_i) \cap V)\cap (N(u_j) \cap V) = \emptyset \forall i,j, i \neq j\)
+Now, pick \(v \in N(u_1) \cap V\), and let \(N(v)=\{u_1,v_2,...,v_t\}\). Notice that \(v_i \in V, i \in \{2,...,t\}\).
+This is because that the neighbhorhood of \(u_i's\) are disjoint.
+Since \(u_1-v\) is in a triangle, we may assume W.L.O.G that \(v_2 \in N(u_1) \cap V\).
+Now, the set \(\{u_2,...,u_{\Delta} \}\) has \(\Delta-1\) elements and the set \(\{v_3,...,v_t\}\) has at most \(\Delta -2\) elements.
+And since each \(v_i\) belongs to at most the neighbhors of one \(u_i\),
+there must be a neighbhor of \(u_i\) that contains no \(v_i, i \in \{2,...,t\}\).
+Well, then distance between \(u_i\) and \(v\) is more than \(2\). This is a contradiction.
+So our assumption of \(|V(G)| \geq \Delta^2-\Delta+1 \) is false and therefore,
+\(|V(G)| < \Delta^2-\Delta+1 \).
+
+
+  </div>
+</li>
+</ul>
+<br>
+\(\textbf{Product of Graphs:}\)
+
+
+<div class="definition">
+Given graphs \(G,H\), the \(\textbf{Cartesian product}\) of \(G,H\) is denoted by \(G \square H\) and is definined as:
+\[ V(G \square H)=V(G) \times V(H)=\{(g,h)|g \in V(G), h \in V(H)\} \]
+\[ E(G \square H)=\{((g,h),(j,k))| ((g=j) \wedge (h,k) \in E(H)) \vee ((g,j)\in E(G) \wedge h=k)\}\]
+</div>
+An example, Given \(G=K_3, H=P_3\):
+
+<div id="mynetwork5"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "A" },
+    { id: 2, label: "B" },
+    { id: 3, label: "C" },
+    { id: 4, label: "D" },
+    { id: 5, label: "E" },
+    { id: 6, label: "F" },
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 2, to: 3 },
+    { from: 1, to: 3 },
+    { from: 4, to: 5 },
+    { from: 4, to: 6 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork5");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+<br>
+Then \(G \square H\) is:
+
+<div id="mynetwork6"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "AD" },
+    { id: 2, label: "AE" },
+    { id: 3, label: "AF" },
+    { id: 4, label: "BD" },
+    { id: 5, label: "BE" },
+    { id: 6, label: "BF" },
+    { id: 7, label: "CD" },
+    { id: 8, label: "CE" },
+    { id: 9, label: "CF" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 1, to: 3 },
+    { from: 4, to: 5 },
+    { from: 4, to: 6 },
+    { from: 7, to: 8 },
+    { from: 1, to: 4 },
+    { from: 4, to: 7 },
+    { from: 7, to: 1 },
+    { from: 7, to: 9 },
+    { from: 3, to: 6 },
+    { from: 6, to: 9 },
+    { from: 9, to: 3 },
+
+    { from: 2, to: 5 },
+    { from: 5, to: 8 },
+    { from: 8, to: 2 }
+
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork6");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+<br>
+<div class="definition">
+Given two graphs \(G=(A,B),H=(X,Y)\), their categorical product(also called tensor product), denoted by \(G \times H\) is defined as:
+\[ V(G \times H)=A \times X \]
+\[ E(G \times H)= \{((z,x),(c,v)| (z,c) \in B, (x,v) \in Y \} \]
+</div>
+Again, Given \(G=K_3, H=P_3\) we get that \(G \times H\) is:
+
+<div id="mynetwork7"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "AD" },
+    { id: 2, label: "AE" },
+    { id: 3, label: "AF" },
+    { id: 4, label: "BD" },
+    { id: 5, label: "BE" },
+    { id: 6, label: "BF" },
+    { id: 7, label: "CD" },
+    { id: 8, label: "CE" },
+    { id: 9, label: "CF" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 9 },
+    { from: 3, to: 7 },
+    { from: 1, to: 8 },
+    { from: 2, to: 7 },
+    { from: 1, to: 6 },
+    { from: 3, to: 4 },
+    { from: 1, to: 5 },
+    { from: 4, to: 2 },
+    { from: 8, to: 4 },
+    { from: 7, to: 6 },
+    { from: 7, to: 5 },
+    { from: 9, to: 4 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork7");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+<div class="lemma">
+For any \(G,H\), \((G \square H)^{(2)}=(G^{(2)} \square H^{(2)})\cup(G \times H)\)
+<div>
+<div class ="proof">
+This is because:
+ \[ \begin{gather*}
+ ((a,b),(c,d)) \in E((G \square H)^{(2)}) \\
+ \Rightarrow ((a=c)\wedge (b,d) \in E(H^{(2)})) \\
+ \vee ((b=d)\wedge (a,c) \in E(G^{(2)})) \\
+ \vee (((a,b),(c,d)) \in E(G \times H))
+ \end{gather*} \]
+</div>
+
+<div class="lemma">
+If \(G\) and \(H\) are connected graph distinct from \(K_2\) then \(\chi_i(G \square H) \leq \chi_i(G) \chi_i(H) \)
+</div>
+<div class="proof">
+	<br>
+	\(\textbf{Claim1:}\)
+We know that If \(G,H\) are graphs with the same underlying vertex set, then
+\(\chi(G \cup H) \leq \chi(G)\chi(H)\).
+<br>
+ \(\textit{proof:}\) This is because suppose we have \(\varphi_1: G \to [m], \varphi_2: H \to [n] \), then we can color \(G \cup H\) with \([m] \times [n]\). A vertex \(v\) would be assigned color
+\((\varphi_1(v),\varphi_2(v))\).
+<br>
+\(\textbf{Claim2:}\)
+ We have \(\chi(G \times H) \leq \min (\chi(G), \chi(H))\)
+ <br>
+ \(\textit{proof:}\) This is because we can just color each copy of \(G\) in \(G \times H\)
+ by the colors of \(G\). Right, suppose \((a,b),(c,d)\) are connected in \(G \times H\),
+ then , necessarly, \((a,c)\in E(G)\). Hence, \((a,b),(c,d)\) receives different color.
+ Note that the Hedetniemi's conjecture:
+ \[\chi(G \times H) = \min (\chi(G), \chi(H))\]
+ has been disproven in 2019 by Shitov.
+<br>
+\(\textbf{Claim 3:}\)
+We have \(\chi(G \square H) \leq \max (\chi(G), \chi(H))\).
+ <br>
+ \(\textit{proof:}\) Refer to <a href="https://math.stackexchange.com/questions/3270041/sabidussi-theorem-for-chromatic-number-on-cartesian-product-graph">Sabidussi Theorem</a>
+ <br>
+ Now
+\[\begin{gather*}
+ \chi_i(G \square H)\\
+  =\chi((G \square H)^{(2)})\\
+  =\chi((G^{(2)} \square H^{(2)})\cup(G \times H) )\\
+  \leq \chi(G^{(2)} \square H^{(2)}) \cdot \chi(G \times H)\\
+	\leq \max(\chi(G^{(2)}), \chi(H^{(2)})) \cdot \min(\chi(G),\chi(H))\\
+	= \max(\chi_i(G), \chi_i(H)) \cdot \min(\chi(G),\chi(H))
+\end{gather*}
+\]
+Now, assume W.L.O.G that \(\chi_i(G) \geq \chi_i(H)\), then:
+\[\chi_i(G\square H) \leq \]?
+
+</div>
+
+Notice that we can reformulate the Hedetniemi conjecture as follow:
+<br>
+\[ \text{The graph }k_n \text{ are multiplicative} \]
+Right? because the statement "if \(G\) can be colored using \(k\) colors and \(H\) can be colored using \(k\) colors then \(G \times H\) can be colored using \(k\) colors",
+<br>
+ is the same as "if \(G \to K_k \wedge H \to K_k \Rightarrow G \times H \to K_k"\).
+
+
+
+<br>
+\(\textbf{The Cube}\)
+
+<div class="theorem">
+ \(\textbf{9}\) Let \(G=\mathcal{Q}_n\) be the n-dimensional cube. Then \(\chi_i(\mathcal{Q}_n)=n\) if and only if \(n=2^r\) for some \(r \geq 0\).
+</div>
+<div class="proof">
+	\(\mathcal{Q}_n\) is a n-regular graph and \(|\mathcal{Q}_n|=2^n\). So by previous lemma, we have that
+	\[n|2^n\]
+	But since the divisors of \(2^n\) are power of \(2\), we get that \(n=2^r\) for some number \(1 \leq r \leq n\).
+	Now, suppose that \(n=2^r, r \geq 0\), we'll create a n-injective coloring of \(G\).
+	We denote a vertex \(a\) of \(\mathcal{Q}_n\) by \((a_0,...,a_n), a_i \in \{0,1\}\).
+	We denote \(i^r=(i_0,...,i_{r-1})\) the binary representation of \(i\) of length \(r\).
+	We define a coloring for \(V(\mathcal{Q}_n)\) by:
+		\[ c(a)=\sum_{i=0}^{n-1} a_i i^r. \]
+	Suppose \(a,b\) are neighbhor of some vertex \(d\). This means that there exist position \(p,q\) such that
+	\(a_p=d_p+1, b_q=d_q+1, a_q=d_q, b_p=d_p\) and \(a_i=b_i=d_i, \forall i \neq p,q\).
+	Suppose \(a,b\) has been assigned the same color, then:
+	\[c(a)=\sum_{i=0}^{n-1} a_ii^r = \sum_{i=0}^{n-1} b_ii^r =c(b) \]
+	So then:
+	\[(d_p+1)p^r+d_pq^r = d_pp^r +(d_p +1)q^r \]
+	Which means:
+	\[p^r=q^r \iff p=q\]
+	Contradicting \(p \neq q\). So the coloring must be injective.
+</div>
+
+<div class= "theorem">
+	For any \(n\), \(\chi_i(\mathcal{Q_n}) \leq 2^{\lceil lg n \rceil} \); thus, \(\chi_i(\mathcal{Q}_n) \leq 2n-2\)
+</div>
+
+We'll use the notation \(H_n\) to be the graph whose vertices are binary string of length \(n\) with even number of \(1\). And two vertices are connected if their Hamming distance is \(2\).
+
+<div class="lemma">
+\(\mathcal{Q}_n^{(2)} \) has two component isomorphic to \(H_n\).
+</div>
+<a href= "qn2hnequiv.html">click here for proof</a>
+
+<div class="definition">
+A (binary) \(\textbf{code}\) of length \(n\) is an arbitrary subset \(S\) of vertices of \(\mathcal{Q}_n\).
+\(S\) is \(\textbf{single-error-correcting}\) if Hamming distance of any two distinct vertices is at least \(3\).
+The \(\textbf{code covering number}\) defined by \(\gamma(\mathcal{Q}_n)\) of the \(n\) cube is :
+the minimum number \(t\) of single-error-correcting codes \(S_1,...,S_t\) such that \(V(\mathcal{Q}_n)=S_1 \cup S_2 \cup..\cup S_t\).
+</div>
+
+<div class="lemma">
+	\(H_{n+1} \cong \mathcal{Q}_n^2 \)
+</div>
+
+<div class="lemma">
+\( \chi_i(\mathcal{Q}_{n+1})= \gamma(\mathcal{Q}_n)\)
+</div>
+<div class="proof">
+
+</dic>
+
+Here are the papers that were used to understand several concepts:
+
+
+
+</body>

@@ -1,9 +1,546 @@
-<!Doctype html>
-<html>
-	<head>
- 		<title>Home</title>
-	</head>
-	<body>
-		empty page
- 	</body>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>First webpage</title>
+	<link rel="stylesheet" href="styles.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="indexCssStyles.css">
+	<script src="jquery-3.5.1.min.js"></script>
+	<script>
+	$(document).ready(function(){
+			$("button").click(function(){
+					$("h1").text("Hello World!");
+			});
+	});
+</script>
+  <meta charset="utf-8"/>
+<style>
+.wrapper {
+  padding: 10px;
+  margin: 0 auto;
+  width: 500px;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  .item{
+    visibility: hidden;
+    display: none;
+  }
+
+  h2 {
+    font-size: 50px;
+    margin: 0;
+    color: #3a3a3a;
+    text-align:left;
+  }
+  > div{
+    min-height: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display : flex;
+    align-items: flex-end;
+    font-weight: bold;
+    color: orange;
+
+    &:after{
+  content: "";
+  width: 10px;
+  height: 4px;
+  display : block;
+  background: black;
+  color: orange;
+  margin-bottom: 4px;
+  margin-left: 2px;
+  animation-duration: 350ms;
+  animation-name: fade;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  }
+ }
+
+}
+
+@keyframes fade{
+  from{
+    opacity:1;
+  }
+  to {
+    opacity: 0;
+  }
+ }
+
+</style>
+</head>
+<body>
+	<button type="b">Replace Text</button>
+	<h1>halalala</h1>
+	<div class= "container">
+    <div>
+      <canvas id="canvasclock" width="280" height="280" style="background-color:#333"></canvas>
+      <canvas id="canvassolar" width="280" height="280"></canvas><br>
+		  Temperature: <small id="tagWeather">*</small> degree Celsius<br>
+			Feels Like: <small id="tagFeelsLike">*</small> degree Celsius<br>
+      Condition: <small id="tagCondition">*</small>
+    </div>
+
+		<div class="intro">
+			<img class = "profile-picture" src="images/profile.jpg" /><br>
+			Quote:<p id="tagMessage1">*</p>
+			~<small id="authorMessage1">*</small>
+		  <hr/>
+
+		  <hr/>
+		  <div>
+			  <h3 class="project-heading">Projects</h3>
+			  <div class="project-grid">
+				  <div class="project-image-wrapper">
+  					<h4><a href="programmings.html">面试准备(Interview Preparation)</a></h4>
+  					<img class="project-image" id = "circularImage" src="images/project-1.jpg"/>
+				  </div>
+  				<div class="project-image-wrapper">
+  					<h4><a href="mls.html" >计算机科学(Computer Science)</a></h4>
+  					<img class= "project-image"  id = "circularImage2" src="images/project-2.jpg"/>
+  				</div>
+  				<div class="project-image-wrapper">
+  					<h4><a href="mathpages.html" >数学(Mathematics)</a></h4>
+  					<img class="project-image" src="images/project-3.jpg"/>
+  				</div>
+  				<div class="project-image-wrapper">
+  					<h4><a href="funstuff.html" >娱乐(Fun Stuff)</a></h4>
+  					<img class="project-image" src="images/project-4.jpg"/>
+  				</div>
+          <!-- <div class="project-image-wrapper">
+            <h4><a href="movies.html" >Movies</a></h4>
+            <img class="project-image" src="images/goodjob.jpg"/>
+          </div> -->
+			  </div>
+		  </div>
+  	  <form class="emailForm">
+				<h1 class= "emailFormH1">to: CoolGadget</h1>
+				<div id="from">
+					<label for="name">from:</label>
+					<input type="text" id="name" name="user_name">
+				</div>
+				<div id="message">
+					<label for ="msg">Your message:</label>
+					<textarea id="msg" name="user_message"></textarea>
+				</div>
+				<div class="button">
+					<button type="submit">Send yout message</button>
+				</div>
+			</form>
+
+		</div>
+    <div>
+      The clock animation has been learnt from : <a href="https://www.w3schools.com/graphics/canvas_clock.asp">w3schools</a>
+      <br>
+      The Planet orbiting animation has been learnt from: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Basic_animations">developer.mozilla</a>
+      <br>
+      The Web template has been learnt from:??<br>
+      Some useful links:<br>
+      <a href= "https://leanprover.github.io/about/">math theorem prover</a>  <br>
+      <a href="https://arxiv.org/abs/2009.10458">new paper about ramsey theory</a><br>
+      <!-- <a href="https://spacegamev1.herokuapp.com/">Space game</a><br> -->
+        <!-- <a href = "machine-learning/generativeavn.html">Generative Adversarial Network</a><br> -->
+      <a href ="https://scratch.mit.edu/explore/projects/games/"> Game dev for young people</a><br>
+      <a href = "https://teachablemachine.withgoogle.com/">Train your own neural network</a><br>
+      <a href = "https://visualgo.net/en">Algorithm Visualization</a><br>
+      <a href = "https://www.cs.ryerson.ca/~aharley/vis/conv/"> Convnet visualization</a><br>
+      <a href = "https://www.kdnuggets.com/2020/04/app-generate-photorealistic-faces-tensorflow-streamlit.html"> Generate Faces</a><br>
+      <a href = "https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Tutorial_local_library_website"> Open Library Tutorial</a><br>
+      <a href = "https://leetcode.com/problemset/all/">Interview Problems</a><br>
+    </div>
+	</div>
+
+
+
+
+<script src="script.js"></script>
+
+<script>
+// const data = null;
+// const xhr = new XMLHttpRequest();
+// xhr.withCredentials = true;
+// xhr.addEventListener("readystatechange", function () {
+// 	if (this.readyState === this.DONE) {
+// 		console.log(this.responseText);
+// 		var jj = JSON.parse(this.responseText)
+// 		console.log(jj['value']);
+// 		document.getElementById("tagMessage").innerHTML=jj['value']
+// 	}
+// });
+// xhr.open("GET", "https://matchilling-chuck-norris-jokes-v1.p.rapidapi.com/jokes/random");
+// xhr.setRequestHeader("accept", "application/json");
+// xhr.setRequestHeader("x-rapidapi-key", "e07469b4b7msh5e55f2a13452fe9p1b5087jsn921c2b4ebf68");
+// xhr.setRequestHeader("x-rapidapi-host", "matchilling-chuck-norris-jokes-v1.p.rapidapi.com");
+// xhr.send(data);
+
+
+
+const data1 = null;
+
+const xhr1 = new XMLHttpRequest();
+xhr1.withCredentials = true;
+
+xhr1.addEventListener("readystatechange", function () {
+	if (this.readyState === this.DONE) {
+		console.log(this.responseText);
+		var jj1 = JSON.parse(this.responseText)
+		console.log(jj1['content']);
+		document.getElementById("tagMessage1").innerHTML=jj1['content'];
+    document.getElementById("authorMessage1").innerHTML=jj1["originator"]["name"];
+	}
+});
+
+xhr1.open("GET", "https://quotes15.p.rapidapi.com/quotes/random/");
+xhr1.setRequestHeader("x-rapidapi-key", "e07469b4b7msh5e55f2a13452fe9p1b5087jsn921c2b4ebf68");
+xhr1.setRequestHeader("x-rapidapi-host", "quotes15.p.rapidapi.com");
+
+xhr1.send(data1);
+
+
+const data2 = null;
+
+const xhr2 = new XMLHttpRequest();
+xhr2.withCredentials = true;
+
+xhr2.addEventListener("readystatechange", function () {
+	if (this.readyState === this.DONE) {
+		console.log(this.responseText);
+		var jj2 = JSON.parse(this.responseText)
+		console.log(jj2["current"]["temp_c"]);
+		document.getElementById("tagWeather").innerHTML=jj2["current"]["temp_c"];
+		// document.getElementById("tagLocation").innerHTML=jj2["location"]["name"];
+		document.getElementById("tagFeelsLike").innerHTML=jj2["current"]["feelslike_c"];
+    //console.log(jj2["current"]["condition"]["text"])
+    document.getElementById("tagCondition").innerHTML=jj2["current"]["condition"]["text"];
+		// document.getElementById("authorMessage1").innerHTML=jj1["originator"]["name"];
+	}
+});
+
+xhr2.open("GET", "https://weatherapi-com.p.rapidapi.com/forecast.json?q=Montreal&days=3");
+xhr2.setRequestHeader("x-rapidapi-key", "e07469b4b7msh5e55f2a13452fe9p1b5087jsn921c2b4ebf68");
+xhr2.setRequestHeader("x-rapidapi-host", "weatherapi-com.p.rapidapi.com");
+
+xhr2.send(data2);
+// const data = null;
+//
+// const xhr = new XMLHttpRequest();
+// xhr.withCredentials = true;
+//
+// xhr.addEventListener("readystatechange", function () {
+// 	if (this.readyState === this.DONE) {
+// 		console.log(this.responseText);
+// 	}
+// });
+//
+// xhr.open("GET", "https://community-open-weather-map.p.rapidapi.com/weather?q=Montreal&lat=0&lon=0&callback=test&id=2172797&lang=null&units=%22metric%22%20or%20%22imperial%22&mode=xml%2C%20html");
+// xhr.setRequestHeader("x-rapidapi-key", "e07469b4b7msh5e55f2a13452fe9p1b5087jsn921c2b4ebf68");
+// xhr.setRequestHeader("x-rapidapi-host", "community-open-weather-map.p.rapidapi.com");
+//
+// xhr.send(data);
+// <img class="project-image" src="images/halo.jpg"/>
+// var circularImage = document.getElementById("circularImage");
+// var currentPos = 0;
+// var circularImages = ["images/jockerr.jpg","images/halo.jpg", "images/poor.jpg", "images/riemann.jpg","images/laughter.jpg","images/joker.jpg"];
+
+// function volgendefoto() {
+//     if (++currentPos >= circularImages.length)
+//         currentPos = 0;
+//     circularImage.src = circularImages[currentPos];
+// }
+
+// setInterval(volgendefoto, 3000);
+//
+
+// var circularImage20 = document.getElementById("circularImage2");
+// var currentPos20 = 0;
+// var circularImages20 = ["images/fake12.jpg","images/fake9.jpg","images/fake10.jpg","images/fake11.jpg","images/fake3.jpg","images/fake2.jpg", "images/fake4.jpg", "images/fake5.jpg","images/fake6.jpg","images/fake7.jpg"];
+
+// function volgendefoto20() {
+//     if (++currentPos20 >= circularImages20.length)
+//         currentPos20 = 0;
+//     circularImage20.src = circularImages20[currentPos20];
+// }
+
+// setInterval(volgendefoto20, 2000);
+
+
+
+// function imageChanger(){
+// 	 time=setTimeout("change()", 5000);
+//  }
+//
+// function changeImage(){
+// 	 current++;
+// 	 if(current > total) currPic=1;
+// 	 document.getElementById("image").src="image"+current+".jpeg";
+// 	 setupPicChange();
+//  }
+
+// var now = new Date();
+// var today = now.getDay();
+// var startTime = new Date();
+// startTime.setHours(08);
+// startTime.setMinutes(23);
+// startTime.setSeconds(00);
+// var endTime = new Date();
+// endTime.setHours(14);
+// endTime.setMinutes(43);
+// endTime.setSeconds(00);
+//
+// if (today > 0 && today < 6)
+// 	{
+// 	if (startTime < now && endTime > now)
+// 		{document.write('<img src="image2.jpg">');}
+// 	else
+// 		{document.write('<img src="image1.jpg">');}
+// 	}
+// else
+// 	{document.write('<img src="image1.jpg">');}
+
+
+
+
+var canvas = document.getElementById("canvasclock");
+var ctx = canvas.getContext("2d");
+var radius = canvas.height /2;
+ctx.translate(radius,radius);
+radius= radius * 0.90
+//drawClock();
+setInterval(drawClock,1000);
+
+/*
+function drawClock(){
+  ctx.arc(0,0,radius,0,2*Math.PI);
+  ctx.fillStyle ="white";
+  ctx.fill();
+}*/
+
+function drawClock()
+{
+  drawFace(ctx, radius);
+  drawNumbers(ctx,radius);
+  drawTime(ctx, radius);
+}
+
+function drawNumbers(ctx, radius)
+{
+  var ang;
+  var num;
+  ctx.font = radius *0.15 + "px arial";
+  ctx.textBaseline ="middle";
+  ctx.textAlign ="center";
+  for(num=1; num<13; num++)
+  {
+    ang = num*Math.PI /6;
+    ctx.rotate(ang);
+    ctx.translate(0, -radius*0.85);
+    ctx.rotate(-ang);
+    ctx.fillText(num.toString(), 0, 0);
+    ctx.rotate(ang);
+    ctx.translate(0, radius *0.85);
+    ctx.rotate(-ang);
+  }
+}
+
+
+
+
+
+function drawFace(ctx,radius){
+  var grad;
+  ctx.beginPath();
+  ctx.arc(0,0,radius, 0, 2*Math.PI);
+  ctx.fillStyle ='white';
+  ctx.fill();
+
+  grad = ctx.createRadialGradient(0,0,radius * 0.95,0,0,radius*1.05);
+  grad.addColorStop(0, '#333');
+  grad.addColorStop(0.5, 'white');
+  grad.addColorStop(1,'#333');
+  ctx.strokeStyle =grad;
+  ctx.lineWidth = radius *0.1;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(0,0,radius *0.1, 0, 2* Math.PI);
+  ctx.fillStyle = '#333';
+  ctx.fill();
+}
+
+function drawTime(ctx, radius){
+  var now= new Date();
+  var hour = now.getHours();
+  var minute = now.getMinutes();
+  var second = now.getSeconds();
+
+  hour = hour%12;
+  hour = (hour*Math.PI/6)+(minute*Math.PI/(6*60))+(second*Math.PI/(360*60));
+  drawHand(ctx, hour, radius*0.5, radius*0.07);
+  minute= (minute*Math.PI/30)+(second*Math.PI/(30*60));
+  drawHand(ctx,minute, radius*0.8, radius*0.07);
+  second =(second*Math.PI/30);
+  drawHand(ctx,second, radius*0.9, radius*0.02);
+}
+
+function drawHand(ctx, pos, length, width){
+  ctx.beginPath();
+  ctx.lineWidth = width;
+  ctx.lineCap ="round";
+  ctx.moveTo(0,0);
+  ctx.rotate(pos);
+  ctx.lineTo(0, -length);
+  ctx.stroke();
+  ctx.rotate(-pos);
+}
+
+</script>
+
+<script>
+
+
+var sun = new Image();
+var moon = new Image();
+var earth = new Image();
+function init(){
+  sun.src = 'https://mdn.mozillademos.org/files/1456/Canvas_sun.png';
+  moon.src = 'https://mdn.mozillademos.org/files/1443/Canvas_moon.png';
+  earth.src = 'https://mdn.mozillademos.org/files/1429/Canvas_earth.png';
+  window.requestAnimationFrame(draw);
+
+}
+
+function draw(){
+  var ctx= document.getElementById('canvassolar').getContext('2d');
+
+  ctx.globalCompositeOperation= 'destination-over'; //New shapes are drawn behind the existing canvas content
+  ctx.clearRect(0,0,300,300); // sets the pixels in a rectangular area to transparent black
+
+  ctx.fillStyle ='rgba(0,0,0,0.4)';
+  ctx.strokeStyle = 'rgba(0,153,255,0.4)';
+  ctx.save(); //save the entire state of the canvas by pushing the current state onto a stack
+  ctx.translate(150,150); //move to the center?
+
+  var time = new Date();
+  ctx.rotate(((2*Math.PI)/60)*time.getSeconds() +((2*Math.PI)/60000)*time.getMilliseconds()); // rotate() add a clockwise rotation to the transformation matrix
+  ctx.translate(105,0);
+  ctx.fillRect(0,-12,40,24); // shadows!
+  ctx.drawImage(earth, -12, -12); // draw image where you specify the top left coner of the image
+
+  ctx.save();
+  ctx.rotate(((2*Math.PI)/6) * time.getSeconds()+((2*Math.PI)/6000)*time.getMilliseconds());
+  ctx.translate(0,28.5);
+  ctx.drawImage(moon, -3.5,-3.5);
+  ctx.restore();
+
+  ctx.restore();
+
+  ctx.beginPath();
+  ctx.arc(150,150,105,0,Math.PI*2,false);
+  ctx.stroke();
+
+  ctx.drawImage(sun,0,0,300,300);
+
+  window.requestAnimationFrame(draw);
+}
+
+init();
+</script>
+
+<script>
+let wrapper
+// => is a way to declare a function and return the statement after =>
+const sleep =(ms)=> new Promise(resolve => setTimeout(resolve,ms))
+
+// async function can have await keyword in them
+async function writingAll (stringTarget, container){
+// querySelector() return the first element within doc that match the selector.
+  wrapper = document.querySelector('['+container+']')
+  const stringsContainer =
+document.getElementsByClassName(stringTarget)
+
+while(wrapper){
+  for(i=0;i< stringsContainer.length; i++){
+// textcontent is the text content of a node and its decendent
+    const string = stringsContainer[i].textContent
+    await write(String)
+    await sleep(1000)
+    await erase()
+    await sleep(1000)
+    };
+  }
+};
+
+async function write(text){
+  let index =0
+  while(index < text.length){
+    const timeout =100
+    await sleep(timeout)
+    index++
+// change the html content of an element. innerHTML is the content of the html element
+    wrapper.innerHTML = text.substring(0,index)
+  }
+};
+
+async function erase(){
+  while(wrapper.textContent.length){
+    const timeout =100
+    await sleep(timeout)
+    wrapper.textContent=
+  wrapper.textContent.substring(0, wrapper.textContent.length -2)
+  }
+};
+writingAll('item', 'data-text');
+
+</script>
+
+<script>
+var wrapper
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+
+async function writingAll (stringTarget, container){
+  wrapper = document.querySelector('['+container+']')
+  const stringsContainer = document.getElementsByClassName(stringTarget)
+
+  while(wrapper){
+    for (i=0; i <  stringsContainer.length ; i++){
+      const string = stringsContainer[i].textContent
+      await write(string)
+      await sleep(1000)
+      await erase()
+      await sleep(1000)
+    };
+  }
+};
+
+async function write(text){
+  let index = 0
+  while(index < text.length){
+    const timeout = 100
+    await sleep(timeout)
+    index++
+    wrapper.innerHTML = text.substring(0, index)
+  }
+};
+
+
+async function erase() {
+  while(wrapper.textContent.length){
+    const timeout = 100
+    await sleep(timeout)
+    wrapper.textContent = wrapper.textContent.substring(0, wrapper.textContent.length - 2)
+  }
+};
+
+writingAll('item', 'data-text');
+</script>
+
+
+</body>
 </html>

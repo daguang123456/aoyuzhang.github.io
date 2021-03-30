@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="../styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+
+  <div class="lemma">
+  	(lemma 2)
+   Hedetniemi's conjecture is equivalent to :
+   \[ \chi(G)>n \Rightarrow \chi((K_n)^G) \leq n\]
+  </div>
+  <div class="proof">
+    So given that \(\chi(G)>n\),
+   \[\begin{gather*}
+           \chi((K_n)^G) \leq n, \\
+           \iff (K_n)^G \to K_n \tag{Proper n coloring is equivalent to a homomorphism to \(K_n\)}\\
+           \iff \forall H, (H \to (K_n)^G \Rightarrow H \to K_n) \tag{ if direction is because Homomorphism is a transitive relation, only if direction is by taking \(H=(K_n)^G\)} \\
+           \iff \forall H, (G \times H \to K_n \Rightarrow H \to K_n) \tag{Applying previous lemma}\\
+           \iff \forall H, (\chi(G \times H) \leq n \Rightarrow \chi(H) \leq n) \tag{Proper n coloring is equivalent to a homomorphism to \(K_n\)}\\
+           \iff \text{Hedetniemi's conjecture is true.} \tag{ Since \(\chi(G)>n\)}
+  \end{gather*}\]
+  </div>
+
+</body>
+</html>

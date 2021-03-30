@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>比萨片(Pizza slice)</h2>
+    有一个披萨，上面有3n个大小不等的切片, 我们和朋友将按照以下方式选切片：
+    我们将挑选任何披萨片。
+    我们的朋友爱丽丝将沿我们选择的逆时针方向选择下一个切片。
+    我们的朋友鲍勃将按照我们选择的顺时针方向选择下一个切片。
+    重复直到没有更多的比萨饼。
+    披萨片的大小由顺时针方向上的圆形阵列片表示。
+    返回我们可以拥有的切片大小的最大可能总和。
+    <br><br>
+    There is a pizza with \(3n\) slices of varying size, you and your friends will take slices of pizza as follows:
+    You will pick any pizza slice.
+    Your friend Alice will pick next slice in anti clockwise direction of your pick.
+    Your friend Bob will pick next slice in clockwise direction of your pick.
+    Repeat until there are no more slices of pizzas.
+    Sizes of Pizza slices is represented by circular array slices in clockwise direction.
+    Return the maximum possible sum of slice sizes which you can have.
+    <hr>
+    例:
+    <div class ="table1">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+      </style>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">输入：</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28"><img src="../images/pizza1.jpg"></td>
+          <th class="tg-fv28">:[1,2,3,4,5,6]</th>
+        </tr>
+        <tr>
+          <td class="tg-fv28">输出:</td>
+          <td class="tg-fv28">10</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">说明:</td>
+          <td class="tg-fv28">挑选大小为4的披萨片，爱丽丝和鲍勃将分别选择大小为3和5的披萨片。<br>然后选择大小为6的切片，最后爱丽丝和鲍勃将分别选择大小为2和1的切片。<br>总计= 4 + 6。</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    Example:
+    <div>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">Input:</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28"><img src="../images/pizza2.jpg"></td>
+          <th class="tg-fv28">slices = [8,9,8,6,1,1]</th>
+        </tr>
+        <tr>
+          <td class="tg-fv28">Output:</td>
+          <td class="tg-fv28">16</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">Explanation:</td>
+          <td class="tg-fv28">Pick pizza slice of size 8 in each turn. <br>If you pick slice with size 9 your partners will pick slices of size 8.</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <hr>
+    <label for="tagPizzaSize">输入披萨片大小(Enter pizza slice size array separated by commas)</label><br>
+    <input type="text" id = "tagPizzaSize" class="numbersonly" value="8,9,8,6,1,1"><br>
+    <input type="Button" onclick="computeResult()" value="获取我们的最佳披萨片(find optimal slices)" /> <br>
+
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+    提示：由于有3n个切片，因此对于任何n个不相邻的披萨片，都存在一选择系列，以便最终得到这些切片。（可以通过归纳证明）
+    此外，我们不会在最佳切片集中选择最小的切片。
+    <br><br>
+    Hint: Since there are 3n slices,for any n no adjacent pizza pieces, there exist a sequence of choices so that we get those slice in the end.(This can be proved by induction)
+    Futhermore, the smallest slice will not be picked by us in an optimal set of slices.
+
+    <script>
+
+			var resultt = 0;
+      var choices = [];
+
+
+      function shiftBy(arr, k){
+        if(k<arr.length-1){
+          for(var i = 0 ; i< k ; i++){
+            arr.push(arr.shift());
+          }
+        }
+        return arr;
+      }
+      function findIndexOfSmallest(arr){
+        var result = -1;
+        var min = arr[0];
+        for(var i = 0 ; i < arr.length ; i++){
+          if(min> arr[i]){
+            min = arr[i];
+            result = i;
+          }
+        }
+        return result;
+      }
+			function copyBToA(A,B){
+				for(var i = 0; i< B.length; i++){
+					A.push(B[i]);
+				}
+			}
+      function findOptimalSlices(arr){
+        var result = [];
+        choiceList = [];
+        for(var i = 0 ; i <= arr.length/3 ; i++){
+          var tempRow = [];
+          var tempRow2 = [];
+          for(var j = 0; j < arr.length; j++){
+            tempRow.push(0);
+            tempRow2.push([]);
+          }
+          result.push(tempRow);
+          choiceList.push(tempRow2);
+        }
+        for(i = 1; i<= arr.length/ 3 ;i++){
+          for(j = i; j < arr.length ; j++){
+						if(i<=j){
+							var tempVar = result[i][(j-1+arr.length)%arr.length];
+							var tempVar2 = arr[j]+result[i-1][(j-2+arr.length)%arr.length];
+							if(tempVar >= tempVar2){
+								result[i][j] = tempVar;
+								copyBToA(choiceList[i][j],choiceList[i][(j-1+arr.length)%arr.length]);
+							}
+							else{
+								result[i][j] = tempVar2;
+								copyBToA(choiceList[i][j],[arr[j]]);
+								copyBToA(choiceList[i][j],choiceList[i-1][(j-2+arr.length)%arr.length]);
+							}
+						}
+						else{
+							result[i][j] = 0;
+						}
+          }
+        }
+				choices = choiceList[arr.length/ 3][arr.length-1];
+        resultt = result[arr.length/ 3][arr.length-1];
+      }
+      function computeResult(){
+        resultt = 0;
+        choices = [];
+				//numberOfDays = 0
+				document.getElementById("tagMessage").innerHTML= "";
+				// numberOfTransactions = 0;
+				// stockPrices = [];
+				// result = 0;
+				// theTransactions = [];
+        // numberOfTransactions  = parseFloat(document.getElementById("tagNumberOfTransactions").value);
+
+				var pizzaSizeString =  document.getElementById("tagPizzaSize").value;
+				if ( pizzaSizeString.match('[^, 0-9]') ){
+					document.getElementById("tagMessage").innerHTML= "错误：披萨片大小格式无效(error: invalid pizza slice size input)"; // Put the error message inside the msg element in HTML.
+					return false;
+				}
+				var pizzaSizeList = pizzaSizeString.split(",");
+				for(var i  = 0 ; i < pizzaSizeList.length; i++){
+					pizzaSizeList[i] = parseFloat(pizzaSizeList[i]);
+				}
+        if(!(pizzaSizeList.length%3 === 0) ){ //If the number of type of food or the number of type of nutrients entered is a negetive number, display an error message.
+          document.getElementById("tagMessage").innerHTML= "披萨片的数量必须是3的倍数(number of pizza slices needs to be a multiple of 3)";
+          return false;
+        }
+        pizzaSizeList = shiftBy(pizzaSizeList,findIndexOfSmallest(pizzaSizeList));
+				console.log(pizzaSizeList);
+        var m = findOptimalSlices(pizzaSizeList);
+
+        displayResult();
+        return 1;
+
+
+      }
+      function displayResult(){
+        clearTable("tagOutput")
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("结果如下(The result is as follow)"));
+				var desc = "最佳披萨片(best pizza slice value is)";
+        resultBody.appendChild(createDescriptionRow(desc,resultt));
+				var desc1 = "要选择的披萨片是(the pizza slices to be selected are)";
+				resultBody.appendChild(createDescriptionRow(desc1,choices));
+        resultTbl.append(resultBody);
+
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>

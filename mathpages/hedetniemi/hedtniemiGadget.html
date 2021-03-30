@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="../styles.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ 	<meta charset="utf-8">
+  	<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  	<script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  	</script>
+	<script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+  	<style>
+		table, td {
+			border: 1px solid black;
+			background-color: coral;
+		}
+
+		#mynetwork {
+		  width: 700px;
+		  height: 700px;
+		  border: 1px solid lightgray;
+		  margin: 0 auto;
+		  background-color: coral;
+		}
+	</style>
+	<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+
+
+<body>
+
+	<h3> Creating Graph A</h3><br>
+	<hr>
+	Adding edge:<br>
+	<label for="ss">Edge end vertex 1 name:</label><br>
+	<input type="text" id = "ss" class="numbersonly" name="nss"  value="A"><br>
+	<label for="ds">Edge end vertex 2 name:</label><br>
+	<input type="text" id = "ds" class="numbersonly" name="nds"  value="B"><br>
+	<input type="Button" onclick="addEdges()" value="Add transition" /> <br/>
+	<br>
+	<br>
+	Adding node:<br>
+	<label for="sn">Node name:</label><br>
+	<input type="text" id = "sn" class="numbersonly" name="nsn"  value="A"><br>
+
+	<input type="button" onclick="addNode()" value="Add State" /> <br/>
+	<input type="Button" onclick="resetAll()" value="Clear diagram" /> <br/>
+	<p> Message: <span id = "msg"></span></p><br>
+	<div id="mynetwork1"></div>
+	<hr>
+
+	<h3> Creating Graph </h3><br>
+	<hr>
+	Adding edge:<br>
+	<label for="ss">Edge end vertex 1 name:</label><br>
+	<input type="text" id = "ss" class="numbersonly" name="nss"  value="A"><br>
+	<label for="ds">Edge end vertex 2 name:</label><br>
+	<input type="text" id = "ds" class="numbersonly" name="nds"  value="B"><br>
+	<input type="Button" onclick="addEdges()" value="Add transition" /> <br/>
+	<br>
+	<br>
+	Adding node:<br>
+	<label for="sn">Node name:</label><br>
+	<input type="text" id = "sn" class="numbersonly" name="nsn"  value="A"><br>
+
+	<input type="button" onclick="addNode()" value="Add State" /> <br/>
+	<input type="Button" onclick="resetAll()" value="Clear diagram" /> <br/>
+	<p> Message: <span id = "msg"></span></p><br>
+	<div id="mynetwork1"></div>
+	<hr>
+
+	<div>
+		<input type="Button" onclick="displayMMatrix()" value="Generate Transition Matrix" /> <br/>
+		<label for="mMatT">Markov Transition Matrix</label><br>
+		<table id="mMatT">
+		</table>
+	</div>
+	<hr>
+
+
+	<div id = "initProb">
+		Here we specify the initial probabilities of the states:
+		<table id="iniProbTbl">
+		</table>
+		<br>
+		Now, The probability of being at any given state after <span id = "stepp"></span> steps is computed in the following table:<br>
+		<label for="nOfStep">How many steps:</label>
+		<input type="number" id = "nOfStep" class="numbersonly" name="nss"  value="2"><br>
+		<input type="Button" onclick="displayNStepProb()" value="Compute Probabilities" />
+		<table id="fnlProb">
+		</table>
+	</div>
+
+	<script type="text/javascript">
+	var nodeIds, shadowState, nodesArray, nodes, edgesArray, edges, network , nodeNames, nodeIdDict;
+	// For the initial state probability input element, we use node id as their id .var initProbInputIdDic = {};
+	var idgenerator = 1;
+
+
+	function startNetwork() {
+	  // this list is kept to remove a random node.. we do not add node 1 here because it's used for changes
+	  nodeIdDict = {};
+	  nodeNames = [];
+	  nodeIds = [];
+	  shadowState = false;
+	  nodesArray = [];
+	  // create an array with nodes
+	  // nodesArray = [
+	  //   { id: 1, label: "Node 1" },
+	  //   { id: 2, label: "Node 2" },
+	  //   { id: 3, label: "Node 3" },
+	  //   { id: 4, label: "Node 4" },
+	  //   { id: 5, label: "Node 5" },
+	  // ];
+	  nodes = new vis.DataSet(nodesArray);
+
+	  // create an array with edges
+	  // edgesArray = [
+	  //   { from: 1, to: 3 },
+	  //   { from: 1, to: 2 },
+	  //   { from: 2, to: 4 },
+	  //   { from: 2, to: 5 },
+	  // ];
+	  edgesArray = [];
+	  edges = new vis.DataSet(edgesArray);
+
+	  // create a network
+	  var container = document.getElementById("mynetwork");
+	  var data = {
+	    nodes: nodes,
+	    edges: edges,
+	  };
+	  var options = {};
+	  network = new vis.Network(container, data, options);
+	}
+
+	//to be call only when applicable
+	function addInitProbInput(labell, newId){
+		var initProbTbl =  document.getElementById("iniProbTbl"); 
+	    var inputElem = document.createElement("input");
+	    var inputElemLabel = document.createElement("label");
+	    var tblBody = document.createElement("tbody");
+		var headerRow = document.createElement("tr");
+		var emptycellLbl = document.createElement("td");
+		var emptycellInput = document.createElement("td");
+
+		inputElem.id = newId;
+		inputElemLabel.innerHTML = "Initial probability of being at state "+labell+":";
+		emptycellLbl.appendChild(inputElemLabel);
+		emptycellInput.appendChild(inputElem);
+		headerRow.appendChild(emptycellLbl);
+		headerRow.appendChild(emptycellInput);
+		tblBody.appendChild(headerRow);
+        initProbTbl.append(tblBody);
+	}
+
+	function addNode() {
+	    var labell = document.getElementById("sn").value;
+		console.log(labell);
+	    //var newId = (Math.random() * 1e7).toString(32);
+		if(labell in nodeIdDict){
+			//console.log("the key already exists:");
+			document.getElementById("msg").innerHTML= "The provided label has already been used.";
+		}
+		else{
+			var newId = idgenerator;
+			idgenerator = idgenerator + 1;
+			var tempNode = { id: newId, label: labell+"" };
+			nodes.add(tempNode);
+			nodeIds.push(newId);
+			nodesArray.push(tempNode);
+			nodeIdDict[labell] = newId;
+			nodeNames.push(labell);
+			addInitProbInput(labell, newId);
+			// console.log("node id dictionary is:");
+			// console.log(nodeIdDict);
+		}
+	}
+
+	// shoul only call if srcNodeLabel exist in graph
+	function nodeSatisfyMarkov(srcNodeLabel){
+		// get all edges whose source is srcNode
+		var edgesBetweensd = edges.get().filter(function (edge) {
+			return edge.from === nodeIdDict[srcNodeLabel];
+		});
+		if(0 === edgesBetweensd.length){ // if there are no edges our of srcNode add edge
+			return false;
+		}
+		else{ // else check if prob is correct
+			var culmulativeProb = 0;
+			for( var j =0 ; j< edgesBetweensd.length; j++){
+				console.log("in nodeSatisfyMarkov()");
+				console.log(srcNodeLabel);
+				console.log(nodeIdDict[srcNodeLabel]);
+				console.log(parseFloat(edgesBetweensd[j].label));
+				culmulativeProb = culmulativeProb + parseFloat(edgesBetweensd[j].label);
+			}
+			if(Math.abs(culmulativeProb -  1)>0.000001){ // if probability adds to more than one then display an error
+				//document.getElementById("msg").innerHTML= "error: outgoing probability adds to more than 1";
+				console.log("culmulativePrb is");
+				console.log(culmulativeProb);
+				return false;
+			}
+			else{ // else ok to add edge
+				console.log("culmulativePrb is");
+				console.log(culmulativeProb);
+				return true;
+			}
+		}
+	}
+
+
+	// shoul only call if srcNodeLabel exist in graph
+	function canAddEdge(srcNodeLabel, p){
+		// get all edges whose source is srcNode
+		var edgesBetweensd = edges.get().filter(function (edge) {
+			return edge.from === nodeIdDict[srcNodeLabel];
+		});
+		if(0=== edgesBetweensd.length){ // if there are no edges our of srcNode add edge
+			return true;
+		}
+		else{ // else check if prob is correct
+			var culmulativeProb = 0;
+			for( var j =0 ; j< edgesBetweensd.length; j++){
+				culmulativeProb = culmulativeProb + parseFloat(edgesBetweensd[j].label);
+			}
+			if(culmulativeProb + p > 1){ // if probability adds to more than one then display an error
+				document.getElementById("msg").innerHTML= "error: outgoing probability adds to more than 1";
+				return false;
+			}
+			else{ // else ok to add edge
+				return true;
+			}
+		}
+	}
+
+	function addEdges(){
+	  //console.log("in add edges()");
+	  var srcLabel = document.getElementById("ss").value;
+	  var destLabel = document.getElementById("ds").value;
+	  var transProb = parseFloat(document.getElementById("prob").value);
+
+	  if(transProb < 0 || transProb >1 || isNaN(transProb)){ // Check if probability value is correct
+	    document.getElementById("msg").innerHTML= "Invalid probability";
+	  }
+		else if(srcLabel in nodeIdDict && destLabel in nodeIdDict){ // if both src and destination node are both in graph
+			console.log("in src in dest in");
+			//console.log("in equal src dest label");
+			//get edge between source and destination nodes
+			var edgesBetween = edges.get().filter(function (edge) {
+				return edge.from === nodeIdDict[srcLabel] && edge.to === nodeIdDict[destLabel];
+			});
+			if(0=== edgesBetween.length){ // if there are no edge between them, we try to add edge
+				if(canAddEdge(srcLabel, transProb)){
+					var tempEdge = { from: nodeIdDict[srcLabel], to: nodeIdDict[destLabel], arrows: "to", label: ""+transProb };
+					edges.add(tempEdge);
+				}
+			}
+			else{
+				document.getElementById("msg").innerHTML= "error: There is an edge present already.";
+			}
+		}
+		else if(srcLabel in nodeIdDict && !(destLabel in nodeIdDict)){
+			console.log("in src in dest not in");
+			if(canAddEdge(srcLabel, transProb)){
+				nodeNames.push(destLabel);
+				var newId2 = idgenerator;
+				idgenerator = idgenerator + 1;
+				var tempNode2 = { id: newId2, label: destLabel };
+				nodeIdDict[destLabel] = newId2;
+				nodes.add(tempNode2);
+				var tempEdge = { from: nodeIdDict[srcLabel], to: nodeIdDict[destLabel], arrows: "to", label: ""+transProb };
+				edges.add(tempEdge);
+				addInitProbInput(destLabel, newId2);
+			}
+		}
+		else if(!(srcLabel in nodeIdDict) && destLabel in nodeIdDict){
+			nodeNames.push(srcLabel);
+			console.log("in src not in dest in");
+			var newId1 =idgenerator;
+			idgenerator = idgenerator + 1;
+			var tempNode1 = { id: newId1, label: srcLabel };
+			nodeIdDict[srcLabel] = newId1;
+		  	nodes.add(tempNode1);
+			var tempEdge = { from: newId1, to: nodeIdDict[destLabel], arrows: "to", label: ""+transProb };
+			edges.add(tempEdge);
+			addInitProbInput(srcLabel, newId1);
+		}
+	    else{
+			if(srcLabel.localeCompare(destLabel) === 0){ // if source label is the same as dest label
+				nodeNames.push(srcLabel);
+				var newId1 =idgenerator;
+				idgenerator = idgenerator + 1;
+				var tempNode1 = { id: newId1, label: srcLabel };
+				nodeIdDict[srcLabel] = newId1;
+				var tempEdge = { from: newId1, to: newId1, arrows: "to", label: ""+transProb };
+				nodes.add(tempNode1);
+				edges.add(tempEdge);
+				addInitProbInput(srcLabel, newId1);
+			}
+			else{
+				// var newId1 = (Math.random() * 1e7).toString(32);
+				// var newId2 = (Math.random() * 1e7).toString(32);
+				nodeNames.push(srcLabel);
+				nodeNames.push(destLabel);
+				var newId1 =idgenerator;
+				idgenerator = idgenerator + 1;
+				var newId2 = idgenerator;
+				idgenerator = idgenerator + 1;
+
+				var tempNode1 = { id: newId1, label: srcLabel };
+				var tempNode2 = { id: newId2, label: destLabel };
+				nodeIdDict[srcLabel] = newId1;
+				nodeIdDict[destLabel] = newId2;
+				var tempEdge = { from: newId1, to: newId2, arrows: "to", label: ""+transProb };
+				console.log("temp node to be added has:"+tempEdge);
+				console.log(tempEdge);
+				nodes.add(tempNode1);
+				nodes.add(tempNode2)
+				edges.add(tempEdge);
+				console.log(edges);
+				addInitProbInput(srcLabel, newId1);
+				addInitProbInput(destLabel, newId2);
+			}
+	  }
+	}
+
+	// function changeNode1() {
+	//   var newColor = "#" + Math.floor(Math.random() * 255 * 255 * 255).toString(16);
+	//   nodes.update([{ id: 1, color: { background: newColor } }]);
+	// }
+
+	// function removeRandomNode() {
+	//   var randomNodeId = nodeIds[Math.floor(Math.random() * nodeIds.length)];
+	//   nodes.remove({ id: randomNodeId });
+
+	//   var index = nodeIds.indexOf(randomNodeId);
+	//   nodeIds.splice(index, 1);
+	// }
+
+	// function changeOptions() {
+	//   shadowState = !shadowState;
+	//   network.setOptions({
+	//     nodes: { shadow: shadowState },
+	//     edges: { shadow: shadowState },
+	//   });
+	// }
+
+	// function resetAllNodes() {
+	//   nodes.clear();
+	//   edges.clear();
+	//   nodes.add(nodesArray);
+	//   edges.add(edgesArray);
+	// }
+
+	// function resetAllNodesStabilize() {
+	//   resetAllNodes();
+	//   network.stabilize();
+	// }
+
+	// function setTheData() {
+	//   nodes = new vis.DataSet(nodesArray);
+	//   edges = new vis.DataSet(edgesArray);
+	//   network.setData({ nodes: nodes, edges: edges });
+	// }
+
+	function resetAll() {
+	  if (network !== null) {
+	    network.destroy();
+	    network = null;
+	  }
+	  idgenerator = 1;
+	  startNetwork();
+	  clearTable("mMatT");
+	  clearTable("fnlProb");
+	  clearTable("iniProbTbl");
+	}
+	function clearTable(idstr){
+		var makovTable = document.getElementById(idstr);
+		while(makovTable.rows.length > 0) {
+			makovTable.deleteRow(0);
+		}
+	}
+	function isMarkovDiagram(){
+		if(nodeNames.length === 0){
+			console.log("length is 0")
+			console.log("it is not markov diagram");
+			document.getElementById("msg").innerHTML= "error: There is no state in the diagram";
+			return false;
+		}
+		else{
+			for(var i = 0 ; i < nodeNames.length ; i++){
+				//console.log(nodeNames[i]);
+				if(!nodeSatisfyMarkov(nodeNames[i])){
+					document.getElementById("msg").innerHTML= "error: probability out of "+nodeNames[i]+" dosen't sum to 1";
+					return false;
+				}
+			}
+			return true;
+		}
+	}
+
+
+	function displayMMatrix(){
+		var themakovMatrix = getMarkovM();
+		var makovmList = themakovMatrix[0];
+		console.log("in display() method");
+		console.log(makovmList);
+		var makovTable = document.getElementById("mMatT");
+		clearTable("mMatT");
+		var tblBody = document.createElement("tbody");
+		var headerRow = document.createElement("tr");
+		var emptycell = document.createElement("td");
+		var emptycellText = document.createTextNode("");
+		emptycell.appendChild(emptycellText);
+		headerRow.appendChild(emptycell);
+		for(var i =0 ; i< makovmList.length; i++){
+			var emptycell = document.createElement("td");
+			var emptycellText = document.createTextNode(""+nodeNames[i]);
+			emptycell.appendChild(emptycellText);
+			headerRow.appendChild(emptycell);
+		}
+		console.log("header row append over");
+		tblBody.appendChild(headerRow);				
+		if(themakovMatrix[2] === 1){
+			if(makovmList.length === 1 ){
+				var headerRow = document.createElement("tr");
+				var emptycell1 = document.createElement("td");
+				var emptycellText1 = document.createTextNode(nodeNames[0]);
+				emptycell1.appendChild(emptycellText1);
+				headerRow.appendChild(emptycell1);
+
+				var emptycell = document.createElement("td");
+				var emptycellText = document.createTextNode(""+makovmList[0]);
+				emptycell.appendChild(emptycellText);
+				headerRow.appendChild(emptycell);
+				tblBody.appendChild(headerRow);
+			}
+			else{
+				for(var i = 0; i< makovmList.length ; i++){
+					var headerRow = document.createElement("tr");
+					var emptycell = document.createElement("td");
+					var emptycellText = document.createTextNode(nodeNames[i]);
+					emptycell.appendChild(emptycellText);
+					headerRow.appendChild(emptycell);
+					for(var j = 0; j< makovmList.length ; j++){
+						var emptycell = document.createElement("td");
+						var emptycellText = document.createTextNode(""+makovmList[i][j]);
+						emptycell.appendChild(emptycellText);
+						headerRow.appendChild(emptycell);
+					}
+					tblBody.appendChild(headerRow);
+				}
+			}
+			makovTable.append(tblBody);
+		}	
+	}
+
+
+	function getMarkovM(){
+		console.log("in get MarkovM()");
+		console.log(isMarkovDiagram());
+		if(isMarkovDiagram()){
+			if(nodeNames.length === 1){
+				console.log(math.matrix([1]));
+				return [[1],math.matrix([1]),1];
+			}
+			else{
+				var matrixList = [];
+				for(var i =0 ; i < nodeNames.length; i++){
+					var tempList = []
+					for(var j = 0; j < nodeNames.length; j++){
+						var edgesBetween = edges.get().filter(function (edge) {
+							return edge.from === nodeIdDict[nodeNames[i]] && edge.to === nodeIdDict[nodeNames[j]];
+						});
+						if(edgesBetween.length === 0){
+							tempList.push(0);
+						}
+						else{
+							tempList.push(parseFloat(edgesBetween[0].label));
+						}
+					}
+					matrixList.push(tempList);
+				}
+				console.log(math.matrix(matrixList));
+				return [matrixList,math.matrix(matrixList),1];
+			}
+		}
+		else{
+			return [[],math.matrix([]),0]
+		}
+	}
+	function getInitProbFromTable(){
+		if(nodeNames.length === 0){ // there are no states
+			document.getElementById("msg").innerHTML= "error: There are no states.";
+			return [math.matrix([]), 0, []];
+		}
+		else{
+			var initProbList = [];
+			var sumProb = 0;
+			for(var i= 0 ; i < nodeNames.length ; i++){
+				var iddd = nodeIdDict[nodeNames[i]] 
+				var probInput =  parseFloat(document.getElementById(""+iddd).value); 
+				if(isNaN(probInput)){
+					document.getElementById("msg").innerHTML= "error: a initial probability entered is not a number.";
+					console.log("input prob is not a number");
+					return [math.matrix([]), 0, []];
+				}
+				else{
+					console.log(probInput);
+					sumProb = sumProb + probInput;
+					if(sumProb > 1 || sumProb < 0){
+						document.getElementById("msg").innerHTML= "error: sum of probability entered is more than 1 or less than 0";
+						console.log("sum of probabilities is more than 1 or less than 0");
+						console.log(initProbList);
+						return [math.matrix([]), 0, []];
+					}
+					else{
+						initProbList.push(probInput);
+					}
+				}
+			}
+			if(sumProb === 1){
+				console.log("sum of probabilities is 1");
+				console.log(initProbList);
+				return [math.matrix(initProbList),1, initProbList];
+			}
+			else{
+				document.getElementById("msg").innerHTML= "error: sum of inital probabilities is not 1.";
+				console.log("sum of probabilities is not 1");
+				console.log(initProbList);
+				return [math.matrix([]), 0 , []];
+			}
+		}
+	}
+
+	function computeNthStepProb(){
+		console.log("in computeNthStepProb()");
+		var themakovMatrix = getMarkovM();
+		var initProbInputs = getInitProbFromTable();
+		console.log("init prob is");
+		console.log(initProbInputs);
+		console.log(initProbInputs[0]);
+		console.log(initProbInputs[1]);
+		console.log(initProbInputs[2]);
+		if(themakovMatrix[2] === 1){
+			if(initProbInputs[1] === 1){
+				console.log(initProbInputs[0]);
+				var initProbVec = initProbInputs[0];
+				console.log("in computeNthStepProb");
+				console.log(initProbVec);
+				var stepN = parseFloat(document.getElementById("nOfStep").value);
+				console.log("step size is");
+				console.log(stepN);
+				if(isNaN(stepN) ){
+					document.getElementById("msg").innerHTML= "error: step size entered is not a number.";
+					return [math.matrix([]), 0];
+				}
+				else if(!(Number.isInteger(stepN))){
+					document.getElementById("msg").innerHTML= "error: step size entered is not an integer.";
+					return [math.matrix([]), 0];
+				}
+				else if(stepN < 0){
+					document.getElementById("msg").innerHTML= "error: step size entered is less than 0.";
+					return [math.matrix([]), 0];
+				}
+				else if(stepN === 0){
+					document.getElementById("stepp").innerHTML= "0";
+					return [initProbVec, 1];
+				}
+				else{
+					document.getElementById("stepp").innerHTML= ""+stepN;
+					var result = math.matrix(initProbInputs[2]);
+					for(var j =0 ; j< stepN ; j++){
+						result = math.multiply(result, themakovMatrix[1]);
+					}
+					console.log("destination state probabilities are:");
+					console.log(result);
+					return [result, 1];
+				}
+			}
+			else{
+				return [math.matrix([]), 0];
+			}
+		}
+		else{
+			console.log("empty matrix print like:");
+			console.log(math.matrix([]));
+			return [math.matrix([]), 0];
+		}
+	}
+
+	function displayNStepProb(){
+		console.log("in displayNStepProb");
+		var finalProbTbl = document.getElementById("fnlProb"); 
+		clearTable("fnlProb");
+		var result = computeNthStepProb();
+		console.log("accessing final prob from displayNstepprob method");
+		console.log(result);
+		var tblBody = document.createElement("tbody");
+
+		if(result[1] === 1){
+			var finalprobVec = result[0];
+			console.log(finalprobVec);
+			for(var i = 0 ; i < nodeNames.length ; i++){
+				var headerRow = document.createElement("tr");
+				var emptycellLbl = document.createElement("td");
+				var emptycellProb = document.createElement("td");
+				var emptycellText = document.createTextNode(""+nodeNames[i]);
+				emptycellLbl.appendChild(emptycellText);
+				var emptycellText1 = document.createTextNode(""+finalprobVec.subset(math.index(i)));
+				emptycellProb.appendChild(emptycellText1);
+				headerRow.appendChild(emptycellLbl);
+				headerRow.appendChild(emptycellProb);
+				tblBody.appendChild(headerRow);
+			}
+			finalProbTbl.append(tblBody);
+		}
+	}
+
+
+	startNetwork();
+
+	</script>
+
+
+
+
+
+</html>
+

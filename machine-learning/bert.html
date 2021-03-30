@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+<!-- 	        <link rel="stylesheet" href="tensorntut.css"> -->
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+	 <meta charset="utf-8">
+
+	  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+	  <script id="MathJax-script" async
+	          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+	  </script>
+<!-- 	  <script type="text/javascript" src="//unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script> -->
+	  <script
+  type="text/javascript"
+  src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"
+></script>
+
+  <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+	  <style>
+	.theorem {
+	    display: block;
+	    margin: 12px 0;
+	    font-style: italic;
+	}
+	.theorem:before {
+	    content: "Theorem.";
+	    font-weight: bold;
+	    font-style: normal;
+	}
+	.lemma {
+	    display: block;
+	    margin: 12px 0;
+	    font-style: italic;
+	}
+	.lemma:before {
+	    content: "Lemma.";
+	    font-weight: bold;
+	    font-style: normal;
+	}
+	.proof {
+	    display: block;
+	    margin: 12px 0;
+	    font-style: normal;
+	}
+	.proof:before {
+	    content: "Proof.";
+	    font-style: italic;
+	}
+	.proof:after {
+	    content: "\25FC";
+	    float:right;
+	}
+	.definition {
+	    display: block;
+	    margin: 12px 0;
+	    font-style: normal;
+	}
+	.definition:before {
+	    content: "Definition.";
+	    font-weight: bold;
+	    font-style: normal;
+	}
+
+
+
+	</style>
+	<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+	<script type="text/javascript" src="https://unpkg.com/vis-graph3d@latest/dist/vis-graph3d.min.js"></script>
+	  </head>
+  </head>
+
+<body>
+<a href = "../pdffiles/efplanning.pdf">Efficient Planning under Partial Observability with Unormalized Q Functions and Spectral Learning</a>
+<br>
+By Tianyu Li, Bogdan Mazoure, Doina Precup, Guillaume Rabusseau
+<br>
+
+<h2>Introduction </h2>
+An intelligent agent make decisions on a set of possible actions based on observation of its current state. However, the enviromnent in which the agent lives in is
+often partially observable to the agent. Partially observable Markov decision Processes(POMDP) gives a framwork for a single agent in a partially observable environment.
+In contrast to Markov decision process(MDP), agent in POMDP
+
+<h2> Partially Observable Markov Decision Processes(POMDPs)</h2>
+
+<div class ="definition">
+A \(\textbf{Markov decision processs(MDP)}\) of size \(k\) is a 6-tuple \((\mathcal{T},r,\mathcal{A},\mathcal{S},\mu,\gamma)\).
+Here
+  <ul>
+    <li>\(\mathcal{T} \in [0,1]^{\mathcal{S} \times \mathcal{A} \times \mathcal{S}}\) is the transition probabilities </li>
+    <li>\(\mu \in [0,1]^S\) is the initial state distribution<li>
+    <li>\(r \in \mathbb{R}^{\mathcal{S}} \) is the reward vectors over satate</li>
+    <li>\(\gamma\) is the discount factor </li>
+    <li>\(S\) is the set of states </li>
+    <li> \(\mathcal{A}\) is the set of actions</li>
+  </ul>
+</div>
+<a href = "mdp.html">Here we can simulate a markov decision process</a>
+</body>
+
+
+
+
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>淘汰游戏(Elimination Game)</h2>
+    有一个从\(1\)到\(n\)的排序整数列表。从左到右开始，然后删除第一个数字，然后删除所有每下下一个数字，直到到达列表末尾。
+    再次重复上一个步骤，但是这次从右到左，从剩余数字中删除最右边的数字和所下下一个数字。
+    我们继续重复步骤，从左到右，从右到左，直到剩下一个数字为止。
+    查找以长度\(n\)列表开头的最后一个数字。
+    <br><br>
+    There is a list of sorted integers from \(1\) to \(n\). Starting from left to right, remove the first number and every other number afterward until you reach the end of the list.
+    Repeat the previous step again, but this time from right to left, remove the right most number and every other number from the remaining numbers.
+    We keep repeating the steps again, alternating left to right and right to left, until a single number remains.
+    Find the last number that remains starting with a list of length \(n\).
+    <hr>
+    例:
+    <div class ="table1">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+      </style>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">输入：</th>
+          <th class="tg-fv28">n=9</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">输出:</td>
+          <td class="tg-fv28">6</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">说明:</td>
+          <td class="tg-fv28">第0步：1 2 3 4 5 6 7 8 9 <br>第一步：2 4 6 8<br>第二步：2 6<br>最后一步：6</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    Example:
+    <div>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">Input:</th>
+          <th class="tg-fv28">9</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">Output:</td>
+          <td class="tg-fv28">6</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">Explanation:</td>
+          <td class="tg-fv28">First Step:1 2 3 4 5 6 7 8 9 <br>Second Step:2 4 6 8<br>Third Step:2 6<br>Last Step:6</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+
+    <label for="tagNRange">n是多少:(What is n)</label><br>
+    <input type="number" id = "tagNRange" class="numbersonly" value="2"><br>
+    <input type="Button" onclick="computeResult()" value="找到最后剩下的数(Find he last remaining number)" /> <br>
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+    暗示：
+        <br>
+        让Ml(1，...，n）通过从序列（1，...，n）的左侧开始消除来表示消除过程的结果
+        MR(1，...，n）通过从序列（1，...，n）的右边开始消除来表示消除过程的结果。
+        那么确实是 n + 1 = Ml(1,...,n)+ MR(1,...,n)。
+    <br><br>
+    Hint:
+    <br>
+    Let Ml(1,...,n) denote the result of the elimination processs by start eliminating from left of the sequence (1,...,n)
+    and MR(1,...,n) denote the result of the elimination processs by start eliminating from right of the sequence (1,...,n).
+    then it is true that \(n+1 =Ml(1,...,n)+MR(1,...,n)\).
+    <script>
+      var rangeN = 0;
+      var result = 0;
+      /**
+        *
+       */
+      function computeResult(){
+				document.getElementById("tagMessage").innerHTML= "";
+        rangeN  = parseFloat(document.getElementById("tagNRange").value);
+        if(isNaN(rangeN)){ //If number of food entered is not a number, display an an explainatory error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的不是数字(error: the number entered is not a number)"; // Put the error message inside the msg element in HTML.
+          return false;
+        }
+        if(rangeN <= 0 ){ //If the number of type of food or the number of type of nutrients entered is a negetive number, display an error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的数必须为正(error: the number entered needs to be positive)";
+          return false;
+        }
+        if(!(Number.isInteger(rangeN)) ){
+          document.getElementById("tagMessage").innerHTML= "错误：输入的数必须是整数(error: The number entered needs to be an Integer)";
+          return false;
+        }
+        result = recursiveCompute(rangeN);
+        displayResult();
+        return 1;
+      }
+      function recursiveCompute(n){
+        if(n===1){
+          return 1;
+        }
+        else{
+          return 2*(Math.floor(n/2)+1-recursiveCompute(Math.floor(n/2)));
+        }
+      }
+      function displayResult(){
+        clearTable("tagOutput")
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("结果如下(The result is as follow)"));
+        resultBody.appendChild(createDescriptionRow("最后剩下的数是(The last remaining number is)",result));
+        resultTbl.append(resultBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>

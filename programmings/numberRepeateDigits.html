@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	  <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+      .chart{
+        width: 1000px;
+        height: 500px;
+        border: 1px solid lightgray;
+        margin: 0 auto;
+        background-color: coral;
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>带重复数字的数字(Numbers With Repeated Digits)</h2>
+    给定正整数N，返回小于或等于N且具有至少1个重复数字的正整数的数目。
+    <br>
+    Given a positive integer N, return the number of positive integers less than or equal to N that have at least 1 repeated digit.
+    <hr>
+      例:
+    <div class ="table1">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+      </style>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">输入：</th>
+          <th class="tg-fv28">100</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">输出:</td>
+          <td class="tg-fv28">10</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">说明:</td>
+          <td class="tg-fv28">重复数至少为1的正数（<= 100）为11、22、33、44、55、66、77、88、99和100。</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    Example:
+    <div>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">Input:</th>
+          <th class="tg-fv28">20</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">Output:</td>
+          <td class="tg-fv28">1</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">Explanation:</td>
+          <td class="tg-fv28">The only positive number (<= 20) with at least 1 repeated digit is 11.</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <hr>
+    <label for="tag=tagPDNA">输入数字(Enter a number）</label><br>
+    <input type="number" id = "tagPDNA" class="numbersonly" value="100"><br>
+    <input type="Button" onclick="computeResult()" value="提交(Submit)" /> <br>
+
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+    <div>
+      <table id="tagSeq">
+      </table>
+
+    </div><br>
+
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+    <br>
+    提示(hint):<br>
+
+    我们计算无效数字的数量。我们通过它们所具有的位数以及它们是否具有公共前缀来对它们进行计数。结果是数字总数-无效数字的数量<br>
+    we count the number of invalid numbers. We count them by number of digits they have and if they have common prefix. The result is the total number of numbers - number of invalid numbers
+
+    <script>
+      var result = 0 ;
+      var input = 0;
+
+
+
+      function computeResult(){
+        resultt=0;
+        input = parseFloat(document.getElementById("tagPDNA").value);
+        console.log(input);
+        var inputpone = input +1;
+        digitsArray = [];
+        while(inputpone > 0){
+          digitsArray.push(inputpone % 10);
+          inputpone = math.floor(inputpone /10);
+        }
+        console.log(digitsArray);
+
+        console.log(digitsArray.length);
+        for(var i = 1 ; i < digitsArray.length; i++){
+          if(i<= 10){
+            if(i=== 1){
+              resultt = resultt + 9
+            }
+            else{
+              resultt = resultt + 9*perm(9,i-1);
+            }
+          }
+          else{
+            break;  
+          } 
+        }
+        console.log(resultt);
+        var numPoped =0;
+        var visited = new Set();
+        while(digitsArray.length !=0){
+          //console.log(digitsArray);
+          var poped = digitsArray.pop();
+          visited.add(poped)
+          numPoped++;
+          if(numPoped === 1){
+            for(var i = 1; i< poped ;i++){
+              resultt = resultt + perm(10-numPoped, digitsArray.length);
+            }
+          }
+          else{
+            for(var i = 0; i< poped ;i++){
+              if(!visited.has(i)){
+                resultt = resultt + perm(10-numPoped, digitsArray.length);
+              }
+            }
+          }
+          // console.log(poped);
+          // if(numPoped ===1){
+          //   resultt = resultt + (poped-1)*perm(10-numPoped, digitsArray.length);
+          // }
+          // else{
+          //   resultt = resultt + poped*perm(10-numPoped, digitsArray.length);
+          // }
+          console.log(resultt);
+        }
+        console.log(resultt);
+        displayResult();
+
+      }
+
+      function perm(m,n){
+        if(n ===0){
+          return 1;
+        }
+        else if( n >m){
+          return 0;
+        }
+        return factorialize(m)/factorialize(m-n);
+      }
+
+      function factorialize(num) {
+        if (num < 0) 
+              return -1;
+        else if (num == 0) 
+            return 1;
+        else {
+            return (num * factorialize(num - 1));
+        }
+      }
+      console.log(perm(9,2));
+
+
+      function displayResult(){
+
+        clearTable("tagOutput")
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("结果如下(The result is as follow)"));
+        resultBody.appendChild(createDescriptionRow("且具有至少1个重复数字而小于等于N的数有(The count is)",input - resultt));
+        resultTbl.append(resultBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>

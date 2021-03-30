@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="../styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+.table1{
+	width:600px;
+	height:560px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+#mynetwork14 {
+  width: 500px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork5 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork6 {
+  width: 500px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork7 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork8 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork9 {
+  width: 800px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork10 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork11 {
+  width: 1000px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork12 {
+  width: 500px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork13 {
+  width: 500px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork15 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+#mynetwork16 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork17 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork18 {
+  width: 800px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork19 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+#mynetwork20 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+
+/* #mynetwork1 {
+  width: 500px;
+  height: 300px;
+  margin: 0 auto;
+}
+#mynetwork2 {
+  width: 500px;
+  height: 300px;
+  margin: 0 auto;
+} */
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+<a href = "../pdffiles/cauchyint.pdf">A VERY SHORT PROOF OF CAUCHY’S INTERLACETHEOREM FOR EIGENVALUES OF HERMITIAN MATRICES</a> by Steve Fisk
+
+<div class ="definition">
+Given two polynomials \(f(x),g(x)\) having real roots \(r_1 \leq r_2 \leq... \leq r_n \) and \(s_1 \leq s_2 \leq ... \leq s_{n-1} \) we say
+\(f\) and \(g\) interlace if and only if:
+\[r_1 \leq s_1 \leq r_2 \leq ... \leq s_{n-1} \leq t_n \]
+</div>
+
+<div class ="theorem">
+The roots of polynimials \(f,g\) interlace if and only if the linear combinations \(f + \alpha g\) have all real roots for all \( \alpha \in \mathbb{R}\).
+</div>
+
+<div class ="definition">
+  Given Hermitian matrix \(A\), the \(\textbf{principal submatrix}\) of \(A\) is a square submatrix of \(A\) obtained by deleting some rows and some columns of \(A\)
+   so that the first \(k\) rows and columns, for some number \(k\), are the ones that remain.
+</div>
+
+<div class = "theorem">
+
+</div>
+</body>
+</html>

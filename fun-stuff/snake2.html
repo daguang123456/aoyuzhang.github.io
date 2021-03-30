@@ -1,0 +1,317 @@
+<!DOCTYPE>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../styles.css">
+<title>Snake Game</title>
+<style>
+canvas {
+    border:1px solid #d3d3d3;
+    background-color: #f1f1f1;
+}
+</style>
+</head>
+
+<body onload ="startGame()">
+<div id = "score">
+  Score:
+</div>
+<p>Enable autoplay in broweser setting to enjoy some Beethoven</p>
+
+music from: https://freemp3cloud.com/<br>
+Game tutorial from: https://www.instructables.com/id/How-to-Make-a-Snake-Game-in-JavaScript/
+<!-- <canvas id="gameCanvas" ></canvas> -->
+
+<!-- inspired by <a href = "https://www.instructables.com/id/How-to-Make-a-Snake-Game-in-JavaScript/ ">snake game</a> -->
+
+<script>
+
+var mySnakePiece;
+var myFoodPiece;
+var score;
+var mySound;
+var myMusic;
+var gameEnded = false;
+
+function startGame(){
+  mySound = new sound("../music/im.mp3");
+  myMusic = new sound("../music/btwelise.mp3")
+  myMusic.play();
+  myGameArea.start();
+  mySnakePiece = new snakeComponent("green","red");
+  myFoodPiece = new foodComponent("red");
+  score = 0;
+
+  //mySnakePiece = new component(30,30,"red", 10, 120);
+}
+var myGameArea = {
+  gameCanvas : document.createElement("canvas"),//document.getElementById("gameCanvas"),
+  start : function(){
+    this.gameCanvas.width = 500;
+    this.gameCanvas.height = 500;
+    this.context = this.gameCanvas.getContext("2d");
+    // this.context.fillStyle = "white";
+    // this.context.strokeStyle = "blue";
+    // this.context.fillRect(0,0,this.gameCanvas.width, this.gameCanvas.height);
+    // this.context.strokeRect(0,0,this.gameCanvas.width, this.gameCanvas.height);
+    document.body.insertBefore(this.gameCanvas, document.body.childNodes[0]);
+    this.interval = setInterval(updateGameArea,300);
+    window.addEventListener('keydown', function (e) {
+      myGameArea.key = e.keyCode;
+    })
+    // window.addEventListener('keyup', function (e) {
+    //   this.key = false;
+    // })
+  },
+  clear : function(){
+    this.context.clearRect(0,0,this.gameCanvas.width, this.gameCanvas.height);
+  }
+}
+
+function snakeComponent(sc, sbc){
+  this.snakeColour = sc;
+  this.snakeBorderColor = sbc;
+  this.snake =   [{x:150, y:150},
+    {x:140, y:150},
+    {x:130, y:150},
+    {x:120, y:150},
+    {x:110, y:150}]
+  this.speedx = 0;
+  this.speedy = -10;
+
+  this.drawSnakePart = function(snakePart){
+    //console.log(this);
+    // console.log(this.snakeBorderColor);
+    // console.log(this.snakeColour);
+    ctx = myGameArea.context;
+    ctx.fillStyle = this.mySnakePiece.snakeColour;
+    // console.log(ctx.fillStyle);
+    ctx.strokeStyle = this.mySnakePiece.snakeBorderColor;
+    ctx.fillRect(snakePart.x, snakePart.y, 10,10);
+    ctx.strokeRect(snakePart.x, snakePart.y, 10, 10);
+  }
+  // this.snake.forEach(this.drawSnakePart);
+  this.update = function(){
+    this.snake.forEach(this.drawSnakePart);
+  }
+  this.newPos =  function(){
+    const head = {x: this.snake[0].x + this.speedx, y: this.snake[0].y + this.speedy};
+    this.snake.unshift(head);
+    const didEatFood = this.snake[0].x === myFoodPiece.x && this.snake[0].y === myFoodPiece.y;
+     if (didEatFood) {
+       mySound.play();
+       score += 10;
+       document.getElementById("score").innerHTML = "Score: "+score;
+       myFoodPiece.createFood();
+     } else {
+       this.snake.pop();
+     }
+
+  }
+  this.gameEnd = function(){
+    for (let i = 1; i < this.snake.length; i++) {
+      const didCollide = this.snake[i].x === this.snake[0].x && this.snake[i].y === this.snake[0].y ;
+      if (didCollide)
+      {
+        gameEnded = true;
+        return;
+      }
+    }
+    const hitLeftWall = this.snake[0].x < 0;
+    const hitRightWall = this.snake[0].x > 500;
+    const hitToptWall = this.snake[0].y < 0;
+    const hitBottomWall = this.snake[0].y > 500;
+    gameEnded = hitLeftWall || hitRightWall || hitToptWall || hitBottomWall
+    return;
+  }
+}
+
+function foodComponent(FOOD_COLOUR){
+  this.madefood = false;
+  this.randomTen = function(min, max){
+    return Math.round((Math.random()*(max-min)+min)/10)*10;
+  }
+  this.x = 0; //randomTen(0,490);
+  this.y = 0; //randomTen(0,490);
+  this.createFood = function(){
+    this.x = this.randomTen(0,490);
+    this.y = this.randomTen(0,490);
+    mySnakePiece.snake.forEach(function isFoodOnSnake(part) {
+      const foodIsOnSnake = part.x == this.x && part.y == this.y
+      if (foodIsOnSnake)
+        this.createFood();
+    });
+    this.madefood = true;
+  };
+  this.update = function(){
+    ctx = myGameArea.context;
+    ctx.fillStyle = FOOD_COLOUR;
+    ctx.fillRect(this.x, this.y, 10,10);
+  }
+}
+
+function sound(src){
+  this.sound = document.createElement("audio");
+  this.sound.src = src;
+  this.sound.setAttribute("preload", "auto");
+  this.sound.setAttribute("controls", "none");
+  this.sound.style.display = "none";
+  document.body.appendChild(this.sound);
+  this.play = function() {
+    this.sound.play();
+  }
+  this.stop = function(){
+    this.sound.pause();
+  }
+}
+
+function updateGameArea(){
+  mySnakePiece.gameEnd();
+  if(gameEnded === true){
+    myMusic.stop();
+    clearInterval(myGameArea.interval);
+  }
+  myGameArea.clear();
+  // mySnakePiece.speedX = 0;
+  // mySnakePiece.speedY = 0;
+  const LEFT_KEY = 37;
+  const RIGHT_KEY = 39;
+  const UP_KEY = 38;
+  const DOWN_KEY = 40;
+
+  const goingUp = mySnakePiece.speedy === -10;
+  const goingDown = mySnakePiece.speedy === 10;
+  const goingRight = mySnakePiece.speedx === 10;
+  const goingLeft = mySnakePiece.speedx === -10;
+
+  //console.log(mySnakePiece.speedx);
+    // console.log("x speed:",mySnakePiece.speedx);
+    // console.log("y speed:",mySnakePiece.speedy);
+
+  // console.log("going up: ",goingUp);
+  // console.log("going down: ", goingDown);
+  // console.log("going left: ",goingLeft);
+  // console.log("going right: ",goingRight);
+
+  // console.log(myGameArea.key);
+
+  if ( myGameArea.key === LEFT_KEY && !goingRight) {mySnakePiece.speedx = -10;  mySnakePiece.speedy = 0;}
+  if (myGameArea.key === RIGHT_KEY && !goingLeft) {mySnakePiece.speedx = 10; mySnakePiece.speedy = 0; }
+  if ( myGameArea.key === UP_KEY && !goingDown) {mySnakePiece.speedy = -10; mySnakePiece.speedx = 0;}
+  if ( myGameArea.key === DOWN_KEY && !goingUp) {mySnakePiece.speedy = 10; mySnakePiece.speedx = 0;}
+  mySnakePiece.newPos();
+  mySnakePiece.update();
+  if(!myFoodPiece.madefood)
+    myFoodPiece.createFood();
+  myFoodPiece.update();
+}
+
+// function drawSnakePart(snakePart){
+//   ctx = myGameArea.context;
+//   ctx.fillStyle = sc;
+//   ctx.strokeStyle = sbc;
+//   ctx.fillRect(snakePart.x, snakePart.y, 10,10);
+//   ctx.strokeRect(snakePart.x, snakePart.y, 10, 10);
+// }
+
+// function updateGameArea() {
+//   myGameArea.clear();
+//   myGamePiece.update();
+// }
+//
+// startGame();
+
+
+
+
+
+
+
+
+// const CANVAS_BORDER_COLOUR = "black";
+// const CANVAS_BACKGROUND_COLOUR = "white";
+// const SNAKE_COLOUR = "lightgreen";
+// const SNAKE_BORDER_COLOUR = "darkgreen";
+// let snake = [
+//   {x:150, y:150},
+//   {x:140, y:150},
+//   {x:130, y:150},
+//   {x:120, y:150},
+//   {x:110, y:150}
+// ];
+//
+// let dx = 10;
+// let dy =  0;
+//
+//
+// var gameCanvas = document.getElementById("gameCanvas");
+// var ctx = gameCanvas.getContext("2d");
+// ctx.fillStyle = CANVAS_BACKGROUND_COLOUR;
+// ctx.strokeStyle = CANVAS_BORDER_COLOUR;
+// ctx.fillRect(0,0,gameCanvas.width, gameCanvas.height);
+// ctx.strokeRect(0,0,gameCanvas.width, gameCanvas.height);
+//
+// advanceSnake()
+// dx = 0;
+// dy = -10;
+// advanceSnake();
+// drawSnake();
+// // advanceSnake(){
+// //   dx=0;
+// //   dy = -10;
+// // }
+// // drawSnake();
+//
+// function advanceSnake(){
+//   const head = {x: snake[0].x + dx, y: snake[0].y +dy};
+//   snake.unshift(head);
+//   snake.pop();
+// }
+//
+// function drawSnakePart(snakePart){
+//   ctx.fillStyle = SNAKE_COLOUR;
+//   ctx.strokeStyle = SNAKE_BORDER_COLOUR;
+//   ctx.fillRect(snakePart.x, snakePart.y, 10,10);
+//   ctx.strokeRect(snakePart.x, snakePart.y, 10, 10);
+// }
+//
+// function drawSnake(){
+//   snake.forEach(drawSnakePart);
+// }
+//
+// function changeDirection(event){
+//   const LEFT_KEY = 37;
+//   const RIGHT_KEY = 39;
+//   const Up_KEY = 38;
+//   const DOWN_KEY = 40;
+//   const goingUp = dy === -10;
+//   const goingDown = dy === 10;
+//   const goingRight = dx === 10;
+//   const goingLeft = dx === -10;
+//   if ( keyPressed === LEFT_KEY && !goingRight){
+//     dx = -10;
+//     dy = 0;
+//   }
+//   if (keyPressed === UP_KEY && !goingDown){
+//     dx = 0;
+//     dy = -10;
+//   }
+//   if (keyPressed === RIGHT_KEY && !goingLeft)
+//   {
+//     dx = 10;
+//     dy =0;
+//   }
+//   if (keyPressed === DOWN_KEY && !goingDown)
+//   {
+//     dx = 0;
+//     xy = 10;
+//   }
+//
+// }
+
+</script>
+
+</body>
+
+</html>

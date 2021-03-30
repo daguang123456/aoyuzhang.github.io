@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+<!-- 	        <link rel="stylesheet" href="tensorntut.css"> -->
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+	 <meta charset="utf-8">
+
+	  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+	  <script id="MathJax-script" async
+	          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+	  </script>
+<!-- 	  <script type="text/javascript" src="//unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script> -->
+	  <script
+  type="text/javascript"
+  src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"
+></script>
+
+  <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+	  <style>
+	.theorem {
+	    display: block;
+	    margin: 12px 0;
+	    font-style: italic;
+	}
+	.theorem:before {
+	    content: "Theorem.";
+	    font-weight: bold;
+	    font-style: normal;
+	}
+	.lemma {
+	    display: block;
+	    margin: 12px 0;
+	    font-style: italic;
+	}
+	.lemma:before {
+	    content: "Lemma.";
+	    font-weight: bold;
+	    font-style: normal;
+	}
+	.proof {
+	    display: block;
+	    margin: 12px 0;
+	    font-style: normal;
+	}
+	.proof:before {
+	    content: "Proof.";
+	    font-style: italic;
+	}
+	.proof:after {
+	    content: "\25FC";
+	    float:right;
+	}
+	.definition {
+	    display: block;
+	    margin: 12px 0;
+	    font-style: normal;
+	}
+	.definition:before {
+	    content: "Definition.";
+	    font-weight: bold;
+	    font-style: normal;
+	}
+	#mynetwork1 {
+	  width: 500px;
+	  height: 300px;
+	  /*border: 1px solid lightgray;*/
+	  margin: 0 auto;
+	}
+
+	.table1{
+		width: 300px;
+		height: 200px;
+		/*border: 1px solid lightgray;*/
+		margin: 0 auto;
+	}
+	.gadget {
+		width : 500px;
+		height: 500px;
+  border: 5px outset red;
+  background-color: lightblue;
+  text-align: center;
+  margin: 0 auto;
+}
+
+
+
+
+	</style>
+	<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+	<script type="text/javascript" src="https://unpkg.com/vis-graph3d@latest/dist/vis-graph3d.min.js"></script>
+	  </head>
+  </head>
+
+<body>
+<h3>What is the probability that a coin landing tail, x times in a row, in a series of n coin flips?</h3>
+
+<br>
+Based on an answer that we found on <a href= "https://math.stackexchange.com/questions/4658/what-is-the-probability-of-a-coin-landing-tails-7-times-in-a-row-in-a-series-of">Stack Exchange</a>,
+we can use the following observation.
+Let \(a_{nx}\) denote the number of ways to flip the coins so that no \(x\) consecutive tails occur, then the last few coin flips should be:
+\[H,HT,HTT,....,HTTTT...TTT\] where the last string has \(x-1\) tails in them.
+If we remove the last tosses represented by those sequences, then we get the formula:
+\[a_n = a_{n-1}+a_{n-2}+...+a_{n-x+1}\]
+We know that \(a_1=2, a_2=2^2,...,a_x =2^{x-1} \)
+So this gives a recurrence formula to solve.
+
+Alternatively,
+Let's denote the different tail configuration of the toss as follow:
+\[\begin{cases}
+A_1 : \text{ last toss is H }\\
+A_{2} : \text{ last two toss are HT}\\
+A_{3} : \text{ last three toss are HTT}\\
+\vdots \\
+A_{x} : \text{ the last 7 bits are H followed by x-1 T}\\
+A_{T} : \text{ the last 7 bits are 7 consecutive T}
+\end{cases}
+\]
+So now, if we are in state \(A\), we go to state \(B\) with probability \(\frac{1}{2}\) and we stays with probability \(\frac{1}{2}\).
+
+We can build markov transition matrix for the sates to be
+\[M_x =
+\begin{bmatrix}
+\frac{1}{2} & \frac{1}{2} & \frac{1}{2} & 0 & ... & \frac{1}{2} & 0 \\
+\frac{1}{2} & 0 & 0 & 0 & ... & 0 & 0\\
+0 & \frac{1}{2} & 0 & 0 & ... & 0 & 0 \\
+0 & 0 & \frac{1}{2} & 0 & ... & 0 & 0 \\
+\vdots & \vdots & \vdots & \vdots & ... & \vdots & \vdots \\
+0 & 0 & 0 & 0 & ... & \frac{1}{2} & 1\\
+\end{bmatrix}
+\]
+Here the matrix is \((x+1) \cdot (x+1)\).
+
+The way to understand this matrix is that the \(j^{th}\) column of this matrix is representing the probability that starting from state \(j\) we get to each of the other sates.
+Then when multiply by row \(i\) of this matrix, we get the probability that from state \(j\), we get to state \(i\) in one coin flip.
+Our initial satate is same as having a head flip.
+We are interested in the lower left corner of the matrix \(M_x^n\).
+
+<br><br>
+Another thing that we might be interested in knowing is how many coin toss do we expect untill be get \(k\) consecutive tails?
+<br>
+Let \(e\) denote the the expected number of toss for \(k\) consecutive tails, \(p\) be the probability of obtaining head, then we have that:
+\[e= p(e+1)+p(1-p)(e+2)+p(1-p)^2(e+3)...+(1-p)^ke \]
+This is because if the first toss was head , with probability \(p\), then the expected number of toss is \((e+1)\).
+Otherwise, the first two tosses is TH, with probability \(p(1-p)\), then the expected number of toss is \((e+2)\).
+We continues untill \(k\) consecutive tails.
+So we try to expand and solve for \(e\).
+\[
+\begin{align*}
+e & = p(e+1)+p(1-p)(e+2)+p(1-p)^2(e+3)+...+(1-p)^kk\\
+& = pe + p +p(1-p)e + p(1-p)2 + p(1-p)^2e+3p(1-p)^2+ ...+(1-p)^{k-1}pe+(1-p)^{k-1}pk +(1-p)^kk \\
+& \iff e - pe - p(1-p)e -p(1-p)^2e-...-p(1-p)^{k-1}e = p + 2p(1-p) + 3p(1-p)^2 +... + kp(1-p)^{k-1}+(1-p)^kk\\
+\end{align*}\]
+And so we can solve for \(e\).
+
+<div class = "gadget">
+Here we can compute the probability that in \(n\) coin toss, there are \(x\) consecutive tails:
+<br>
+
+<label for="prob">Probability that the coin lands heads when flipped:</label><br>
+<input type="number" id = "prob" class="numbersonly" name="nprob"  value="0.3"><br>
+<label for="toss">Number of coin toss:</label><br>
+<input type="number" id = "toss" class="numbersonly" name="ntoss"  value="5"><br>
+<label for="consec">number of consecutive tails wanted:</label><br>
+<input type="number" id = "consec" class="numbersonly" name="max_money1"  value="10"><br>
+<button onclick="display()">Show</button>
+
+<p> Probability of getting <span id = "tos"></span> consecutive tails in <span id = "ntosss"></span> toss of coin is:<span id = "dprob"></span></p><br>
+<p> Expected number of toss to get <span id = "nt"></span> consecutive tails is:<span id = "exptoss"></span></p>
+
+</div>
+<script>
+
+function expTossTokTails(p,k){
+  console.log("probability of head is "+p);
+  var temp1 = Math.pow(1-p,k)*k;
+  var temp2 = 1 ;
+  console.log("temp2 is"+temp2);
+  for(var i =0; i< k; i++){
+    temp1 = temp1 + p*(i+1)*Math.pow( 1-p , i) ;
+    temp2 = temp2 - p*Math.pow((1- p),i);
+    console.log("temp2 in for loop is"+temp2);
+  }
+  return temp1 / temp2
+}
+
+function makeMarkovTM(p,x){
+  var listm = [];
+  for(var i=0; i< x+1 ; i++){
+    var templ = [];
+    if(i === x){
+      for(var j = 0; j< x+1 ;j++){
+        if(j===x){
+          templ.push(1);
+        }
+        else{
+          templ.push(0);
+        }
+      }
+    }
+    else{
+      for(var j = 0; j< x+1 ;j++){
+        if(j===0 ){
+          templ.push(p);
+        }
+        else if(j=== i+1){
+          templ.push(1-p);
+        }
+        else{
+          templ.push(0);
+        }
+      }
+    }
+    listm.push(templ);
+  }
+  console.log(listm);
+  return math.transpose(math.matrix(listm));
+}
+
+function xconsecTailInNtoss(p,x,n){
+  if(p <=1 && p >= 0){
+    if(x > n){
+      return 0;
+    }
+    else{
+      var markovTransitionM = makeMarkovTM(p,x);
+      console.log(markovTransitionM);
+      var mton = math.identity(x+1);
+      for( var i =0 ; i< n ; i++){
+        mton = math.multiply(mton, markovTransitionM);
+      }
+      return math.subset(mton, math.index(x,0));
+    }
+  }
+  else{
+    return -1;
+  }
+}
+
+function display(){
+	var p = parseFloat(document.getElementById("prob").value);
+	var n = parseFloat(document.getElementById("toss").value);
+	var x = parseFloat(document.getElementById("consec").value);
+
+	if(p < 0 || p > 1 || isNaN(p)){
+		document.getElementById("dprob").innerHTML= "Invalid input, Probability that coin lands head is between 0 and 1";
+	}
+  else if(n < 0 || isNaN(n)){
+    document.getElementById("dprob").innerHTML= "Invalid input, number of coin flips needs to be positive or no number input";
+  }
+	else if(x<0 || isNaN(x)){
+		//console.log(true);
+		document.getElementById("dprob").innerHTML= "Invalid input, Cannot have no number input or negative consecutive tails";
+	}
+	else{
+    var result = xconsecTailInNtoss(p,x,n);
+    
+  //  "nt"></span> is:<span id = "exptoss"></span></p>
+    document.getElementById("nt").innerHTML= x;
+    document.getElementById("exptoss").innerHTML= expTossTokTails(p,x);
+    document.getElementById("tos").innerHTML= x;
+    document.getElementById("dprob").innerHTML= result;
+    document.getElementById("ntosss").innerHTML= n;
+    
+	}
+  drawVisualization(p);
+}
+
+
+//graph drawing:
+
+var data = null;
+var graph = null;
+
+  // Called when the Visualization API is loaded.
+  function drawVisualization(p) {
+    // Create and populate a data table.
+    var data = new vis.DataSet();
+    // create some nice looking data with sin/cos
+    var steps = 20;  // number of datapoints will be steps*steps
+    var axisMax = 30;
+    var axisStep = axisMax / steps;
+    for (var x = 1; x < axisMax; x+=axisStep) {
+      for (var y = 1; y < axisMax; y+=axisStep) {
+        var value =0;
+        try {
+          value = xconsecTailInNtoss(p,x,y);
+        }
+        catch(err) {
+          value = 0;
+        }
+
+        data.add({
+          x: x,
+          y: y,
+          z: value,
+          style: value
+        });
+      }
+    }
+
+    // specify options
+    var options = {
+      width:  '600px',
+      height: '600px',
+      style: 'surface',
+      xLabel: "x consecutive tails",
+      yLabel: "n coin toss",
+      zLabel: "Probability of x consecutive tails",
+      showPerspective: true,
+      showGrid: true,
+      showShadow: false,
+      keepAspectRatio: true,
+      verticalRatio: 0.5
+    };
+
+    // create a graph3d
+    var container = document.getElementById('mygraph');
+    graph3d = new vis.Graph3d(container, data, options);
+  }
+
+</script>
+
+Here is plot of the probabilities of getting \(x\) consecutive coin flips against number of coin tosses and number of consecutive tails wanted.
+<div id="mygraph">
+</div>
+<!-- <script>
+
+</script> -->
+
+
+
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script src="https://cdn.rawgit.com/BrainJS/brain.js/45ce6ffc/browser.js"></script>
+    <style>
+      .comment {
+        resize: none;
+      }
+    </style>
+
+</head>
+
+<body>
+Sentiment Analysis. 
+<label for="nNutrient">Enter your name:</label><br>
+<input type="strings" id = "name" class="numbersonly" ><br>
+
+<label for="description">Describe how you feel:</label><br>
+<textarea id="description" class = "comment" name="w3review" rows="5" cols="60" resize: none></textarea>
+<br>
+<label for="feeling">How do you feel:</label><br>
+  <input type="radio" name="group" value="happy"> Happy<br>
+  <input type="radio" name="group" value="sad"> Sad <br>
+  <input type="radio" name="group" value="sarc"> Sarcastic <br>
+  <input type="radio" name="group" value="excit"> Excited <br>
+  <input type="radio" name="group" value="torm"> Tormented <br>
+  <input type="radio" name="group" value="ang"> Angry <br>
+
+<input type="Button" onclick = "compute()" value="Submit" /> <br>
+
+<p> The probability that you are : <span id = "prs"></span></p><br>
+<p> The probability that you feel: <span id = "sentiment"></span></p><br>
+
+<script>
+var trainingDataS = [
+    { input: 'I am super happy!', output: 'happy' },
+    { input: 'What a pill!', output: 'sarcastic' },
+    { input: 'I am super unhappy!', output: 'sad' },
+    { input: 'Are we there yet?', output: 'excited' }
+];
+var trainingDataN = [];
+
+function getRadioValue(){ 
+  var ele = document.getElementsByName('group'); 
+  for(i = 0; i < ele.length; i++) { 
+    if(ele[i].checked) {
+      return [ele[i].value, 1];
+    }
+    else{
+      return ["",-1];
+    }
+  } 
+} 
+
+function compute(){
+  var namestr = document.getElementById("name").value;
+  var descStr = document.getElementById("description").value;
+  var sent = getRadioValue();
+  console.log(namestr);
+  console.log(descStr);
+  console.log(sent);
+
+  trainingDataS.push(
+      { input: descStr, output: sent }
+  );
+  const net = new brain.recurrent.LSTM();
+  net.train(trainingDataS);
+  var bla = net.run(descStr);
+  console.log(bla);
+  document.getElementById("sentiment").innerHTML = bla;
+}
+
+
+</script>
+
+</body>
+</html>

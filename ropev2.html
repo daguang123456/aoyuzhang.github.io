@@ -1,0 +1,334 @@
+<!doctype html>
+
+<html>
+    <head>
+        <title> Rope3</title>
+        <link rel = "stylesheet" href = "index.css">
+        <style>
+        * {
+    margin: 0;
+    padding: 0;
+    font-family:"Roboto";
+    color:#1f1f1f;
+}
+
+html,body {
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+#canvas
+{
+    position:absolute;
+    left:25%;
+    background-color:#2E3040;
+}
+.mainHolder{
+    position:absolute;
+    top:0;
+    left:0;
+    height:100%;
+    width:25%;
+    background-color:#ED6A5A;
+}
+#clear
+{
+    margin:2%;
+    border-radius:30px;
+    width:96%;
+    text-align:center;
+    height:26%;
+    background-color:#fafaff;
+}
+#clear:hover
+{
+    background-color:#e5e5ff;
+}
+.cleartext
+{
+    position:relative;
+    top:40%;
+}
+.sliderCont
+{
+    position:relative;
+    margin:2%;
+    border-radius:30px;
+    width:96%;
+    height:40px;
+    background-color:#fafaff;
+}
+.slider
+{
+    background-color:#f0f1f4;
+    border-color:#d3d6de;
+    border-style:solid;
+    border-width:1px;
+    appearance: none;
+    -webkit-appearance: none;
+    outline:none;
+    width:40%;
+    top:5px;
+    height:30px;
+    position:absolute;
+    right:10px;
+    border-radius: 20px;
+}
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #2E3040;
+    height:30px;
+    width:30px;
+    border-radius: 20px;
+
+}
+.textIn
+{
+    font-size:20px;
+    font-family:"Roboto";
+    background-color:#f0f1f4;
+    border-color:#d3d6de;
+    border-style:solid;
+    border-width:1px;
+    appearance: none;
+    -webkit-appearence:none;
+    outline:none;
+    width:25%;
+    position:absolute;
+    left:30%;
+    top:3px;
+    height:30px;
+}
+.sliderName
+{
+    position:absolute;
+    left:15px;
+    top:6px;
+}
+.description
+{
+    margin:2%;
+    border-radius:30px;
+    padding:4%;
+    width:88%;
+    text-align:center;
+    background-color:#fafaff;
+}
+.dt{
+    position:relative;
+
+}
+
+        </style>
+
+    </head>
+    <body>
+        <canvas id = "canvas"></canvas>
+        <script src = "script.js"></script>
+        <div class = "mainHolder">
+            <div id = "clear"><h1 class = "cleartext">Clear</h1></div>
+            <div class = "sliderCont"><h2 class = "sliderName">Density</h2> <input value = "100" type = "text" id ="NumpText" class = "textIn"><input class = "slider" type="range" min="3000" max="300000" value="100000" id="NumpRange"></div>
+            <div class = "sliderCont"><h2 class = "sliderName">Tension</h2> <input value = "1" type = "text" id ="KText" class = "textIn"><input class = "slider" type="range" min="0" max="2000" value="1000" id="KRange"></div>
+            <div class = "sliderCont"><h2 class = "sliderName">Resistance</h2> <input value = "0.005" type = "text" id = "MText" class = "textIn"><input class = "slider" type="range" min="0" max="1000" value="5" id="MRange"></div>
+            <div class = "description"><h1 class = "dt">Click twice in the area to add two base points of the rope</h1></div>
+        </div>
+
+        <script>
+        
+        document.addEventListener("DOMContentLoaded",function()
+{
+    const canvas = document.getElementById("canvas");
+    const clearBut = document.getElementById("clear");
+    const context = canvas.getContext('2d');
+    var NumpSlider = document.getElementById("NumpRange");
+    var NumpText = document.getElementById("NumpText");
+    var KSlider = document.getElementById("KRange");
+    var KText = document.getElementById("KText");
+    var MSlider = document.getElementById("MRange");
+    var MText = document.getElementById("MText");
+    var NumpC = 100;
+    var kC =1;
+    var mC =0.995;
+    const g =1;
+    const MaxLength = canvas.width/10;;
+
+    canvas.width = 3*window.innerWidth/4;
+    canvas.height = window.innerHeight;
+    var Basep1 = {x:canvas.width,y:20};
+    var Basep2 = {x:10,y:20};
+    var stPoints = 0;
+    var ropes = [];
+    var vertices = [];
+    const pulls = [];
+
+    var mousePos =
+    {
+        x:0,
+        y:0,
+        mouseState: 0,
+    };
+
+    createRope(Basep1,Basep2);
+
+    NumpText.oninput = function()
+    {
+        NumpSlider.value = NumpText.value*1000;
+        NumpC = Math.floor(NumpText.value);
+    }
+    NumpSlider.oninput = function() {
+        NumpText.value = Math.floor(NumpSlider.value/1000);
+        NumpC=Math.floor(NumpSlider.value/1000);
+    }
+    KText.oninput = function()
+    {
+        KSlider.value = KText.value*1000;
+        kC = KText.value;
+    }
+    KSlider.oninput = function() {
+        KText.value = KSlider.value/1000;
+        kC=KSlider.value/1000;
+    }
+    MText.oninput = function()
+    {
+        MSlider.value = MText.value*1000;
+        mC =1- MText.value;
+    }
+    MSlider.oninput = function() {
+        MText.value = MSlider.value/1000;
+        mC=1-MSlider.value/1000;
+    }
+
+
+    clearBut.addEventListener("click",function()
+    {
+        ropes =[];
+    })
+
+    canvas.addEventListener("click",function(event)
+    {
+        if(stPoints == 0)
+        {
+            Basep1.x = event.clientX-canvas.offsetLeft;
+            Basep1.y = event.clientY;
+            stPoints = 1;
+        }else
+        {
+            Basep2.x = event.clientX-canvas.offsetLeft;
+            Basep2.y = event.clientY;
+            createRope(Basep1,Basep2);
+            stPoints = 0;
+        }
+    })
+
+
+    function createRope(Point1,Point2)
+    {
+        for(let j =0;j<NumpC;j++)
+        {
+            const vertex = {
+                x:(Point2.x-Point1.x)/(NumpC-1)*j+Point1.x,
+                y:(Point2.y-Point1.y)/(NumpC-1)*j+Point1.y,
+                xvel: 0,
+                yvel: 0,
+            };
+            vertices.push(vertex);
+        }
+        var rope =
+        {
+            vertices:vertices,
+            Nump:NumpC,
+            k:kC,
+            m:mC,
+        }
+        ropes.push(rope);
+        vertices =[];
+    }
+
+    function draw(event) {
+
+        context.clearRect(0,0,canvas.width,canvas.height);
+
+        for(let l = 0;l<ropes.length;l++)
+        {
+            var rp = ropes[l];
+            for(var i =0; i< rp.vertices.length ;i++)
+            {
+                context.beginPath();
+                context.arc(rp.vertices[i].x, rp.vertices[i].y, 2, 0, 2 * Math.PI, false);
+                context.fillStyle = "#FFFFFF";
+                context.fill();
+                context.closePath();
+            }
+            context.beginPath()
+            context.strokeStyle = "#FFFFFF";
+            context.lineWidth = 1;
+            context.lineTo(rp.vertices[0].x,rp.vertices[0].y);
+            var j = 1;
+            for(j=1;j<(rp.vertices.length-1);j++)
+            {
+                var xac =0;
+                var yac = 0;
+                var distx = 0;
+                var disty = 0;
+                if(j!=1)
+                {
+                    distx =(rp.vertices[j-1].x+rp.vertices[j-2].x)/2 - rp.vertices[j].x;
+                    disty =(rp.vertices[j-1].y+rp.vertices[j-2].y)/2 - rp.vertices[j].y;
+                }
+                else{
+                    distx = rp.vertices[j-1].x-rp.vertices[j].x;
+                    disty = rp.vertices[j-1].y-rp.vertices[j].y;
+                }
+                context.lineTo(rp.vertices[j].x,rp.vertices[j].y);
+                Leng = Math.sqrt(Math.pow(distx,2)+Math.pow(disty,2));
+                if(Leng>MaxLength){Leng=MaxLength;}
+                xac += (distx)*rp.k;
+                yac += (disty)*rp.k;
+                if(j!=rp.vertices.length-2)
+                {
+                    distx =(rp.vertices[j+1].x+rp.vertices[j+2].x)/2 - rp.vertices[j].x;
+                    disty =(rp.vertices[j+1].y+rp.vertices[j+2].y)/2 - rp.vertices[j].y;
+                }
+                else{
+                    distx = rp.vertices[j+1].x-rp.vertices[j].x;
+                    disty = rp.vertices[j+1].y-rp.vertices[j].y;
+                }
+                var Leng = Math.sqrt(Math.pow(distx,2)+Math.pow(disty,2));
+                if(Leng>MaxLength){Leng=MaxLength;}
+                xac += (distx)*rp.k;
+                yac += (disty)*rp.k;
+                yac+=g;
+                if(rp.vertices[j].y+rp.vertices[j].xvel+yac>canvas.height-20)
+                {
+                    rp.vertices[j].y=canvas.height-20;
+                    rp.vertices[j].yvel*=0;
+                    yac = 0;
+                }
+                rp.vertices[j].xvel += xac;
+                rp.vertices[j].yvel += yac;
+                rp.vertices[j].xvel*=rp.m;
+                rp.vertices[j].yvel*=rp.m;
+            }
+            for(var j =1;j<rp.vertices.length;j++)
+            {
+                rp.vertices[j].x+=rp.vertices[j].xvel;
+                rp.vertices[j].y+=rp.vertices[j].yvel;
+            }
+            context.lineTo(rp.vertices[rp.vertices.length-1].x,rp.vertices[rp.vertices.length-1].y);
+            context.stroke();
+            context.closePath();
+        }
+
+        window.requestAnimationFrame(draw);
+    }
+
+    window.requestAnimationFrame(draw);
+});
+
+
+
+        </script>
+    </body>
+</html>

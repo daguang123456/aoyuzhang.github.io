@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+		</style>
+	</head>
+
+	<body>
+		<h2>时隙分配问题(Time Slot Assignment Problem)</h2>
+		由于据报混乱的活动，一个城市每天必须雇用一些警察在海滩巡逻。
+一项研究显示了每天在海滩上每个时段（以小时为单位，例如从凌晨0点到凌晨3点或从下午14点到20点）所需的警察人数。
+由于每个警务人员都有固定的工作时间，因此他们无法将整个24小时都花在工作上。假设人员每天连续工作（\(0 < n \leq 8\)小时。
+此外，他们可以在一组指定的开始时间开始工作。目的是确定能够满足所有时期需求的最少警官人数。
+<br>
+		A city has to hire a number of police officers to patrol the beach each day due to reported chaotic activity.
+		A study shows the number of police officers needed in each period (in hours, such as 0 a.m. to 3 a.m. or 14 p.m. to 20 p.m.) throughout the day on the beach.
+		Since each police officer has a fixed working time, they cannot spend the 24 hours at work. Suppose the officers work continuously for \(0 < n \leq 8 \) hours per day.
+		In addition, they can start working at a specified set of start times. The objective is to determine the minimum number of police officers to cover the needs of all periods.
+		<hr>
+		<div>
+		<label for="tagNumberOfPeriods">有多少个时期:(How many periods are there)</label><br>
+		<input type="number" id = "tagNumberOfPeriods" class="numbersonly" value="3"><br>
+		<label for="tagNumberOfWorkHours">每名警察每天工作几小时:(How many hours each police officer works each day)</label><br>
+		<input type="number" id = "tagNumberOfWorkHours" class="numbersonly" value="3"><br>
+		<label for="tagDepartureTime">警察可以开始工作的所有时间是几点:(What are the police departure times (from 0 to 23 separated by commas)</label><br>
+		<input type="text" id = "tagDepartureTime" class="numbersonly" value="3"><br>
+		<input type="Button" onclick="generateForms()" value="Create Form" /> <br>
+
+		<div>
+			<table id="tagInputForm">
+			</table>
+		</div><br>
+
+		<div>
+			<table id="tagMathModel">
+			</table>
+		</div>
+
+		<br>
+		<div>
+			<table id="tagSolvingTable">
+			</table>
+		</div>
+
+		<!-- <input type="Button" onclick="addEdges()" value="Optimize it" /> <br> -->
+		<br>
+		<p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+		<script>
+			var nPeriods, nworkHour, requiredPolice = [] , periods = [], pivotsTable=[];
+			var startTimes = new Set();
+
+			function generateForms(){
+				if(isInputOk()){
+					clearTable("tagInputForm");
+					clearTable("tagMathModel"); // clear the table
+					clearTable("tagSolvingTable");
+					makeFormTable();
+					return 1;
+				}
+				else{
+					clearTable("tagInputForm");
+					clearTable("tagMathModel"); // clear the table
+					clearTable("tagSolvingTable");
+					return -1;
+				}
+			}
+			function makeFormTable(){
+        clearTable("tagInputForm");
+				var formTable = document.getElementById("tagInputForm");
+				var formBody = document.createElement("tbody");
+				formBody.appendChild(createTitleRow("Input Form"));
+				for(var i = 0 ; i < nPeriods ; i++){
+					if(i===0){
+						formBody.appendChild(createInputRow("What is period"+i+"? Enter 9,13 for example if the period is from 9am to 1pm","tagPeriod"+i));
+					}
+					else{
+						formBody.appendChild(createInputRow("What is period"+i+":","tagPeriod"+i));
+					}
+					formBody.appendChild(createInputRow("How many police officers are required for period "+i+":","tagNumberOfOfficers"+i));
+				}
+				formBody.appendChild(createSubmitRow("Generate Model", generateModel));
+				formTable.append(formBody);
+			}
+			function generateModel(){
+				//reset all
+				clearTable("tagMathModel"); // clear the table
+				clearTable("tagSolvingTable");
+				requiredPolice = [];
+				periods = [];
+				pivotsTable=[];
+				console.log(startTimes);
+
+				// get police hours and time periods
+				for(var i = 0 ; i < nPeriods ; i++){
+					var numberOfOfficers = parseFloat(document.getElementById("tagNumberOfOfficers"+i).value);
+					var periodString = document.getElementById("tagPeriod"+i).value;
+					//process the number of officer string
+					if(isNaN(numberOfOfficers) || numberOfOfficers < 0 ){
+						document.getElementById("tagMessage").innerHTML= "error: the required number of police officers at period"+i+" needs to be a no negative number";
+						return -1;
+					}
+					else{
+						requiredPolice.push(numberOfOfficers);
+					}
+					// process the period hours
+					if ( periodString.match('[^, 0-9]') ) {
+						document.getElementById("tagMessage").innerHTML= "period "+i+" entered contains invalid characters.";
+						return false;
+					}
+					var periodArray = [...new Set(periodString.split(','))];
+					console.log(periodArray);
+					if(periodArray.length !=2){
+						document.getElementById("tagMessage").innerHTML= "period entered needs to be of the form starting hour, comma, end hour.";
+						return false;
+					}
+					var startPeriod = parseFloat(periodArray[0]);
+					var endPeriod = parseFloat(periodArray[1]);
+					if(startPeriod>23 || startPeriod<0 || endPeriod > 23 || endPeriod <0){
+						document.getElementById("tagMessage").innerHTML= "starting times entered needs to be between 0 and 23.";
+						return false;
+					}
+					periods.push([startPeriod,endPeriod])
+				}
+				console.log(requiredPolice);
+				console.log(periods);
+
+				//We now create the mathematical model:
+				var mathModelTable = document.getElementById("tagMathModel");
+				var mathModelTableBody = document.createElement("tbody");
+				mathModelTableBody.appendChild(createTitleRow("variable x[i0] represent number of items sold on period i, variable x[i1] represent number of items stored at the end of period i, variable x[i2] represent number of items bought at the end of period i." ));
+				mathModelTableBody.appendChild(createTitleRow("Here is the math model for these settings:"));
+				var optFuncString = ""; // create the opt function string
+				for(var i = 0 ; i < nPeriod  ; i++){
+					optFuncString = optFuncString +""+ periodPrices[i]+"x["+i+"0]-"+storageCost+"x["+i+"1]-" +periodPrices[i]+"x["+i+"2]" ;
+					if(i != nPeriod -1){
+						optFuncString = optFuncString +"+";
+					}
+				}
+				mathModelTableBody.appendChild(createDescriptionRow("Maximize",optFuncString));
+				//Now we add the constraints imposed by conservation law
+				for(var i = 0 ; i < nPeriod  ; i++){
+					var constraintString = "";
+					if(i === 0){
+						constraintString = constraintString +"x["+i+"0]+x["+i+"1]" +" - "+"x["+i+"2] ="+initStorage;
+					}
+					else{
+						constraintString = constraintString +"x["+i+"0]+x["+i+"1] - x["+i+"2]-x["+(i-1)+"1] =0";
+					}
+					mathModelTableBody.appendChild(createDescriptionRow("Constraint "+i,constraintString));
+				}
+				//Now we add constrain of storage space limit
+				for(var i = 0; i < nPeriod ; i++){
+					mathModelTableBody.appendChild(createDescriptionRow("Constraint "+(i+nPeriod),"x"+"["+i+"1] <= "+storageSpace));
+				}
+				// Now we add the constraint of no-negativity
+				var noneg = "";
+				for(var i = 0; i < nPeriod ; i++){
+					noneg = noneg + "x["+i+"0],x["+i+"1]"+",x["+i+"2]";
+					if(i != nPeriod -1){
+						noneg = noneg + ",";
+					}
+				}
+				noneg = noneg + " >= 0"
+				mathModelTableBody.appendChild(createDescriptionRow("Constrain No Negativity:",noneg));
+				mathModelTableBody.appendChild(createSubmitRow("Optimize Using Simplex", optimizeIt));
+				mathModelTable.append(mathModelTableBody);
+			}
+
+			function isInputOk(){
+				nPeriods = parseFloat(document.getElementById("tagNumberOfPeriods").value); // Get the number of food from
+				nWorkHour = parseFloat(document.getElementById("tagNumberOfWorkHours").value);
+				var startTimeString = document.getElementById("tagDepartureTime").value;
+				startTimes = new Set();
+
+
+				if(isNaN(nPeriods)){
+					document.getElementById("tagMessage").innerHTML= "error: number of period entered is not a number.";
+					return false;
+				}
+				else if(nPeriods <= 0){
+					document.getElementById("tagMessage").innerHTML= "error: number of periods needs to be positive.";
+					return false;
+				}
+				else if(!(Number.isInteger(nPeriods))){
+					document.getElementById("tagMessage").innerHTML= "error: number of periods entered needs to be an Integer.";
+					return false;
+				}
+				else if(isNaN(nWorkHour)){
+					document.getElementById("tagMessage").innerHTML= "error: number of hours entered is not a number.";
+					return false;
+				}
+				else if(nWorkHour <= 0){
+					document.getElementById("tagMessage").innerHTML= "error: number of work hours needs to be greater than 0.";
+					return false;
+				}
+				else if(!(Number.isInteger(nWorkHour))){
+					document.getElementById("tagMessage").innerHTML= "error: number of work hours entered needs to be an Integer.";
+					return false;
+				}
+				else if(nWorkHour > 8) {
+					document.getElementById("tagMessage").innerHTML= "error: number of work hours entered needs to be less than or equals to 8.";
+					return false;
+				}
+				else{
+					return true;
+				}
+			}
+			function createDescriptionRow(label,description){
+				var constraintRow = document.createElement("tr");
+				constraintRow.appendChild(makecell(label));
+				constraintRow.appendChild(makecell(description));
+				return constraintRow;
+			}
+			function createTitleRow(str){
+				var titleRow = document.createElement("tr");
+				var titleCellTextNode = document.createTextNode(str);
+				titleRow.appendChild(titleCellTextNode);
+				return titleRow;
+			}
+			function createInputRow(strr,idd){
+				var oRow = document.createElement("tr");
+				oRow.appendChild(makecell(strr));
+				oRow.appendChild(createInputCell(idd));
+				return oRow;
+			}
+			function createSubmitRow(name, funName){
+				var submitRow = document.createElement("tr");
+				var ginputElem = document.createElement("input");
+				ginputElem.type = "Button";
+				ginputElem.onclick = function() {funName()};
+				ginputElem.value = name;
+				submitRow.appendChild(ginputElem);
+				return submitRow;
+			}
+			function createInputCell(inputcellid){
+				var ginputCell = document.createElement("td");
+				var ginputElem = document.createElement("input");
+				ginputElem.id = inputcellid;
+				ginputCell.appendChild(ginputElem);
+				return ginputCell;
+			}
+			function clearTable(idstr){
+				var makovTable = document.getElementById(idstr);
+				while(makovTable.rows.length > 0) {
+					makovTable.deleteRow(0);
+				}
+			}
+			function makecell(str){
+				var nameCell = document.createElement("td");
+				var nameCellTextNode = document.createTextNode(str);
+				nameCell.appendChild(nameCellTextNode);
+				return nameCell;
+			}
+			function arrOfnegOne(n){
+				var rsl = [];
+				for(var i = 0; i< n ;i++){
+					rsl.push(-1);
+				}
+				return rsl;
+			}
+
+		</script>
+	</body>
+</html>

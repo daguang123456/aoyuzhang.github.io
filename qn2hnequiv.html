@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+#mynetwork1 {
+  width: 600px;
+  height: 400px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork2 {
+  width: 650px;
+  height: 450px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork3 {
+  width: 600px;
+  height: 400px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+
+  <div class="lemma">
+  \(\mathcal{Q}_n^{(2)} \) has two component isomorphic to \(H_n\).
+  </div>
+  <div class="proof">
+  Let's take \(\mathcal{Q}_4\) as an example:
+
+  <div id="mynetwork1"></div>
+  <script type="text/javascript">
+    // create an array with nodes
+    var nodes = new vis.DataSet([
+      { id: 1, label: "0000", color: "red" },
+      { id: 2, label: "0001", color: "red" },
+      { id: 3, label: "0010", color: "red" },
+      { id: 4, label: "0011", color: "red" },
+      { id: 5, label: "0100", color: "red" },
+      { id: 6, label: "0101", color: "red" },
+      { id: 7, label: "0110", color: "red" },
+      { id: 8, label: "0111", color: "red" },
+
+      { id: 11, label: "1000" },
+      { id: 12, label: "1001" },
+      { id: 13, label: "1010" },
+      { id: 14, label: "1011" },
+      { id: 15, label: "1100" },
+      { id: 16, label: "1101" },
+      { id: 17, label: "1110" },
+      { id: 18, label: "1111" }
+    ]);
+
+    // create an array with edges
+    var edges = new vis.DataSet([
+      { from: 1, to: 2 },
+      { from: 1, to: 3 },
+      { from: 1, to: 5 },
+      { from: 2, to: 4 },
+      { from: 2, to: 6 },
+      { from: 3, to: 4 },
+      { from: 3, to: 7 },
+      { from: 4, to: 8 },
+      { from: 5, to: 7 },
+      { from: 5, to: 6 },
+      { from: 6, to: 8 },
+      { from: 7, to: 8 },
+
+      { from: 11, to: 12 },
+      { from: 11, to: 13 },
+      { from: 11, to: 15 },
+      { from: 12, to: 14 },
+      { from: 12, to: 16 },
+      { from: 13, to: 14 },
+      { from: 13, to: 17 },
+      { from: 14, to: 18 },
+      { from: 15, to: 17 },
+      { from: 15, to: 16 },
+      { from: 16, to: 18 },
+      { from: 17, to: 18 },
+
+      { from: 1, to: 11 },
+      { from: 2, to: 12 },
+      { from: 3, to: 13 },
+      { from: 4, to: 14 },
+      { from: 5, to: 15 },
+      { from: 6, to: 16 },
+      { from: 17, to: 7 },
+      { from: 18, to: 8 }
+
+
+    ]);
+
+    // create a network
+    var container = document.getElementById("mynetwork1");
+    var data = {
+      nodes: nodes,
+      edges: edges
+    };
+    var options = {};
+    var network = new vis.Network(container, data, options);
+  </script>
+
+	One can construct inductively \(\mathcal{Q}_n\) with two copies of \(\mathcal{Q}_{n-1}\) and connect the corresponding vertices of the two \(\mathcal{Q}_{n-1}\).
+  We colored vertices of one of the \(\mathcal{Q}_3\) above in red for easier visualization.
+	<br>
+	We also take a look at its common neighbhor graph \(\mathcal{Q}_4^{(2)}\):
+
+  <div id="mynetwork2"></div>
+  <script type="text/javascript">
+    // create an array with nodes
+    var nodes = new vis.DataSet([
+      { id: 1, label: "0000" },
+      { id: 2, label: "0011" },
+      { id: 3, label: "1100" },
+      { id: 4, label: "0110" },
+      { id: 5, label: "1001" },
+      { id: 6, label: "1010" },
+      { id: 7, label: "0101" },
+      { id: 8, label: "1111" },
+
+      { id: 11, label: "0001" },
+      { id: 12, label: "0010" },
+      { id: 13, label: "1101" },
+      { id: 14, label: "0111" },
+      { id: 15, label: "1000" },
+      { id: 16, label: "1011" },
+      { id: 17, label: "0100" },
+      { id: 18, label: "1110" }
+    ]);
+
+    // create an array with edges
+    var edges = new vis.DataSet([
+      { from: 1, to: 2 },
+      { from: 1, to: 3 },
+      { from: 1, to: 4 },
+      { from: 1, to: 5 },
+      { from: 1, to: 6 },
+      { from: 1, to: 7 },
+      { from: 1, to: 8 },
+      { from: 7, to: 8 },
+      { from: 6, to: 8 },
+      { from: 5, to: 8 },
+      { from: 4, to: 8 },
+      { from: 3, to: 8 },
+      { from: 2, to: 8 },
+      { from: 2, to: 4 },
+      { from: 2, to: 5 },
+      { from: 2, to: 6 },
+      { from: 2, to: 7 },
+      { from: 3, to: 4 },
+      { from: 3, to: 5 },
+      { from: 3, to: 6 },
+      { from: 3, to: 7 },
+      { from: 4, to: 6 },
+      { from: 4, to: 7 },
+      { from: 5, to: 6 },
+      { from: 5, to: 7 },
+
+      { from: 11, to: 12 },
+      { from: 11, to: 13 },
+      { from: 11, to: 14 },
+      { from: 11, to: 15 },
+      { from: 11, to: 16 },
+      { from: 11, to: 17 },
+      { from: 11, to: 18 },
+      { from: 17, to: 18 },
+      { from: 16, to: 18 },
+      { from: 15, to: 18 },
+      { from: 14, to: 18 },
+      { from: 13, to: 18 },
+      { from: 12, to: 18 },
+      { from: 12, to: 14 },
+      { from: 12, to: 15 },
+      { from: 12, to: 16 },
+      { from: 12, to: 17 },
+      { from: 13, to: 14 },
+      { from: 13, to: 15 },
+      { from: 13, to: 16 },
+      { from: 13, to: 17 },
+      { from: 14, to: 16 },
+      { from: 14, to: 17 },
+      { from: 15, to: 16 },
+      { from: 15, to: 17 },
+
+
+
+    ]);
+
+    // create a network
+    var container = document.getElementById("mynetwork2");
+    var data = {
+      nodes: nodes,
+      edges: edges
+    };
+    var options = {};
+    var network = new vis.Network(container, data, options);
+  </script>
+
+  Now, let's take a look at \(H_4\):
+
+  <div id="mynetwork3"></div>
+  <script type="text/javascript">
+    // create an array with nodes
+    var nodes = new vis.DataSet([
+      { id: 1, label: "0000" },
+      { id: 2, label: "0011" },
+      { id: 3, label: "1100" },
+      { id: 4, label: "0110" },
+      { id: 5, label: "1001" },
+      { id: 6, label: "1010" },
+      { id: 7, label: "0101" },
+      { id: 8, label: "1111" }
+    ]);
+
+    // create an array with edges
+    var edges = new vis.DataSet([
+      { from: 1, to: 2 },
+      { from: 1, to: 3 },
+      { from: 1, to: 4 },
+      { from: 1, to: 5 },
+      { from: 1, to: 6 },
+      { from: 1, to: 7 },
+      { from: 1, to: 8 },
+      { from: 7, to: 8 },
+      { from: 6, to: 8 },
+      { from: 5, to: 8 },
+      { from: 4, to: 8 },
+      { from: 3, to: 8 },
+      { from: 2, to: 8 },
+      { from: 2, to: 4 },
+      { from: 2, to: 5 },
+      { from: 2, to: 6 },
+      { from: 2, to: 7 },
+      { from: 3, to: 4 },
+      { from: 3, to: 5 },
+      { from: 3, to: 6 },
+      { from: 3, to: 7 },
+      { from: 4, to: 6 },
+      { from: 4, to: 7 },
+      { from: 5, to: 6 },
+      { from: 5, to: 7 }
+    ]);
+
+    // create a network
+    var container = document.getElementById("mynetwork3");
+    var data = {
+      nodes: nodes,
+      edges: edges
+    };
+    var options = {};
+    var network = new vis.Network(container, data, options);
+  </script>
+
+
+
+
+  	\( \textbf{Claim:}\) \(\mathcal{Q}_{n}\) is bipartite.
+  	<br>
+  	\(\textit{proof:}\) Two vertices are connected if their corresponding coordinate differ in one position.
+    Therefore, two vertices are connected then the sum of their coordinate has different parity, for example:
+    \[ ((1101),(1100)) \in E(\mathcal{Q}_4),sum((1101)) \equiv 1 (\mod 2), sum((1100)) \equiv 0 (\mod 2) \]
+
+    For \(\mathcal{Q}_4\), we partition its vertex set into \((A,B)\), where one bipartition has vertices with even sum of coordinate and the other bipartition
+  	has vertices with odd sum of coordinate:
+    <div class="table">
+    <style type="text/css">
+    .tg  {border-collapse:collapse;border-spacing:0;}
+    .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+      overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+      font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+    .tg .tg-0lax{text-align:left;vertical-align:top}
+    </style>
+    <table class="tg" style="border:1px solid black;margin-left:auto;margin-right:auto;">
+    <thead>
+      <tr>
+        <th class="tg-0pky">A<br></th>
+        <th class="tg-0pky">B<br></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="tg-0pky">(0000)<br></td>
+        <td class="tg-0pky">(0001)<br></td>
+      </tr>
+      <tr>
+        <td class="tg-0pky">(0011)<br></td>
+        <td class="tg-0pky">(0010)<br></td>
+      </tr>
+      <tr>
+        <td class="tg-0lax">(1100)</td>
+        <td class="tg-0lax">(1101)</td>
+      </tr>
+      <tr>
+        <td class="tg-0lax">(0110)</td>
+        <td class="tg-0lax">(0111)</td>
+      </tr>
+      <tr>
+        <td class="tg-0lax">(1001)</td>
+        <td class="tg-0lax">(1000)</td>
+      </tr>
+      <tr>
+        <td class="tg-0lax">(1010)</td>
+        <td class="tg-0lax">(1011)</td>
+      </tr>
+      <tr>
+        <td class="tg-0lax">(0101)</td>
+        <td class="tg-0lax">(0100)</td>
+      </tr>
+      <tr>
+        <td class="tg-0lax">(1111)</td>
+        <td class="tg-0lax">(1110)</td>
+      </tr>
+    </tbody>
+    </table>
+  </div>
+
+
+  	Vertices in \(A\) are only connected to vertices in \(B\) in \(\mathcal{Q}_{4}\), Hence \(\mathcal{Q}_{4}\) is bipartite.
+    One uses the same argument for \(\mathcal{Q}_{n}\).
+<br>
+
+  	\(\mathcal{Q}_n^{(2)}\) is in fact two disjoint graph where each is defined on a bipartition \((A,B)\) of \(\mathcal{Q}_n\).
+    <br>
+    We let \(A\) be the set of vertices with even sum of coordinates and
+    <br>
+    \(B\) be the set of vertices with odd sum of coordinates.
+    <br>
+    We denote induced subgraph of \(\mathcal{Q}_n^{(2)}\) on \(A\) to be \(\mathcal{Q}_n^{(2)}(A)\) and the induced subgraph of
+    \(\mathcal{Q}_n^{(2)}\) on \(B\) to be \(\mathcal{Q}_n^{(2)}(B)\).
+  </div>
+  We now exibit two isomorphisms:
+  \[ \begin{gather*}
+      \phi_1 : V(H_n) \to V(\mathcal{Q}_n^{(2)}(A))\\
+      \phi_2 : V(\mathcal{Q}_n^{(2)}(A)) \to V(\mathcal{Q}_n^{(2)}(B))
+  \end{gather*}
+  \]
+  And they will establish the lemma.
+<br>
+We take \(\phi_1\) to be the identity map and we define \(\phi_2\) by:
+\[ \phi_2((a_1,a_2,...,a_n))=(a_1,a_2,...,a_n+1), a_i \in \mathbb{Z}/2\mathbb{Z}\]
+\(\phi_2\) is an isomorphism because:
+<ul>
+  <li>
+    If \(((x_1,x_2,....x_n),(y_1,y_2,...,y_n)) \in E(\mathcal{Q}_n^{(2)}(A)) \), then
+    \((x_1,x_2,....x_n),(y_1,y_2,...,y_n) \) differ by two positions. And so
+    \( \phi_2((x_1,x_2,....x_n))= (x_1,x_2,....x_n+1),\phi_2((y_1,y_2,...,y_n))=(y_1,y_2,...,y_n+1) \) differ by two positions
+    and so they are adjacent to each other in \(\mathcal{Q}_n^{(2)}(B)\).
+  </li>
+  <li>
+    The map is bijective as an easy verification.
+  </li>
+
+  </ul>
+</body>
+</html>

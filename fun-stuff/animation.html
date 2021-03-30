@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  	<link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8">
+  <title>Newton's Cannon</title>
+</head>
+
+<body style = "font-family:sans-serif; font-size:15px; width:600px;
+    margin-left:auto; margin-right:auto; background-color:#e0e0e0;" >
+
+  <h1 style = "font-size:24px; text-align:center;">
+    Newton's Cannon by <a href="https://physics.weber.edu/schroeder/html5/drawanimate.html">physics simulation</a>
+  </h1>
+
+  <div style = "width:500px; margin-left:auto; margin-right:auto; position:relative;">
+    <img src = "NewtonDrawing.jpg" width = "500" height = "500" style="position:absolute;">
+    
+    <canvas id = "theCanvas" width = "500" height = "500" style="position:relative;">
+    Canvas not supported; please update your browser.
+  </canvas>
+  </div>
+  <div style = "text-align: center;">
+  <input type="button" value="Fire!" onclick="fireProjectile();">
+  Initial speed = <span id="speedReadout" value="3000" oninput="showSpeed();" onchange = "showSpeed();">3000</span> m/s
+  <input type="range" id="speedSlider" min="0" max="8000" step="100" value="3000">
+</div>
+
+  <p>This simulation is based on Isaac Newton's famous thought
+  experiment and illustration of firing a projectile from a high
+  mountaintop at various speeds, as he described in
+  <a href="http://books.google.com/books?id=DXE9AAAAcAAJ">A
+  Treatise of the System of the World</a>.</p>
+
+
+<script>
+var theCanvas = document.getElementById("theCanvas");
+var theContext = theCanvas.getContext("2d");
+var speedSlider = document.getElementById("speedSlider");
+var speedReadout = document.getElementById("speedReadout");
+
+// var x = 300; // x position of a dot
+// var y =50;  // y position of a dot
+var x, y, vx, vy;
+// var vx = 6000 // meters per getSecond
+// var vy = 0;
+
+var earthRadius = 6371000;
+var mountainHeight = earthRadius * 0.165;
+// var x = 0;
+// var y = earthRadius + mountainHeight;
+var timer ;
+
+moveProjectile();
+
+function showSpeed(){
+  speedReadout.innerHTML = speedSlider.value;
+}
+
+function fireProjectile(){
+  window.clearTimeout(timer);
+  x = 0;
+  y = earthRadius + mountainHeight;
+//  vx = 6000;
+vx = Number(speedSlider.value);
+  vy = 0;
+  moveProjectile();
+}
+
+function drawProjectile() {
+theContext.beginPath();
+var metersPerPixel = earthRadius / (0.355 * theCanvas.width);
+var pixelX = theCanvas.width/2 + x/metersPerPixel;
+var pixelY = theCanvas.height/2 - y/metersPerPixel;
+
+theContext.arc(pixelX, pixelY, 5, 0, 2*Math.PI);
+theContext.fillStyle = "red";
+theContext.fill();
+}
+
+
+function moveProjectile(){
+  var newtonG = 6.67e-11;
+  var earthMass = 5.97e24; //In kg
+  var dt =5; // time step
+  var r = Math.sqrt(x*x+y*y);
+  if( r > earthRadius) {
+  var accel = newtonG * earthMass / (r*r); // acceleration;;
+
+  var ax = -accel * x / r; // the x component of acceleration
+  var ay = -accel * y / r; // the y component of acceleration
+
+  vx = vx + ax * dt;
+  vy = vy + ay * dt;
+
+  var lastx = x;
+
+  x = x + vx * dt;
+  y = y + vy * dt;
+
+
+  // x += 1;
+  theContext.clearRect(0,0, theCanvas.width, theCanvas.height);
+  drawProjectile();
+  if(!((lastx < 0) && (x >= 0))){
+    timer = window.setTimeout(moveProjectile, 1000 / 30);
+  // window.setTimeout(moveProjectile, 1000/30);
+}
+}
+}
+
+
+
+</script>
+
+
+</body>
+
+</html>

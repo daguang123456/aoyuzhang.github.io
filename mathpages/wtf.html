@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+		</style>
+<!-- 		<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+		<script type="text/javascript" src="https://unpkg.com/vis-graph3d@latest/dist/vis-graph3d.min.js"></script> -->
+
+	</head>
+
+	<body>
+    <h3>Problème de répartition de charge généralisé( Generalized load balancing problem)(Algorithm Design By Jon Kleinberg-Eva Tardos Section 11.7)</h3>
+    Voici donc le problème: nous avons un ensemble \(J \) de \(n \) travaux, et un ensemble \(M \) de \(m \) machines. Chaque tâche \(j \in J \) a une charge/poids associé \(t_j \)
+    et une collection de machines \(M_j \) qu'il peut utiliser. Une attribution de travaux à des machines est dite réalisable si chaque travail est distribué à une machine qu'il est autorisé à utiliser.
+    Le but est de trouver une distribution de tâches pour minimiser la somme des poids des tâches sur n'importe quelle machine. À savoir, la plus grande charge sur n'importe quelle machine doit être minimisée.
+    <br><bR>
+    So here is the problem: We have a set \(J\) of \(n\) jobs, and a set \(M\) of \(m\) machines. Each job \(j \in J\) has an associated load/weight \(t_j\)
+    and a collection of machines \(M_j\) that it can use. An assignment of jobs to machines is called feasible if each job is assigned to a machine that it is allowed to use.
+    The goal is to find an assignment of jobs to minimize the sum of weight of the jobs on any machines. Namely, the largest load on any machine should be minimized.
+
+    <hr>
+
+
+		<br>
+    <label for="tagNumberOfJobs">Combien de tâches y a-t-il(How many jobs are there)</label><br>
+    <input type="number" id = "tagNumberOfJobs" class="numbersonly" value="3"><br>
+    <label for="tagNumberOfMachines">combien de machines y a-t-il(How many machines are there)</label><br>
+    <input type="number" id = "tagNumberOfMachines" class="numbersonly" value="3"><br>
+    <input type="Button" onclick="generateForms()" value="Créer un formulaire(Generate Form)" />
+
+		<div>
+    <table id="jobsTable">
+		</table>
+		</div>
+
+
+    <div>
+      <table id="tagTasks">
+      </table>
+    </div><br>
+		<div>
+			<table id = "tagAdded"> </table>
+		</div>
+		<div>
+			<table id = "tagResult"> </table>
+		</div>
+		<p> 讯息(Message:) <span id = "tagMessage"></span></p><br>
+
+    <script>
+      var numOfJobs = 0 , numOfMachines = 0, jobFeasibleMachine = [];
+			var machineCounter = 0;
+			var projectCounter = 0;
+      // <p>Please Select a Group</p>
+      // <input type="radio" name="group" value="zp"> \(Z_p\)<br>
+      // <input type="radio" name="group" value="zptok"> \(\prod_p Z_p\)	<br>
+      // <input type="radio" name="group" value="sn"> \(S_n\)	<br>
+      // <input type="radio" name="group" value="free"> Free Group	<br>
+      // <input type="Button" onclick="getRadioValue()" value="Create Form" /> <br>
+      // <hr>
+      // <div>
+
+      function generateForms(){
+				if(projectCounter === 0){
+				  getInitialInput();
+				}
+        //clearTable("tagTasks");
+        var checkTable = document.getElementById("tagTasks");
+				var checkBoxBody = document.createElement("tblBody");
+				checkBoxBody.appendChild(createTitleRow("Sélectionnez les machines que la tâche"+projectCounter+" peut exécuter"));
+        for( var i = 0 ; i <  numOfMachines ; i++){
+					checkBoxBody.appendChild(createDescriptionRow("hi", "yiu"+i));
+					//checkBoxBody.appendChild(createCheckRow("SelectMachines", "machineId"+projectCounter+""+i, "Machine "+i));
+        }
+				checkBoxBody.appendChild(createSubmitRow("submit", getJobSMachines));
+				checkTable.append(checkBoxBody);
+				clearTable("tagTasks");
+      }
+			function createCheckRow(name, id, value){
+				var ginputRow = document.createElement("tr");
+				var ginputCell =  document.createElement("td")
+				var tempCheck = document.createElement("input");
+				var tempLabel = document.createElement("label");
+				tempCheck.type = "checkbox";
+				tempCheck.name = name;
+				tempCheck.value = value;
+				tempCheck.id = id;
+				tempLabel.for = id;
+				tempLabel.innerHTML = value;
+				ginputCell.appendChild(tempCheck);
+				ginputCell.appendChild(tempLabel);
+				ginputRow.appendChild(ginputCell);
+				return ginputRow;
+			}
+			function getJobSMachines(){
+				// projectCounter++;
+				// if(projectCounter <numOfJobs ){
+				clearTable("tagTasks");
+				console.log("hello");
+				// 	generateForms();
+				// }
+			}
+      function getInitialInput(){
+        numOfJobs = parseFloat(document.getElementById("tagNumberOfJobs").value);
+        numOfMachines = parseFloat(document.getElementById("tagNumberOfMachines").value);
+
+      }
+      function initialize2dList(height,width){
+        var result = 0;
+        for(var i = 0 ; i < height ; i++){
+          var tempRow = [];
+          for(var j = 0; j < width ; j++){
+            tempRow.push(0);
+          }
+          result.push(tempRow);
+        }
+        return result;
+      }
+
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function createInputRow(strr,idd){
+        var oRow = document.createElement("tr");
+        oRow.appendChild(makecell(strr));
+        oRow.appendChild(createInputCell(idd));
+        return oRow;
+      }
+      function createSubmitRow(name, funName){
+        var submitRow = document.createElement("tr");
+        var ginputElem = document.createElement("input");
+        ginputElem.type = "Button";
+        ginputElem.onclick = function() {funName()};
+        ginputElem.value = name;
+        submitRow.appendChild(ginputElem);
+        return submitRow;
+      }
+      function createInputCell(inputcellid){
+        var ginputCell = document.createElement("td");
+        var ginputElem = document.createElement("input");
+        ginputElem.id = inputcellid;
+        ginputCell.appendChild(ginputElem);
+        return ginputCell;
+      }
+			function createBreakRow(){
+				var ginputCell = document.createElement("td");
+				var ginputElem = document.createElement("br");
+				ginputCell.appendChild(ginputElem);
+				return ginputCell;
+			}
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+      function arrOfnegOne(n){
+        var rsl = [];
+        for(var i = 0; i< n ;i++){
+          rsl.push(-1);
+        }
+        return rsl;
+      }
+
+    </script>
+
+	</body>
+</html>

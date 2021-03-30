@@ -1,0 +1,702 @@
+
+Homework: find advantages and disadvantages of block chain structure.
+
+
+<script type="text/javascript">
+      var nodes, edges, network;
+
+      // convenience method to stringify a JSON object
+      function toJSON(obj) {
+        return JSON.stringify(obj, null, 4);
+      }
+
+      function addNode() {
+        try {
+          nodes.add({
+            id: document.getElementById("node-id").value,
+            label: document.getElementById("node-label").value,
+          });
+        } catch (err) {
+          alert(err);
+        }
+      }
+
+      function updateNode() {
+        try {
+          nodes.update({
+            id: document.getElementById("node-id").value,
+            label: document.getElementById("node-label").value,
+          });
+        } catch (err) {
+          alert(err);
+        }
+      }
+      function removeNode() {
+        try {
+          nodes.remove({ id: document.getElementById("node-id").value });
+        } catch (err) {
+          alert(err);
+        }
+      }
+
+      function addEdge() {
+        try {
+          edges.add({
+            id: document.getElementById("edge-id").value,
+            from: document.getElementById("edge-from").value,
+            to: document.getElementById("edge-to").value,
+          });
+        } catch (err) {
+          alert(err);
+        }
+      }
+      function updateEdge() {
+        try {
+          edges.update({
+            id: document.getElementById("edge-id").value,
+            from: document.getElementById("edge-from").value,
+            to: document.getElementById("edge-to").value,
+          });
+        } catch (err) {
+          alert(err);
+        }
+      }
+      function removeEdge() {
+        try {
+          edges.remove({ id: document.getElementById("edge-id").value });
+        } catch (err) {
+          alert(err);
+        }
+      }
+
+      function draw() {
+        // create an array with nodes
+        nodes = new vis.DataSet();
+        nodes.on("*", function () {
+          document.getElementById("nodes").innerHTML = JSON.stringify(
+            nodes.get(),
+            null,
+            4
+          );
+        });
+        nodes.add([
+          { id: "1", label: "Node 1" },
+          { id: "2", label: "Node 2" },
+          { id: "3", label: "Node 3" },
+          { id: "4", label: "Node 4" },
+          { id: "5", label: "Node 5" },
+        ]);
+
+        // create an array with edges
+        edges = new vis.DataSet();
+        edges.on("*", function () {
+          document.getElementById("edges").innerHTML = JSON.stringify(
+            edges.get(),
+            null,
+            4
+          );
+        });
+        edges.add([
+          { id: "1", from: "1", to: "2" },
+          { id: "2", from: "1", to: "3" },
+          { id: "3", from: "2", to: "4" },
+          { id: "4", from: "2", to: "5" },
+        ]);
+
+        // create a network
+        var container = document.getElementById("mynetwork");
+        var data = {
+          nodes: nodes,
+          edges: edges,
+        };
+        var options = {};
+        network = new vis.Network(container, data, options);
+      }
+    </script
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //
+    //
+    //
+    //
+    //
+    // var projectIdSet;
+    // var projectNamesSet;
+    // var projectNamesIdDict;
+    // var projectIdNamesDict;
+    // var projectNodesArray ;
+    // var projectNodes;
+    // var projectEdgesArray;
+    // var projectEdges;
+    // var projectNameRevenueDict;
+    //
+    //
+    // var networkFlowIdSet;
+    // var networkFlowNamesSet;
+    // var networkFlowNamesIdDict;
+    // var networkFlowNodesArray ;
+    // var networkFlowNodes;
+    // var networkFlowEdgesArray;
+    // var networkFlowEdges;
+    //
+    // var residualIdSet;
+    // var residualNamesSet;
+    // var residualNameIdDict;
+    // var residualNodesArray ;
+    // var residualNodes;
+    // var residualEdgesArray;
+    // var residualEdges;
+    //
+    // var totalPositiveRevenue = 0; // use to set capacity of edges between project.
+    //
+    //
+    // function getEdgeBetweenProjectNodes(node1_id,node2_id) {
+    // 	return projectEdges.get().filter(function (edge) {
+    //   	return (edge.from === node1_id && edge.to === node2_id );
+    // 	});
+    // };
+    //
+    // function addProjectNode(theLabel, profit){ // this method assume the label to be added dosen't exist in the network yet
+    // 	console.log("in add node");
+    // 	var tempId = Math.floor(Math.random() * MAXIMUM_PROJECT);
+    // 	while(projectIdSet.has(tempId)){
+    // 		tempId = Math.floor(Math.random() * MAXIMUM_PROJECT);
+    // 	}
+    // 	var nodeDisplayLabel = theLabel +":"+ profit;
+    // 	var tempNode = { id: tempId, label: nodeDisplayLabel };
+    // 	projectNodes.add(tempNode);
+    // 	projectIdSet.add(tempId);
+    // 	projectNodesArray.push(tempNode);
+    // 	projectNamesIdDict[theLabel] = tempId;
+    // 	projectIdNamesDict[tempId] = theLabel;
+    // 	projectNameRevenueDict[theLabel] = profit;
+    // 	projectNamesSet.add(theLabel);
+    // }
+    // function addProjectEdge(sLabel, dLabel){
+    // 	var tempEdge = { from: projectNamesIdDict[sLabel], to: projectNamesIdDict[dLabel], arrows: "to", label: ""};
+    // 	// console.log(getEdgeBetweenProjectNodes(projectNamesIdDict[sLabel],projectNamesIdDict[dLabel]));
+    // 	projectEdges.add(tempEdge);
+    // 	projectEdgesArray.push(tempEdge)
+    // }
+    // function addProjects() {
+    //   var dependentProjectLabel = document.getElementById("tagProject").value;
+    //   var dependentProjectProfit = parseFloat(document.getElementById("tagProjectRevenue").value);
+    //   var requiredProjectLabel = document.getElementById("tagPrerequisiteProject").value;
+    //   var requiredProjectProfit = parseFloat(document.getElementById("tagPrerequisiteProjectRevenue").value);
+    // 	console.log(requiredProjectLabel === "");
+    // 	console.log(dependentProjectLabel === "");
+    //
+    // 	if(dependentProjectLabel === "" && requiredProjectLabel === ""){
+    // 		//return -1;
+    // 		document.getElementById("tagMessage").innerHTML= "error: both project labels are empty";
+    // 	}
+    // 	else if((dependentProjectLabel === "") && (requiredProjectLabel != "")){
+    // 		if(!(projectNamesSet.has(requiredProjectLabel))){
+    // 			addProjectNode(requiredProjectLabel, requiredProjectProfit);
+    // 			if(requiredProjectProfit > 0){
+    // 				totalPositiveRevenue =  totalPositiveRevenue + requiredProjectProfit;
+    // 			}
+    // 			if(requiredProjectProfit < 0){
+    // 				totalPositiveRevenue =  totalPositiveRevenue - requiredProjectProfit;
+    // 			}
+    // 		}
+    // 	}
+    // 	else if((dependentProjectLabel != "") && (requiredProjectLabel === "")){
+    // 		if(!(projectNamesSet.has(dependentProjectLabel))){
+    // 			addProjectNode(dependentProjectLabel, dependentProjectProfit);
+    // 			if(dependentProjectProfit > 0){
+    // 				 totalPositiveRevenue =  totalPositiveRevenue + dependentProjectProfit;
+    // 			}
+    // 			if(dependentProjectProfit < 0){
+    // 				 totalPositiveRevenue =  totalPositiveRevenue - dependentProjectProfit;
+    // 			}
+    // 		}
+    // 	}
+    // 	else{
+    // 		if(projectNamesSet.has(dependentProjectLabel) && projectNamesSet.has(requiredProjectLabel) ){
+    // 			if(projectNameRevenueDict[dependentProjectLabel]=== dependentProjectProfit && projectNameRevenueDict[requiredProjectLabel]=== requiredProjectProfit){
+    // 				console.log(dependentProjectProfit);
+    // 				console.log(projectNameRevenueDict[dependentProjectLabel]);
+    // 				console.log(requiredProjectProfit);
+    // 				console.log(projectNameRevenueDict[requiredProjectLabel]);
+    // 				if(getEdgeBetweenProjectNodes(projectNamesIdDict[dependentProjectLabel],projectNamesIdDict[requiredProjectLabel]).length === 0){
+    // 					addProjectEdge(dependentProjectLabel, requiredProjectLabel);
+    // 				}
+    // 			}
+    // 		}
+    // 		else if(projectNamesSet.has(dependentProjectLabel) && !(projectNamesSet.has(requiredProjectLabel))){
+    // 			console.log(dependentProjectProfit);
+    // 			if(projectNameRevenueDict[dependentProjectLabel]=== dependentProjectProfit){
+    // 				addProjectNode(requiredProjectLabel, requiredProjectProfit);
+    // 				addProjectEdge(dependentProjectLabel, requiredProjectLabel);
+    // 				if(requiredProjectProfit > 0){
+    // 					totalPositiveRevenue =  totalPositiveRevenue + requiredProjectProfit;
+    // 				}
+    // 				if(requiredProjectProfit < 0){
+    // 					totalPositiveRevenue =  totalPositiveRevenue - requiredProjectProfit;
+    // 				}
+    // 			}
+    // 		}
+    // 		else if(!(projectNamesSet.has(dependentProjectLabel)) && projectNamesSet.has(requiredProjectLabel)){
+    // 			if(projectNameRevenueDict[requiredProjectLabel]=== requiredProjectProfit){
+    // 				addProjectNode(dependentProjectLabel, dependentProjectProfit);
+    // 				addProjectEdge(dependentProjectLabel, requiredProjectLabel);
+    // 				if(dependentProjectProfit > 0){
+    // 					 totalPositiveRevenue =  totalPositiveRevenue + dependentProjectProfit;
+    // 				}
+    // 				if(dependentProjectProfit < 0){
+    // 					 totalPositiveRevenue =  totalPositiveRevenue - dependentProjectProfit;
+    // 				}
+    // 			}
+    // 		}
+    // 		else{
+    // 			addProjectNode(dependentProjectLabel, dependentProjectProfit);
+    // 			addProjectNode(requiredProjectLabel, requiredProjectProfit);
+    // 			addProjectEdge(dependentProjectLabel, requiredProjectLabel);
+    // 			if(dependentProjectProfit > 0){
+    // 				 totalPositiveRevenue =  totalPositiveRevenue + dependentProjectProfit;
+    // 			}
+    // 			if(requiredProjectProfit > 0){
+    // 				totalPositiveRevenue =  totalPositiveRevenue + requiredProjectProfit;
+    // 			}
+    // 			if(dependentProjectProfit < 0){
+    // 				 totalPositiveRevenue =  totalPositiveRevenue - dependentProjectProfit;
+    // 			}
+    // 			if(requiredProjectProfit < 0){
+    // 				totalPositiveRevenue =  totalPositiveRevenue - requiredProjectProfit;
+    // 			}
+    // 		}
+    // 	}
+    // 	return 1;
+    // }
+    //
+    // ////
+    // ////
+    // ////
+    // ////
+    // ////
+    //
+    // function addNetworkNode(theLabel, profit){ // this method assume the label to be added dosen't exist in the network yet
+    // 	console.log("in add node");
+    // 	var tempId = Math.floor(Math.random() * MAXIMUM_PROJECT);
+    // 	while(networkFlowIdSet.has(tempId)){
+    // 		tempId = Math.floor(Math.random() * MAXIMUM_PROJECT);
+    // 	}
+    // 	var nodeDisplayLabel = theLabel +":"+ profit;
+    // 	var tempNode = { id: tempId, label: nodeDisplayLabel };
+    // 	networkFlowNodes.add(tempNode);
+    // 	networkFlowIdSet.add(tempId);
+    // 	networkFlowNodesArray.push(tempNode);
+    // 	networkFlowNamesIdDict[theLabel] = tempId;
+    // 	networkFlowNamesSet.add(theLabel);
+    // }
+    // function addNetworkEdge(sLabel, dLabel, capacity, flow){ // ann nodes needs to be preset before adding the edge
+    // 	console.log("in addNetworkEdge");
+    // 	var tempEdge = { from: networkFlowNamesIdDict[sLabel], to: networkFlowNamesIdDict[dLabel], arrows: "to", label: ""+flow+"/"+capacity};
+    // 	// console.log(getEdgeBetweenProjectNodes(projectNamesIdDict[sLabel],projectNamesIdDict[dLabel]));
+    // 	networkFlowEdges.add(tempEdge);
+    // 	networkFlowEdgesArray.push(tempEdge);
+    // }
+    // function getFlowNetwork(){
+    // 	startFlowNetwork();
+    // 	//startResidualNetwork();
+    // 	console.log("in getFlowNetwork");
+    // 	addNetworkNode("source", 0);
+    // 	addNetworkNode("sink", 0);
+    // 	for (var key in  projectNameRevenueDict){
+    // 		addNetworkNode(key, projectNameRevenueDict[key]);
+    // 		if(projectNameRevenueDict[key]>0){
+    // 			addNetworkEdge("source", key, projectNameRevenueDict[key],0);
+    // 		}
+    // 		if(projectNameRevenueDict[key]<0){
+    // 			addNetworkEdge(key, "sink",-projectNameRevenueDict[key],0);
+    // 		}
+    // 	}
+    // 	for( var i = 0 ; i < projectEdgesArray.length ; i++){
+    // 		console.log(projectEdgesArray[i]);
+    // 		addNetworkEdge(projectIdNamesDict[projectEdgesArray[i].from], projectIdNamesDict[projectEdgesArray[i].to],totalPositiveRevenue+1,0);
+    // 	}
+    // 	buildResidualGraph();
+    // }
+    // ////
+    // ////
+    // ////
+    // ////
+    // var residualIdSet;
+    // var residualNamesSet;
+    // var residualNameIdDict;
+    // var residualNodesArray ;
+    // var residualNodes;
+    // var residualEdgesArray;
+    // var residualEdges;
+    //
+    // function addResidualNode(theLabel, profit){ // this method assume the label to be added dosen't exist in the network yet
+    // 	console.log("in add node");
+    // 	var tempId = Math.floor(Math.random() * MAXIMUM_PROJECT);
+    // 	while(networkFlowIdSet.has(tempId)){
+    // 		tempId = Math.floor(Math.random() * MAXIMUM_PROJECT);
+    // 	}
+    // 	var nodeDisplayLabel = theLabel +":"+ profit;
+    // 	var tempNode = { id: tempId, label: nodeDisplayLabel };
+    // 	residualNodes.add(tempNode);
+    // 	residualIdSet.add(tempId);
+    // 	residualNodesArray.push(tempNode);
+    // 	residualNameIdDict[theLabel] = tempId;
+    // 	residualNamesSet.add(theLabel);
+    // }
+    // function buildResidualGraph(){
+    // 	//startFlowNetwork();
+    // 	startResidualNetwork();
+    // 	addNetworkNode("source", 0);
+    // 	addNetworkNode("sink", 0);
+    // 	for (var key in  projectNameRevenueDict){
+    // 		addNetworkNode(key, projectNameRevenueDict[key]);
+    // 		if(projectNameRevenueDict[key]>0){
+    // 			addNetworkEdge("source", key, projectNameRevenueDict[key],0);
+    // 		}
+    // 		if(projectNameRevenueDict[key]<0){
+    // 			addNetworkEdge(key, "sink",-projectNameRevenueDict[key],0);
+    // 		}
+    // 	}
+    // }
+    //
+    //
+    // // function displayResult(){
+    // //   clearTable("tagOutput")
+    // //   var resultTbl = document.getElementById("tagOutput");
+    // //   var resultBody =  document.createElement("tbody");
+    // //   resultBody.appendChild(createTitleRow("最长序列及其长度如下(The Longest Sequence And Its Length Is As Follow)"));
+    // //   var longestSequenceStr = "["+initialNumberInMaxLengthSequence;
+    // //   var tempNum = initialNumberInMaxLengthSequence;
+    // //   while(inputIntegerSet.has(tempNum+1)){
+    // //     longestSequenceStr = longestSequenceStr+","+(tempNum+1);
+    // //     tempNum++;
+    // //   }
+    // //   longestSequenceStr = longestSequenceStr +"]";
+    // //   resultBody.appendChild(createDescriptionRow("最长的数字序列是(The longest sequence of numbers are)",longestSequenceStr));
+    // //   resultBody.appendChild(createDescriptionRow("其长度是(The length of the longest sequence of numbers is)",globalMaxLength));
+    // //   resultTbl.append(resultBody);
+    // // }
+    //
+    // // function resetAll() {
+    // // 	if (network !== null) {
+    // // 		network.destroy();
+    // // 		network = null;
+    // // 	}
+    // // 	totalPositiveRevenue = 0;
+    // // 	startNetwork();
+    // // }
+    // function createDescriptionRow(label,description){
+    //   var constraintRow = document.createElement("tr");
+    //   constraintRow.appendChild(makecell(label));
+    //   constraintRow.appendChild(makecell(description));
+    //   return constraintRow;
+    // }
+    // function createTitleRow(str){
+    //   var titleRow = document.createElement("tr");
+    //   var titleCellTextNode = document.createTextNode(str);
+    //   titleRow.appendChild(titleCellTextNode);
+    //   return titleRow;
+    // }
+    // function clearTable(idstr){
+    //   var makovTable = document.getElementById(idstr);
+    //   while(makovTable.rows.length > 0) {
+    //     makovTable.deleteRow(0);
+    //   }
+    // }
+    // function makecell(str){
+    //   var nameCell = document.createElement("td");
+    //   var nameCellTextNode = document.createTextNode(str);
+    //   nameCell.appendChild(nameCellTextNode);
+    //   return nameCell;
+    // }
+    // function startProjectNetwork() {
+    // 	projectNameRevenueDict = {};
+    //   projectIdSet = new Set();
+    //   projectNamesSet = new Set();
+    //   projectNamesIdDict = {};
+    // 	projectIdNamesDict = {};
+    //   //shadowState = false;
+    //   // create an array with nodes
+    //   projectNodesArray = [];
+    //   projectNodes = new vis.DataSet(projectNodesArray);
+    //   // create an array with edges
+    //   projectEdgesArray = [];
+    //   projectEdges = new vis.DataSet(projectEdgesArray);
+    //   // create a network
+    //   var container = document.getElementById("projectNetwork");
+    //   var data = {
+    //     nodes: projectNodes,
+    //     edges: projectEdges,
+    //   };
+    //   var options = {};
+    //   network = new vis.Network(container, data, options);
+    // }
+    //
+    // function startFlowNetwork() {
+    //
+    // 	networkFlowIdSet = new Set();
+    // 	networkFlowNamesSet =  new Set();
+    // 	networkFlowNamesIdDict = {};
+    // 	// shadowState = false;
+    // 	// create an array with nodes
+    // 	networkFlowNodesArray = [];
+    // 	networkFlowNodes = new vis.DataSet(networkFlowNodesArray);
+    // 	// create an array with edges
+    // 	networkFlowEdgesArray = []
+    // 	networkFlowEdges = new vis.DataSet(networkFlowEdgesArray);
+    // 	// create a network
+    // 	var container = document.getElementById("networkFlow");
+    // 	var data = {
+    // 		nodes: networkFlowNodes,
+    // 		edges: networkFlowEdges,
+    // 	};
+    // 	var options = {};
+    // 	network = new vis.Network(container, data, options);
+    // }
+    //
+    // function startResidualNetwork() {
+    //
+    // 	residualIdSet = new Set();
+    // 	residualNamesSet =  new Set();
+    // 	residualNameIdDict = {};
+    //
+    // 	// create an array with nodes
+    // 	residualNodesArray = [];
+    // 	residualNodes = new vis.DataSet(networkFlowNodesArray);
+    // 	// create an array with edges
+    // 	residualEdgesArray = []
+    // 	residualEdges = new vis.DataSet(networkFlowEdgesArray);
+    // 	// create a network
+    // 	var container = document.getElementById("residualNetwork");
+    // 	var data = {
+    // 		nodes: residualNodes,
+    // 		edges: residualEdges,
+    // 	};
+    // 	var options = {};
+    // 	network = new vis.Network(container, data, options);
+    // }
+    //
+    // startProjectNetwork();
+
+
+
+
+
+
+
+
+
+
+
+
+
+    class ANetwork {
+      constructor(divName) {
+        this.divName = divName;
+        this.namesValueDict = {};
+        this.nodeIdSet = new Set();
+        this.nodeNamesSet = new Set();
+        this.namesIdDict = {};
+        this.idNamesDict = {};
+        // create an array with nodes
+        this.nodeSet = new Set();
+        this.nodes = new vis.DataSet([]);
+        // create an array with edges
+        this.edgesSet = new Set();
+        this.edges = new vis.DataSet([]);
+        // create a network
+        this.container = document.getElementById(divName);
+        this.data = {
+          nodes: this.nodes,
+          edges: this.edges,
+        };
+        this.options = {};
+        this.network = new vis.Network(this.container, this.data, this.options);
+      }
+      displayAgain(){
+        this.container = document.getElementById(this.divName);
+        this.data = {
+          nodes: this.nodes,
+          edges: this.edges,
+        };
+        this.options = {};
+        this.network = new vis.Network(this.container, this.data, this.options);
+      }
+      addNode(theLabel, profit){ // this method assume the label to be added dosen't exist in the network yet
+        var tempId = Math.floor(Math.random() * MAXIMUM_PROJECT);
+        while(this.nodeIdSet.has(tempId)){
+          tempId = Math.floor(Math.random() * MAXIMUM_PROJECT);
+        }
+        var nodeDisplayLabel = theLabel +":"+ profit;
+        var tempNode = { id: tempId, label: nodeDisplayLabel };
+        this.nodes.add(tempNode);
+        this.nodeIdSet.add(tempId);
+        this.nodeSet.add(tempNode);
+        this.namesIdDict[theLabel] = tempId;
+        this.idNamesDict[tempId] = theLabel;
+        this.namesValueDict[theLabel] = profit;
+        this.nodeNamesSet.add(theLabel);
+      }
+      addEdge(sLabel, dLabel){
+        var tempEdge = { from: this.namesIdDict[sLabel], to: this.namesIdDict[dLabel], arrows: "to", label: "To be done after"};
+        // console.log(getEdgeBetweenProjectNodes(projectNamesIdDict[sLabel],projectNamesIdDict[dLabel]));
+        this.edges.add(tempEdge);
+        this.edgesSet.add(tempEdge)
+      }
+      addLabelledEdge(sLabel, dLabel, capacity, flow, color){ // ann nodes needs to be preset before adding the edge
+        var tempEdge = { from: this.namesIdDict[sLabel], to: this.namesIdDict[dLabel], arrows: "to", label: ""+flow+"/"+capacity, color: color};
+        // console.log(getEdgeBetweenProjectNodes(projectNamesIdDict[sLabel],projectNamesIdDict[dLabel]));
+        this.edges.add(tempEdge);
+        this.edgesSet.add(tempEdge);
+      }
+      addResidueEdge(sLabel, dLabel, theLabel, color){ // ann nodes needs to be preset before adding the edge
+        //console.log(theLabel);
+        var tempEdge = { from: this.namesIdDict[sLabel], to: this.namesIdDict[dLabel], arrows: "to", label: theLabel+"", color: color};
+        // console.log(getEdgeBetweenProjectNodes(projectNamesIdDict[sLabel],projectNamesIdDict[dLabel]));
+        this.edges.add(tempEdge);
+        this.edgesSet.add(tempEdge);
+      }
+      getEdgeBetweenNodes(node1_id,node2_id) {
+        return this.edges.get().filter(function (edge) {
+          return (edge.from === node1_id && edge.to === node2_id );
+        });
+      }
+      getEdgesOfNode(nodeId) {
+        return this.edges.get().filter(function (edge) {
+          return edge.from === nodeId || edge.to === nodeId;
+        });
+      }
+      getNodeByName(theName){
+        return this.nodes.get(this.namesIdDict[theName]);
+      }
+      reset(){
+        this.namesValueDict = {};
+        this.nodeIdSet = new Set();
+        this.nodeNamesSet = new Set();
+        this.namesIdDict = {};
+        this.idNamesDict = {};
+        // create an array with nodes
+        this.nodeSet = new Set();
+        this.nodes = new vis.DataSet([]);
+        // create an array with edges
+        this.edgesSet = new Set();
+        this.edges = new vis.DataSet([]);
+        // create a network
+        this.data = {
+          nodes: this.nodes,
+          edges: this.edges,
+        };
+        this.options = {};
+        //this.network = new vis.Network(this.container, this.data, this.options);
+        if (this.network != null) {
+          this.network.destroy();
+          this.network = new vis.Network(this.container, this.data, this.options);
+        }
+      }
+    }
+
+
+
+
+
+
+    // 				1  procedure BFS(G, root) is
+    // 2      let Q be a queue
+    // 3      label root as discovered
+    // 4      Q.enqueue(root)
+    // 5      while Q is not empty do
+    // 6          v := Q.dequeue()
+    // 7          if v is the goal then
+    // 8              return v
+    // 9          for all edges from v to w in G.adjacentEdges(v) do
+    // 10             if w is not labeled as discovered then
+    // 11                 label w as discovered
+    // 13                 Q.enqueue(w)
+
+
+    				// //console.log(flowNetwork.namesIdDict["source"]);
+    				// residualNetwork.addNode("source", 0);
+    				// visitedSet.add(flowNetwork.namesIdDict["source"]);
+    				// aQueue.enqueue(flowNetwork.namesIdDict["source"]);
+    				// //console.log(aQueue.isEmpty());
+    				// while(!aQueue.isEmpty()){
+    				// 	var v = aQueue.dequeue();
+    				// 	var neighbhors = flowNetwork.getEdgesOfNode(v);
+    				// 	//console.log(neighbhors[0]);
+    				// 	for(var i = 0 ; i < neighbhors.length ; i++){
+    				// 		if(neighbhors[i].from === v){ // edge orientation: v to its neightbhors
+    				// 			if(!(visitedSet.has(neighbhors[i].to))){// if neighbhor not visited
+    				// 				var currFlow = parseFloat((neighbhors[i].label).split("/")[0]);
+            //         var edgeResidualFlow = parseFloat((neighbhors[i].label).split("/")[1])- currFlow; // compute residual flow
+    				// 				//console.log(edgeResidualFlow);
+    				// 				visitedSet.add(neighbhors[i].to);
+    				// 				var tempToNodeName = flowNetwork.idNamesDict[neighbhors[i].to];
+    				// 				var tempToNodeLabel = flowNetwork.namesValueDict[flowNetwork.idNamesDict[neighbhors[i].to]]
+    				// 				residualNetwork.addNode(tempToNodeName,  tempToNodeLabel);
+    				// 				parentNodeDict[neighbhors[i].to] = v;
+    				// 				aQueue.enqueue(neighbhors[i].to);
+    				//
+    				// 				if(edgeResidualFlow > 0){
+    				// 					residualNetwork.addResidueEdge(flowNetwork.idNamesDict[v], flowNetwork.idNamesDict[neighbhors[i].to], edgeResidualFlow, "");
+    				// 				}
+    				// 				if(currFlow > 0){
+    				// 					residualNetwork.addResidueEdge(flowNetwork.idNamesDict[neighbhors[i].to],flowNetwork.idNamesDict[v],  currFlow, "");
+    				// 				}
+    				// 			}
+    				// 		}
+    				// 		if(neighbhors[i].to === v){ // edge orientation n[n] to v
+    				// 			if(!(visitedSet.has(neighbhors[i].from))){
+    				// 				var edgeResidualFlow = parseFloat((neighbhors[i].label).split("/")[0]);
+    				// 				var toFlow = parseFloat((neighbhors[i].label).split("/")[1])-edgeResidualFlow;
+    				// 				//console.log(edgeResidualFlow);
+    				// 				visitedSet.add(neighbhors[i].from);
+    				// 				var tempFromNodeName = flowNetwork.idNamesDict[neighbhors[i].from];
+    				// 				var tempFromNodeLabel = flowNetwork.namesValueDict[flowNetwork.idNamesDict[neighbhors[i].from]]
+    				// 				residualNetwork.addNode(tempFromNodeName,  tempFromNodeLabel);
+    				// 				parentNodeDict[neighbhors[i].from] = v;
+    				// 				aQueue.enqueue(neighbhors[i].from);
+    				// 				if(edgeResidualFlow > 0){
+    				// 					residualNetwork.addResidueEdge(flowNetwork.idNamesDict[v], flowNetwork.idNamesDict[neighbhors[i].from], edgeResidualFlow, "");
+    				// 				}
+    				// 				if(toFlow > 0){
+    				// 					residualNetwork.addResidueEdge(flowNetwork.idNamesDict[neighbhors[i].from],flowNetwork.idNamesDict[v],  toFlow, "");
+    				// 				}
+    				// 			}
+    				// 		}
+    				// 	}
+    				// }
+
+
+
+
+Recommander system falls into two categories, collaborative and content based methods.
+
+Collaborative method are method that uses only past interactions between users and items. The interactions are stored in user item interactions matrix.
+
+Collaborative method are divided into two subcategories, memory based and model based.
+
+ memory based method uses directly the with values of the records. Model based approach assume there is a model that generate the interactions between user and item.
+
+ With collaborative model, there is a problem called cold start which is we don't know how user

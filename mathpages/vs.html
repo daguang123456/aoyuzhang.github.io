@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="../styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+
+  <style>
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+#mynetwork1 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+.table1{
+  width: 500px;
+  height: 380px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/vis-graph3d@latest/dist/vis-graph3d.min.js"></script>
+  </head>
+
+<body>
+
+\( \textbf{向量空间} \)<br>
+
+向量空间是把我们熟悉的二维和三维空间里的特点抽象化出来。<br>
+三维空间里的向量用三个数来代表， 比如说 \(（1，2，3)\) 和 \((1,1,1)\) 和 \((2,3,4)\) 是三维空间的点：
+
+<div id="mygraph"></div>
+<div id="info"></div>
+<script>
+  var data = null;
+var graph = null;
+
+function onclick(point) {
+  console.log(point);
+}
+
+// Called when the Visualization API is loaded.
+// function drawVisualization() {
+  // create the data table.
+  data = new vis.DataSet();
+
+  // create some shortcuts to math functions
+  var sqrt = Math.sqrt;
+  var pow = Math.pow;
+  var random = Math.random;
+
+  data.add({ x: 1, y: 2, z: 3, style: "#00ffff" });
+  data.add({ x: 1, y: 1, z: 1, style: "#00ffff" });
+  data.add({ x: 2, y: 3, z: 4, style: "#00ffff" });
+
+
+
+  // specify options
+  var options = {
+    width: "600px",
+    height: "600px",
+    style: "dot-color",
+    showPerspective: true,
+    showGrid: true,
+    keepAspectRatio: true,
+    verticalRatio: 1.0,
+    legendLabel: "distance",
+    cameraPosition: {
+      horizontal: -0.35,
+      vertical: 0.22,
+      distance: 1.8,
+    },
+  };
+
+  // create our graph
+  var container = document.getElementById("mygraph");
+  graph = new vis.Graph3d(container, data, options);
+  graph.on("click", onclick);
+// }
+
+// window.addEventListener("load", () => {
+//   drawVisualization();
+// });
+</script>
+这些向量形成一个集(set)， 然后这个向量集里有一个加法运算。 可以对两个向量进行加法。 比如说：
+\[(1,2,3)+(1,1,1)=(2,3,4)\]
+这些向量还可以和数字相乘， 比如说：
+\[3 \cdot (1,2,3)=(3,6,9)\].
+
+在我们的例子， 这些数字所形成的集实际上就是实数集。
+这个实数集的两个运算，加法和乘法 也可以被抽象化。
+所以我们来看下面的定义：
+
+<div class="definition">
+让\(S\)为任意一个集， 如果在\(S\)上定义两个运算，\( +, \cdot \).
+然后这两个运算使、\(S\) 成为一个阿贝尔群(Abelian group). 而且这两个运算之间有分配律。
+\((a+b) \cdot c = a \cdot c + b \cdot c \). 那么， 我们就叫这个元组  \((S,+,\cdot)\)
+域(field)。
+</div>
+例子，假如 \(p \in \mathbb{N} \) 是一个质数。 那么 \(\mathbb{Z}_p)\) 是一个域。 如下是 \(\mathbb{Z}_3\) 的加法和乘法运算：
+
+<div class="table1">
+<div style="width: 150px; float: left; height:150px;  margin: 20px">
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-iifz">\(\cdot\)</th>
+    <th class="tg-iifz">0</th>
+    <th class="tg-iifz">1</th>
+    <th class="tg-iifz">2</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-iifz">0</td>
+    <td class="tg-iifz">0</td>
+    <td class="tg-iifz">0</td>
+    <td class="tg-iifz">0</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">1</td>
+    <td class="tg-iifz">0</td>
+    <td class="tg-iifz">1</td>
+    <td class="tg-iifz">2</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">2</td>
+    <td class="tg-iifz">0</td>
+    <td class="tg-iifz">2</td>
+    <td class="tg-iifz">1</td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+<div style="width: 150px; float:left; height:150px; margin: 20px">
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-iifz">+</th>
+    <th class="tg-iifz">0</th>
+    <th class="tg-iifz">1</th>
+    <th class="tg-iifz">2</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-iifz">0</td>
+    <td class="tg-iifz">0</td>
+    <td class="tg-iifz">1</td>
+    <td class="tg-iifz">2</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">1</td>
+    <td class="tg-iifz">1</td>
+    <td class="tg-iifz">2</td>
+    <td class="tg-iifz">0</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">2</td>
+    <td class="tg-iifz">2</td>
+    <td class="tg-iifz">0</td>
+    <td class="tg-iifz">1</td>
+  </tr>
+</tbody>
+</table>
+</div>
+</div>
+从上表可以看到 \(\mathbb{Z}_5\) 的加法和乘法都符合阿贝尔群的条件。
+向量空间需要两个数学物体来形成，一个阿贝尔群\(G\), 和一个域\(F\)。
+
+<div class="definition">
+给一个阿贝尔群\(G\)和一个域\(F\)。
+定义如下函数：
+\[s: F \times G \to G 使得
+\begin{cases}
+s(1,v)= v , v \in G\\
+s(a,s(b,v)) = s(ab,v), a,b \in F\\
+s((a+b),v) = s(a,v)+s(b,v)
+\end{cases}\]
+那么元组 \( (G,F,s)\) 形成一个向量空间。
+</div>
+
+给集 \(S=\{1,2,3\} \), \(S\)的所有的\(2^3\)个子集是：
+\[\emptyset, \{1\},\{2\}\{3\},\{4\},\{5\},\{1,2\}...\]
+观察向量空间 \(\mathbb{Z}_2^3 \)里的所有点:
+
+
+
+<div id="mygraph1"></div>
+<div id="info1"></div>
+<script>
+  var data = null;
+var graph = null;
+
+function onclick(point) {
+  console.log(point);
+}
+
+// Called when the Visualization API is loaded.
+function drawVisualization() {
+  // create the data table.
+  data = new vis.DataSet();
+
+  // create some shortcuts to math functions
+  var sqrt = Math.sqrt;
+  var pow = Math.pow;
+  var random = Math.random;
+
+  data.add({ x: 0, y: 0, z: 0, style: "#00ffff" });
+  data.add({ x: 0, y: 0, z: 1, style: "#00ffff" });
+  data.add({ x: 0, y: 1, z: 0, style: "#00ffff" });
+  data.add({ x: 0, y: 1, z: 1, style: "#00ffff" });
+  data.add({ x: 1, y: 0, z: 0, style: "#00ffff" });
+  data.add({ x: 1, y: 0, z: 1, style: "#00ffff" });
+  data.add({ x: 1, y: 1, z: 0, style: "#00ffff" });
+  data.add({ x: 1, y: 1, z: 1, style: "#00ffff" });
+
+  // specify options
+  var options = {
+    width: "600px",
+    height: "600px",
+    style: "dot-color",
+    showPerspective: true,
+    showGrid: true,
+    keepAspectRatio: true,
+    verticalRatio: 1.0,
+    legendLabel: "distance",
+    cameraPosition: {
+      horizontal: -0.35,
+      vertical: 0.22,
+      distance: 1.8,
+    },
+  };
+
+  // create our graph
+  var container = document.getElementById("mygraph1");
+  graph = new vis.Graph3d(container, data, options);
+  graph.on("click", onclick);
+}
+
+window.addEventListener("load", () => {
+  drawVisualization();
+});
+</script>
+
+这个向量空间里的任何一个元素都和一个\(S\)集里的一个子集相对应。
+比如说：
+向量 \((1,0,0)\) 对应的子集是 \(\{1\}\), 向量 \((0,1,1)\) 对应的子集是 \(\{2,3\}\)等等。
+让我们用 \(e_X  \in \mathbb{Z}_2^3\)来代表子集\(X\).
+那么现在向量的加法代表着什么样的在子集上的运算?
+随意选两个\(S\)里的子集 \(X,Y\),那么\(e_X+e_Y=e_{X \triangle Y} \)。
+也就是说代表两个子集\(X,Y\) 的向量的和得的向量代表的集是X,Y的对称差。
+
+不同的向量空间可能实际上是同构的。 比如说我们可以给\(\mathbb{Z}_2^3\)的向量取名：
+\[
+\begin{cases}
+(0,0,0) ： 黑猫\\
+(0,0,1) ： 红猫\\
+(0,1,0) ： 橙猫\\
+(0,1,1) ： 黄猫\\
+(1,0,0) ： 绿猫\\
+(1,0,1) ： 情猫\\
+(1,1,0) ： 蓝猫\\
+(1,1,1) ： 紫猫
+\end{cases}
+\]
+然后猫与猫之间和猫与域\(\mathbb{Z}_2\)之间的运算可以用\(\mathbb{Z}_2^3\)里的运算。
+比如说 黑猫加红猫等于红猫。
+那么这个猫集向量空间和\(\mathbb{Z}_2\)不一样。 但是它们是同构的。
+有的时候两个向量空间不一定有元素与元素之间一一对应， 可是还是有某一种意义上的一一对应。
+所有有如下定义：
+
+<div class="definition">
+
+</div>
+
+
+
+
+
+</body>
+
+
+
+</html>

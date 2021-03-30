@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>回文分区(Palindrome Partitioning)</h2>
+    給定字符串s，分區s，使得分區的每個子字符串都是回文。
+    返回s的回文分區所需要的最小切割次數。
+    <br><br>
+    Given a string \(s\), partition \(s\) such that every substring of the partition is a palindrome.
+    Return the minimum cuts needed for a palindrome partitioning of \(s\).
+    <hr>
+    例:
+    <div class ="table1">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+      </style>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">输入：</th>
+          <th class="tg-fv28">s = "aab"</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">输出:</td>
+          <td class="tg-fv28">1</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">说明:</td>
+          <td class="tg-fv28">回文分區[“ aa”，“ b”]可以使用1個切割來生成。</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    Example:
+    <div>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">Input:</th>
+          <th class="tg-fv28">s = "ab"</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">Output:</td>
+          <td class="tg-fv28">1</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">Explanation:</td>
+          <td class="tg-fv28">The palindrome partitioning ["a","b"] could be produced using 1 cut.</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <hr>
+    <label for="tag=tagPDNA">输入字符串，无空格(enter a string, no space)</label><br>
+    <input type="text" id = "tagPDNA" class="numbersonly" value="aab"><br>
+    <input type="Button" onclick="computeResult()" value="计算切割的最小数量(compute minimum number of cuts)" /> <br>
+
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+    切到绿色单元格的左侧(Cut to the left of green cell)
+    <div>
+      <table id="tagSeq">
+      </table>
+    </div><br>
+
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+    暗示(Hint): 动态编程两次，一次用于计算子字符串是否为回文，一次用于计算直到字符串上的某个位置最小割，。(Dynamic programming twice, once for computing if substring is palindom, once to compute minimum cut untill certain position on the string. )
+    <br>
+
+    <script>
+			var pString;
+			var resultt = 0;
+      var choices = [];
+      var cutsdp = [];
+      var isPalindrome = [];
+      var realChoice = [];
+
+      function isPalindromeFunction(str){
+        var lengthStr =  str.length;
+        for(var i = 0 ; i< lengthStr ; i++){
+          var temp = [];
+          for(var j = 0; j< lengthStr ; j++){
+            temp.push(-1);
+          }
+          isPalindrome.push(temp);
+        }
+        for(var i =0 ; i< lengthStr ; i++){
+          for(var k = 0; k< lengthStr - i ;k++){
+            if(k+i===k){
+              isPalindrome[k][k+i] = 1;
+            }
+            else if(i===1){
+              if(str.charAt(k) === str.charAt(k+i)){
+                isPalindrome[k][k+i] = 1;
+              }
+              else{
+                isPalindrome[k][k+i] = 0;
+              }
+            }
+            else{
+              if(str.charAt(k) === str.charAt(k+i)){
+                isPalindrome[k][k+i] = isPalindrome[k+1][k+i-1];
+              }
+              else{
+                isPalindrome[k][k+i] = 0;
+              }
+            }
+          }
+        }
+        console.log(isPalindrome);
+      }
+      
+      function copyAB(aa,bb){
+        var result = [];
+        for(var i = 0 ; i< aa.length ; i++){
+          result.push(aa[i]);
+        }
+        for(var i = 0 ; i< bb.length ; i++){
+          result.push(bb[i]);
+        }
+        return result;
+      }
+      function minCuts(str){
+        for(var i =0 ; i<= str.length; i++){
+          cutsdp.push(0);
+          choices.push([]);
+        }
+        cutsdp[0]=-1;
+        cutsdp[1]= 0;
+        for(var i =2 ; i<= str.length ; i++){
+          var min = 9999999;
+          var temp=[];
+          for(var j=0 ; j <= i-1 ; j++){
+            if(isPalindrome[j][i-1]===1){
+              if(min >= cutsdp[j]+1){
+                min = cutsdp[j]+1;
+                temp = copyAB(choices[j],[j]);
+              }
+            }
+          }
+          cutsdp[i]=min;
+          choices[i] = temp;
+        }
+        //console.log(cutsdp);
+        //console.log(choices[str.length]);
+      }
+
+      function computeResult(){
+        pString ="";
+        resultt = 0;
+        choices = [];
+        cutsdp = [];
+        isPalindrome = [];
+        realChoice = [];
+				document.getElementById("tagMessage").innerHTML= "";
+				pString =  document.getElementById("tagPDNA").value;
+				if ( pString.match('[ ]') ){
+					document.getElementById("tagMessage").innerHTML= "错误：输入格式无效(error: invalid input sequence format)"; // Put the error message inside the msg element in HTML.
+					return false;
+				}
+        isPalindromeFunction(pString);
+        minCuts(pString);
+        resultt = cutsdp[pString.length];
+        realChoice = choices[pString.length];
+        console.log(realChoice);
+        displayResult();
+        
+      }
+      function transformStringListToIntegerList(aStringList){
+        var theCorrepondingIntegerList = [];
+        for(var index = 0 ; index < aStringList.length ; index++){ 
+          theCorrepondingIntegerList.push(parseFloat(aStringList[index])); 
+        }
+        return theCorrepondingIntegerList;
+      }
+
+      function displayResult(){
+
+        clearTable("tagOutput");
+        clearTable("tagSeq");
+        var seqTable = document.getElementById("tagSeq");
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("结果如下(The result is as follow)"));
+        resultBody.appendChild(createDescriptionRow("最小切割次數(minimum number of cuts is)",resultt));
+        resultBody.appendChild(createDescriptionRow("切割位置(cuts positions",realChoice));
+        resultTbl .append(resultBody);
+
+        var seqBody = document.createElement("tbody");
+        var aRow = document.createElement("tr");
+        var indexSet = new Set(realChoice);
+        console.log(indexSet);
+        for(var i = 0; i< pString.length ; i++){
+          var nameCell = document.createElement("td");
+          var nameCellTextNode = document.createTextNode(pString.charAt(i)+"");
+          nameCell.appendChild(nameCellTextNode);
+          if(indexSet.has(i)){
+            nameCell.style.backgroundColor = "green";
+          }
+          aRow.appendChild(nameCell);
+          //console.log(aRow);
+        }
+        seqBody.appendChild(aRow);
+        seqTable.append(seqBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>

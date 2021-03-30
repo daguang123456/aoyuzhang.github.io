@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+		</style>
+<!-- 		<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+		<script type="text/javascript" src="https://unpkg.com/vis-graph3d@latest/dist/vis-graph3d.min.js"></script> -->
+
+	</head>
+
+	<body>
+    <h3>加权间隔调度问题(Weighted Interval Scheduling problem)</h3>
+    我们要完成一系列任务。我们具有每个任务的开始和结束时间及其重要性等级。我们不能执行两个时间重叠的任务。目标是选择要执行的任务，以便最大化要执行的任务的总重要性等级。
+		<Br>(The problem is, we have a set of tasks to accomplish.
+            We have the start and end time of each task and their importance rating. We cannot perform two tasks that overlap in time.
+            The goal is to select the tasks to be performed so as to maximize the total importance rating of the tasks to be performed.）
+    <hr>
+
+		现在，假设时间间隔的格式为 \((a,b)\)，其中 \(a \leq b \) 是非负数的 (For now, assume that the time interval is of the form \((a,b)\) where \(a < b\) are some no negative numbers).
+		<br>
+    <label for="tagInitTime">任务的开始时间是：（What is the starting time of the task:）</label><br>
+    <input type="number" id = "tagInitTime" class="numbersonly" value="3"><br>
+    <label for="tagEndTime">任务的结束时间是：(What is the end time of the task:)</label><br>
+    <input type="number" id = "tagEndTime" class="numbersonly" value="3"><br>
+    <label for="tagImportance">任务有多重要，请输入一个非负数，数字越大，任务越重要（How important is the task, Please enter a no negative number, the higher the number the more important is the task:）</label><br>
+    <input type="text" id = "tagImportance" class="numbersonly" value="3"><br>
+    <input type="Button" onclick="addTask()" value="添加任务(Add Task)" />
+		<input type="Button" onclick="clearTask()" value="清除所有任务(Clear Tasks)" /> <br>
+
+    <div>
+      <table id="tagTasks">
+      </table>
+    </div><br>
+		<div>
+			<table id = "tagAdded"> </table>
+		</div>
+		<div>
+			<table id = "tagResult"> </table>
+		</div>
+		<p> 讯息(Message:) <span id = "tagMessage"></span></p><br>
+
+    <script>
+		var startTimes = [], endTimes = [], weights = [], datass = [];
+		var numberDataPoint = 0;
+		var optArray = [];
+		var pred = [] ;
+		var optimum = 0;
+
+		function p(j){
+			for(var k = j-1 ; k >=0 ; k--){
+				if(datass[k][1]<=datass[j][0]){
+					return k;
+				}
+			}
+			return -1;
+		}
+
+		function clearTask(){
+			clearTable("tagAdded");
+			startTimes = [];
+			endTimes = [];
+			weights = [];
+			datass = [];
+			numberDataPoint = 0;
+		}
+
+		function displayAdded(){
+			clearTable("tagAdded");
+			var tableForAdded =  document.getElementById("tagAdded");
+			var tblBody = document.createElement("tbody");
+			var constraintRow = document.createElement("tr");
+			constraintRow.appendChild(makecell("任务编号(Task Number)"));
+			constraintRow.appendChild(makecell("开始时间(Start Time)"));
+			constraintRow.appendChild(makecell("结束时间(Finish Time)"));
+			constraintRow.appendChild(makecell("重要性值(Weight)"));
+			tblBody.appendChild(constraintRow);
+			for(var i = 0 ; i < startTimes.length; i++){
+				tblBody.appendChild(createELemRow(i+1, startTimes[i], endTimes[i], weights[i],false));
+			}
+			tblBody.appendChild(createSubmitRow("优化(Optimize)", optimize));
+			tableForAdded.append(tblBody);
+		}
+		function displayResult(){
+			var scheduled = getSchedule();
+			console.log(scheduled);
+			clearTable("tagAdded");
+			var tableForAdded =  document.getElementById("tagAdded");
+			var tblBody = document.createElement("tbody");
+			tblBody.appendChild(createTitleRow("选择以优化重要性值的任务集是：(The set of tasks to select to optimize the importance value is)"));
+			var constraintRow = document.createElement("tr");
+			constraintRow.appendChild(makecell("任务编号：(Task Number)"));
+			constraintRow.appendChild(makecell("开始时间：(Start Time)"));
+			constraintRow.appendChild(makecell("结束时间：(Finish Time)"));
+			constraintRow.appendChild(makecell("重要性值：(Weight)"));
+			tblBody.appendChild(constraintRow);
+			for(var i = 0 ; i < startTimes.length; i++){
+				if(scheduled.has(i)){
+					tblBody.appendChild(createELemRow(i+1, datass[i][0], datass[i][1], datass[i][2] , true));
+				}
+				else{
+					tblBody.appendChild(createELemRow(i+1, datass[i][0], datass[i][1], datass[i][2], false));
+				}
+			}
+			tblBody.appendChild(createDescriptionRow("最佳重要性值是(The Optimal Importance is)",optimum));
+			tableForAdded.append(tblBody);
+			// clearTable("tagResult");
+			// var tblBody = document.createElement("tbody");
+			// tblBody.appendChild(createTitleRow("The set of tasks to select to optimize the importance value is"));
+
+		}
+
+		function getSchedule(){
+			var j = datass.length-1;
+			var sched = new Set();
+			while(j >= 0 ){
+				if(pred[j] === p(j)){
+					sched.add(j);
+				}
+				if(j === 0){
+					j = -1;
+				}
+				else{
+					j = pred[j];
+				}
+			}
+			return sched;
+		}
+
+		function optimize(){
+			BB= datassOfnegOne(datass.length);
+			TopDownMergeSort(datass, BB, datass.length);
+			console.log(datass);
+			optArray = arrmno(datass.length);
+			console.log(optArray);
+			pred = arrmtwo(datass.length);
+			console.log(pred);
+			//optimum = memorizedwis(datass.length-1);
+			bottomUpWis();
+			optimum = optArray[datass.length-1];
+			console.log(optimum);
+			console.log(optArray);
+			console.log(pred);
+			displayResult();
+
+			// console.log(TopDownMergeSort(AA,BB,5));
+		}
+		function bottomUpWis() {
+			//optArray[0] = 0;
+			for (var j = 0; j< datass.length ; j++) {
+				var leaveWeight = 0;
+				if(j === 0){
+					leaveWeight = 0;
+				}
+				else{
+					leaveWeight = optArray[j-1];
+				}
+				var takeWeight = 0;
+				if(p(j)!= -1){
+					takeWeight = datass[j][2] + optArray[p(j)];
+				}
+				else{
+					takeWeight = datass[j][2];
+				}             // total weight if we take j
+				if ( leaveWeight > takeWeight ) {
+					optArray[j] = leaveWeight;                   // better to leave j
+					pred[j] = j-1;                       // previous is j-1
+				}
+				else {
+					optArray[j] = takeWeight;                    // better to take j
+					pred[j] = p(j);                // previous is p[j]
+				}
+			}
+			console.log(optArray);
+		}
+		// function memorizedwis(j){
+		// 	if(j < 0){
+		// 		return 0;
+		// 	}
+		// 	if(j === 0){
+		// 		optArray[j] = datass[0][2];
+		// 		pred[j] = -1;
+		// 		return datass[0][2];
+		// 	}
+		// 	else if(optArray[j] != -2){
+		// 		return optArray[j];
+		// 	}
+		// 	else{
+		// 		var leaveWeight = memorizedwis(j-1);
+		// 		var takeWeight = datass[j][2]+memorizedwis(p(j));
+		// 		if(leaveWeight > takeWeight){
+		// 			optArray[j] = leaveWeight;
+		// 			pred[j] = j-1;
+		// 		}
+		// 		else{
+		// 			optArray[j] = takeWeight;
+		// 			pred[j] = p(j)
+		// 		}
+		// 		return optArray[j];
+		// 	}
+		// }
+
+		// function convertTosecond(start, finish){
+		//
+		// }
+    function addTask(){
+      var tempStartTime = parseFloat(document.getElementById("tagInitTime").value);
+			var tempFinishTime = parseFloat(document.getElementById("tagEndTime").value);
+			var tempWeight = parseFloat(document.getElementById("tagImportance").value);
+			if(isNaN(tempWeight)){
+				document.getElementById("tagMessage").innerHTML= "错误：输入的重要性值不是数字。(error:the weight entered is not a number.)";
+				return -1;
+			}
+			if(tempWeight < 0){
+				document.getElementById("tagMessage").innerHTML= "错误：重要性值必须不为负。(error: the weight needs to be no negative.)";
+				return -1;
+			}
+			if(isNaN(tempStartTime)){
+				document.getElementById("tagMessage").innerHTML= "错误：输入的开始时间不是数字。(error:the starting time entered is not a number.)";
+				return -1;
+			}
+			if(tempStartTime < 0){
+				document.getElementById("tagMessage").innerHTML= "错误：输入的开始时间必须不为负。(error: the starting time entered needs to be no negative)";
+				return -1;
+			}
+			if(isNaN(tempFinishTime)){
+				document.getElementById("tagMessage").innerHTML= "错误：输入的结束时间不是数字。(error:the end time entered is not a number)";
+				return -1;
+			}
+			if(tempFinishTime < 0){
+				document.getElementById("tagMessage").innerHTML= "错误：输入的结束时间必须不为负。(error: the end time needs to be no negative)";
+				return -1;
+			}
+			if(tempStartTime > tempFinishTime){
+				document.getElementById("tagMessage").innerHTML= "错误：结束时间必须大于开始时间(error: the end time needs to be larger than start time)";
+				return -1;
+			}
+			startTimes.push(tempStartTime);
+			endTimes.push(tempFinishTime);
+			weights.push(tempWeight);
+			datass.push([tempStartTime,tempFinishTime,tempWeight]);
+			numberDataPoint++;
+			console.log(datass);
+			displayAdded();
+    }
+
+		// Array A[] has the items to sort; array B[] is a work array.
+		function TopDownMergeSort(A, B, n){
+		    CopyArray(A, 0, n, B);           // one time copy of A[] to B[]
+		    TopDownSplitMerge(B, 0, n, A);   // sort data from B[] into A[]
+		}
+		// Sort the given run of array A[] using array B[] as a source.
+		// iBegin is inclusive; iEnd is exclusive (A[iEnd] is not in the set).
+		function TopDownSplitMerge(B, iBegin, iEnd, A){
+		    if(iEnd - iBegin <= 1)                       // if run size == 1
+		        return;                                 //   consider it sorted
+		    // split the run longer than 1 item into halves
+		    var iMiddle = Math.floor((iEnd + iBegin) / 2);              // iMiddle = mid point
+		    // recursively sort both runs from array A[] into B[]
+		    TopDownSplitMerge(A, iBegin,  iMiddle, B);  // sort the left  run
+		    TopDownSplitMerge(A, iMiddle,    iEnd, B);  // sort the right run
+		    // merge the resulting runs from array B[] into A[]
+		    TopDownMerge(B, iBegin, iMiddle, iEnd, A);
+		}
+
+		//  Left source half is A[ iBegin:iMiddle-1].
+		// Right source half is A[iMiddle:iEnd-1   ].
+		// Result is            B[ iBegin:iEnd-1   ].
+		function TopDownMerge(A, iBegin, iMiddle, iEnd, B){
+		    var i = iBegin;
+				var j = iMiddle;
+				console.log(j);
+		    // While there are elements in the left or right runs...
+		    for (var k = iBegin; k < iEnd; k++) {
+		        // If left run head exists and is <= existing right run head.
+		        if (i < iMiddle && (j >= iEnd || A[i][1] <= A[j][1])) {
+		            B[k] = A[i];
+		            i = i + 1;
+		        } else {
+		            B[k] = A[j];
+		            j = j + 1;
+		        }
+		    }
+		}
+		function CopyArray(A, iBegin, iEnd, B){
+	    	for(var k = iBegin; k < iEnd; k++)
+		        B[k] = A[k];
+		}
+		// AA=[[1,2,3],[4,5,6],[1,2,7],[3,3,9],[4,9,1]];
+		// BB= datassOfnegOne(5);
+		// console.log(TopDownMergeSort(AA,BB,5));
+		// console.log(AA);
+
+		function createSubmitRow(name, funName){
+			var submitRow = document.createElement("tr");
+			var ginputElem = document.createElement("input");
+			ginputElem.type = "Button";
+			ginputElem.onclick = function() {funName()};
+			ginputElem.value = name;
+			submitRow.appendChild(ginputElem);
+			return submitRow;
+		}
+		function createELemRow(i, start, finish, weight ,color){
+			var constraintRow = document.createElement("tr");
+			if(color){
+				var tempi = makecell(i);
+				tempi.style.backgroundColor = "green";
+				var tempStart = makecell(start);
+				tempStart.style.backgroundColor = "green";
+				var tempFinish = makecell(finish);
+				tempFinish.style.backgroundColor = "green";
+				var tempWeight = makecell(weight);
+				tempWeight.style.background = "green";
+				constraintRow.appendChild(tempi);
+				constraintRow.appendChild(tempStart);
+				constraintRow.appendChild(tempFinish);
+				constraintRow.appendChild(tempWeight);
+			}
+			else{
+				constraintRow.appendChild(makecell(i));
+				constraintRow.appendChild(makecell(start));
+				constraintRow.appendChild(makecell(finish));
+				constraintRow.appendChild(makecell(weight));
+			}
+			// constraintRow.appendChild(makecell(i));
+			// constraintRow.appendChild(makecell(start));
+			// constraintRow.appendChild(makecell(finish));
+			// constraintRow.appendChild(makecell(weight));
+			return constraintRow;
+		}
+    function clearTable(idstr){
+      var makovTable = document.getElementById(idstr);
+      while(makovTable.rows.length > 0) {
+        makovTable.deleteRow(0);
+      }
+    }
+		function createTitleRow(str){
+			var titleRow = document.createElement("tr");
+			var titleCellTextNode = document.createTextNode(str);
+			titleRow.appendChild(titleCellTextNode);
+			return titleRow;
+		}
+		function createDescriptionRow(label,description){
+			var constraintRow = document.createElement("tr");
+			constraintRow.appendChild(makecell(label));
+			constraintRow.appendChild(makecell(description));
+			return constraintRow;
+		}
+		function makecell(str){
+			var nameCell = document.createElement("td");
+			var nameCellTextNode = document.createTextNode(str);
+			nameCell.appendChild(nameCellTextNode);
+			return nameCell;
+		}
+		function datassOfnegOne(n){
+			var rsl = [];
+			for(var i = 0; i< n ;i++){
+				rsl.push([-1,-1,-1]);
+			}
+			return rsl;
+		}
+		function arrmno(n){
+			var arr = [];
+			for(var i= 0 ; i< n ; i++){
+				arr.push(-2);
+			}
+			return arr;
+		}
+		function arrmtwo(n){
+			var arrr = [];
+			for(var i= 0 ; i< n ; i++){
+				arrr.push(-3);
+			}
+			return arrr;
+		}
+    </script>
+
+	</body>
+</html>

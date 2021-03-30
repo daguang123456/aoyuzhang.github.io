@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="../../styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+#mynetwork14 {
+  width: 500px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork5 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork6 {
+  width: 500px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork7 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork8 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork9 {
+  width: 800px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork10 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork11 {
+  width: 1000px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork12 {
+  width: 500px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork13 {
+  width: 500px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork15 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+#mynetwork16 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork17 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork18 {
+  width: 800px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork19 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+#mynetwork20 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+
+/* #mynetwork1 {
+  width: 500px;
+  height: 300px;
+  margin: 0 auto;
+}
+#mynetwork2 {
+  width: 500px;
+  height: 300px;
+  margin: 0 auto;
+} */
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+<h2><a href ="../../pdffiles/hedt1.pdf">COUNTEREXAMPLES TO HEDETNIEMI’S CONJECTURE</a></h2> by Yaroslav Shitov
+Thank professor Shitov for making a breakthrough on \(50\) years conjecture and letting us present his work.
+<!-- \( \textbf{On Hedetniemi's conjecture} \)
+<br>
+We present a recent paper about <a href="../pdffiles/hedt1.pdf">Disproving the Hedetniemi's Conjecture</a> by Yaroslav Shitov. -->
+<!-- <br> -->
+<!-- <a href="https://github.com/notmyfaultok/Random-Research">This github repo</a> contains the codes involved. -->
+
+<h2>Table Of Content:</h2>
+<ul>
+	<li><a href="hedtniemi.html#intr">Introduction</a></li>
+	<li><a href="hedtniemi.html#ob1">Observation 1</a></li>
+	<li><a href="hedtniemi.html#cl2">Claim 2</a></li>
+	<li><a href="hedtniemi.html#cl3">Claim 3</a></li>
+	<li><a href="hedtniemi.html#refu">The Counterexample</a></li>
+</ul>
+
+<h2 id = "intr">Introduction</h2>
+
+Hedetniemi conjecture in his PhD thesis that the chromatic number of the categorical product of two graph is the minimum of the chromatic number of the two.
+
+<div class="definition">
+Given two graphs \(G=(A,B),H=(X,Y)\), their categorical product(also called tensor product), denoted by \(G \times H\) is defined as:
+\[ V(G \times H)=A \times X \]
+\[ E(G \times H)= \{((z,x),(c,v)| (z,c) \in B, (x,v) \in Y \} \]
+</div>
+Example, \(K_3\times P_3\), where \(K_3\) is the complete graph on \(3\) vertices \(\{D,E,F\}\) and \(P_3\) is the path graph on three vertices \(\{A,B,C\}\):
+
+<div id="mynetwork20"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "AD" },
+    { id: 2, label: "AE" },
+    { id: 3, label: "AF" },
+    { id: 4, label: "BD" },
+    { id: 5, label: "BE" },
+    { id: 6, label: "BF" },
+    { id: 7, label: "CD" },
+    { id: 8, label: "CE" },
+    { id: 9, label: "CF" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 5 },
+    { from: 1, to: 6 },
+    { from: 2, to: 4 },
+    { from: 2, to: 6 },
+    { from: 3, to: 4 },
+    { from: 3, to: 5 },
+    { from: 7, to: 5 },
+    { from: 7, to: 6 },
+    { from: 9, to: 4 },
+    { from: 9, to: 5 },
+    { from: 8, to: 6 },
+    { from: 8, to: 4 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork20");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+<div class="definition">
+	Let \(H\), and \(G\) be graphs. The \(\textbf{exponential graph}\) of \(G\) with base \(H\) is denoted \(H^G\), and is it is defined as:
+	\[
+	\begin{gather*}
+	 V(H^G):=V(H)^{V(G)}\\
+	 E(H^G):=\{(u,v)| \forall (x,y) \in E(G), (u(x), v(y)) \in E(H)\}
+	\end{gather*}
+	\]
+</div>
+  If \(H = K_c\), then we can think of the vertices
+  of \(K_c^G \) as colorings of vertices in \(G\) with \(c\) colors where two colorings in \(V(K_c^G)\) are adjacent if they color adjacent vertices in \(G\) with different colors.
+  We denote these types of exponential graphs as \(\mathcal{E}_c(G)\).<br>
+
+Example, given length \(3\) path graph \(P_3\) and complete graph on \(2\) vertices \(K_2\):
+<div id="mynetwork8"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "A" },
+    { id: 2, label: "B" },
+    { id: 3, label: "C" },
+    { id: 4, label: "1" ,color: "rgb(234,179,245)"},
+    { id: 5, label: "2" , color:"rgb(213,250,178)"}
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 2, to: 3 },
+    { from: 4, to: 5 ,color: "blue"}
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork8");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+We think of vertices in \(K_2\) as colors. Say vertex \(1\) correspond to <font color="rgb(234,179,245)">purple</font> color and vertex \(2\) to <font color="rgb(213,250,178)">green</font> color.
+<br> A vertex in \(K_2 ^{P_3}=\mathcal{E}_2(P_3)\) is a coloring of vertices of \(P_3\) in two colors:
+
+<div id="mynetwork11"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+		{ id: 1, label: "A", color: "rgb(234,179,245)"},
+    { id: 2, label: "B", color: "rgb(234,179,245)"},
+    { id: 3, label: "C", color: "rgb(234,179,245)"},
+
+		{ id: 31, label: "A", color: "rgb(234,179,245)"},
+		{ id: 32, label: "B", color: "rgb(234,179,245)"},
+		{ id: 33, label: "C", color: "rgb(213,250,178)"},
+
+		{ id: 41, label: "A", color: "rgb(234,179,245)"},
+		{ id: 42, label: "B", color: "rgb(213,250,178)"},
+		{ id: 43, label: "C", color: "rgb(234,179,245)"},
+
+		{ id: 51, label: "A", color: "rgb(234,179,245)"},
+		{ id: 52, label: "B", color: "rgb(213,250,178)"},
+		{ id: 53, label: "C", color: "rgb(213,250,178)"},
+
+		{ id: 61, label: "A", color: "rgb(213,250,178)"},
+		{ id: 62, label: "B", color: "rgb(234,179,245)"},
+		{ id: 63, label: "C", color: "rgb(234,179,245)"},
+
+		{ id: 71, label: "A", color: "rgb(213,250,178)"},
+		{ id: 72, label: "B", color: "rgb(234,179,245)"},
+		{ id: 73, label: "C", color: "rgb(213,250,178)"},
+
+		{ id: 81, label: "A", color: "rgb(213,250,178)"},
+		{ id: 82, label: "B", color: "rgb(213,250,178)"},
+		{ id: 83, label: "C", color: "rgb(234,179,245)"},
+
+		{ id: 21, label: "A" , color:"rgb(213,250,178)"},
+		{ id: 22, label: "B" , color:"rgb(213,250,178)"},
+		{ id: 23, label: "C" , color:"rgb(213,250,178)"}
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2, color: "blue" },
+		{ from: 3, to: 2 , color: "blue"},
+
+		{ from: 31, to: 32, color: "blue" },
+		{ from: 33, to: 32 , color: "blue"},
+
+		{ from: 41, to: 42, color: "blue" },
+		{ from: 43, to: 42 , color: "blue"},
+
+		{ from: 51, to: 52, color: "blue" },
+		{ from: 53, to: 52 , color: "blue"},
+
+		{ from: 61, to: 62, color: "blue" },
+		{ from: 63, to: 62 , color: "blue"},
+
+		{ from: 71, to: 72, color: "blue" },
+		{ from: 73, to: 72 , color: "blue"},
+
+		{ from: 81, to: 82, color: "blue" },
+		{ from: 83, to: 82 , color: "blue"},
+
+		{ from: 21, to: 22 , color: "blue"},
+		{ from: 23, to: 22 , color: "blue"}
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork11");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+The two colorings that colors every vertices in \(P_3\) monochromatically are the only colorings forming an edge in \(K_2 ^{P_3}\):
+
+<div id="mynetwork9"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 111, label: "(A:1,B:1,C:1)" },
+    { id: 112, label: "(A:1,B:1,C:2)" },
+    { id: 121, label: "(A:1,B:2,C:1)" },
+    { id: 122, label: "(A:1,B:2,C:2)" },
+    { id: 211, label: "(A:2,B:1,C:1)" },
+		{ id: 212, label: "(A:2,B:1,C:2)" },
+		{ id: 221, label: "(A:2,B:2,C:1)" },
+		{ id: 222, label: "(A:2,B:2,C:2)" },
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 111, to: 222 , value: 1}
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork9");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {
+// 		nodes: {
+// 	shape: "dot",
+// 	scaling: {
+// 		customScalingFunction: function (min, max, total, value) {
+// 			return value / total;
+// 		},
+// 		min: 5,
+// 		max: 150,
+// 	},
+// },
+	};
+  var network = new vis.Network(container, data, options);
+</script>
+
+Here, the vertex with label \((A:i,B:j,C:k)\) just means we assign colors \(i,j,k \in \{1,2\}\) to vertices \(A,B,C \in V(G)\).<br>
+<br>
+
+<!-- How we use exponential graphs on in the Hedetniemi's Conjecture is as follow: -->
+
+
+<!-- <div class="lemma">
+ Given graphs \(G,H\), and map definined as \( f: G \times K^G \to K \), \(f(u,\phi) = \phi(u)\) is a homomorphism.
+</div>
+<div class="proof">
+Let \( ((u, \phi),(v, \tau)) \in E(G \times K^G) \), then \( f((u, \phi)) =\phi(u), f((v, \tau))=\tau(v) \)
+<br>
+As \((u,v) \in E(G), (\phi,\tau) \in E(K^G) \Rightarrow (\phi(u) ,\tau(v)) \in E(K)\)
+</div> -->
+
+<!-- We first give this lemma:
+<div class="lemma">
+	(lemma 1)
+Given graphs \(G,H,K\), we have \(G \times H \to K \iff H \to K^G\)
+</div>
+<a href="lemma1.html">proof</a>
+<br> -->
+
+
+<!-- <div class= "definition">
+  We define the statement: \(H(n):\) If \(G \times H\) is \(n\)-colorable, then \(G\) or \(H\) is \(n\)-colorable.
+</div> -->
+
+<!-- Since \(\chi(G,H) \leq \min(\chi(G),\chi(H)) \),
+the Heditmiemi's conjecture is true if and only if \(\chi(G,H) \geq \min(\chi(G),\chi(H)) \) -->
+
+<!-- \(H(n)\) is true for all \(n\).  -->
+
+<!-- <br>
+We can use the above lemma to prove the following lemma:
+<div class="lemma">
+	(lemma 2)
+ Hedetniemi's conjecture is equivalent to :
+ \[ \chi(G)>n \Rightarrow \chi((K_n)^G) \leq n\]
+</div>
+<a href="lemma2.html">proof</a>
+<br>
+If we can find a graph \(G\) such that \(\chi(G)>n\) and also \(\chi((K_n)^G) > n\) then we would have disproven the conjecture.
+<br> -->
+
+<div class ="definition">
+Given graphs \(G,H\), the \(\textbf{strong product}\) \(G \boxtimes H\) is defined as follow:
+\[\begin{gather*}
+V(G \boxtimes H)=V(G) \times V(H)\\
+E(G \boxtimes H) = \{ ((u,v),(x,y)) |((u,v),(x,y)) \in E(G \times H) \text{ or } ((u,v),(x,y)) \in E(G \square H) \}
+\end{gather*}
+\]
+</div>
+Here is \(P_3 \boxtimes K_3\) where \(P_3= A-B-C\) and \(K_3\) is on vertices \(\{D,E,F\}\):
+
+<div id="mynetwork6"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "FB" , color: "rgb(170,243,200)"},
+    { id: 2, label: "FC" ,color: "rgb(172,216,230)"},
+    { id: 3, label: "FA" ,color: "rgb(220,230,172)"},
+    { id: 4, label: "DB" ,color: "rgb(170,243,200)"},
+    { id: 5, label: "DC" ,color: "rgb(172,216,230)"},
+    { id: 6, label: "DA" ,color: "rgb(220,230,172)" },
+    { id: 7, label: "EB" ,color: "rgb(170,243,200)"},
+    { id: 8, label: "EC" ,color: "rgb(172,216,230)"},
+    { id: 9, label: "EA" ,color: "rgb(220,230,172)" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+       { from: 1, to: 2 ,color: "blue"},
+    { from: 1, to: 3 ,color: "blue"},
+    { from: 4, to: 5 ,color: "blue"},
+    { from: 4, to: 6 ,color: "blue"},
+    { from: 7, to: 8 ,color: "blue"},
+    { from: 1, to: 4 , color: "rgb(170,243,200)"},
+    { from: 4, to: 7 , color: "rgb(170,243,200)"},
+    { from: 7, to: 1 , color: "rgb(170,243,200)"},
+    { from: 7, to: 9 ,color: "blue"},
+    { from: 3, to: 6 ,color: "rgb(220,230,172)"},
+    { from: 6, to: 9 ,color: "rgb(220,230,172)"},
+    { from: 9, to: 3 ,color: "rgb(220,230,172)"},
+
+    { from: 2, to: 5 ,color: "rgb(172,216,230)"},
+    { from: 5, to: 8 ,color: "rgb(172,216,230)"},
+    { from: 8, to: 2 ,color: "rgb(172,216,230)"},
+    { from: 1, to: 9 ,color: "blue"},
+    { from: 3, to: 7 ,color: "blue"},
+    { from: 1, to: 8 ,color: "blue"},
+    { from: 2, to: 7 ,color: "blue"},
+    { from: 1, to: 6 ,color: "blue"},
+    { from: 3, to: 4 ,color: "blue"},
+    { from: 1, to: 5 ,color: "blue"},
+    { from: 4, to: 2 ,color: "blue"},
+    { from: 8, to: 4 ,color: "blue"},
+    { from: 7, to: 6 ,color: "blue"},
+    { from: 7, to: 5 ,color: "blue"},
+    { from: 9, to: 4 ,color: "blue"}
+
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork6");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+We made the coloring of the complete graph \(K_3\) in the strong product so that you can visualize better.
+<br> we can really think of \(G \boxtimes K_n\) as \(G\) but each of its verticess is a copy of \(K_n\)
+and all possible edges between \((K_n, a), (K_n,b) \) is present if \((a,b) \in E(G)\):
+
+<div id="mynetwork10"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "(K_3,B)" ,value: 3, color: "rgb(170,243,200)"},
+    { id: 2, label: "(K_3,A)" ,value: 3, color: "rgb(172,216,230)"},
+    { id: 3, label: "(K_3,C)" ,value: 3, color: "rgb(220,230,172)"}
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 3 ,color: "blue",value:9, label: "9"},
+    { from: 1, to: 2 ,color: "blue",value:9, label: "9"}
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork10");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+The value \(9\) on each thick edge means there are \(9\) edges between the clusters.
+<br>We also need another construction of graphs. We'll denote by \(\Gamma_G\), the graph obtained from \(G\), by adding all loops.
+For example, \(\Gamma_{P_3} \) looks like:
+
+<div id="mynetwork7"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "C" },
+    { id: 2, label: "B" },
+    { id: 3, label: "A" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 2, to: 3 },
+    { from: 3, to: 3 },
+    { from: 1, to: 1 },
+    { from: 2, to: 2 }
+  ]);
+  // create a network
+  var container = document.getElementById("mynetwork7");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+<div class="definition">
+  The \(\textbf{girth}\) of a graph is the length of its smallest cycle.
+</div>
+For example, the girth of \(P_3 \boxtimes K_3\) is \(3\) as it contains a triangle say\(CE-AE-BE\).
+<div class="definition">
+Given a graph \(G\), its \(\textbf{radius}\), denoted by \(r(G)\), is the smallest distance among all largest distances between pairwise vertices in the graph.
+</div>
+<div class="definition">
+The \(\textbf{fractional chromatic number}\) of a graph \(G\) is the infimum over all \(m \in \mathbb{N}\) of \[\chi_f(G) := \inf_m \frac{G \boxtimes K_m}{m}\]
+</div>
+
+
+<!-- <div class="theorem">
+	(theorem 1)
+ Let \(G\) be a finite graph such that girth \(>5\) and radius \(>2\), let \(n >6m, n,m \in \mathbb{N}\). Then for large enough \(n\), we have \(\chi((K_n)^{G \boxtimes K_m})>n \).
+</div>
+We are ready to give proof to refute the Hedetniemi's conjecture.
+<div class="theorem">
+	(theorem 2)
+Hedetniemi's conjecture is false.
+</div> -->
+
+<!-- <div class="proof">
+  Given a graph \(G\) with girth \(>5\), \(\chi_f(G)>7\). \(G\) has radius \(>2, \chi_F(G) \leq 2\). Then for any \(m\),
+  \[ \chi(G \boxtimes K_m)\geq \chi_f(G) \cdot m > 7m \]
+  Now, let \(n:=7m\), then by theorem above, for large enough \(n\), \(\chi((K_n)^{G \boxtimes K_m})>n\).
+</div> -->
+
+<!-- Now, we look at how we prove the theorem involved in the proof of disproving Hedetniemi's conjecture. -->
+<div class="definition">
+Let \(G\) be a graph, \(n \in \mathbb{N}\) a constant and \(k \in [n]\), we let \(\bar{k} \in V(\mathcal{E}_n(G)) \) be the contant mapping that maps all vertices to the color \(k\). A \(\textbf{suited colouring}\) of \((K_n)^G\) is a proper \(n\) coloring \(\phi: (K_n)^G \to K_n \) such that \(\phi(\bar{k})=k \).
+</div>
+
+For example, a suited proper coloring of the \(\mathcal{E}_2(P_3)\) graph could be :
+
+<div id="mynetwork12"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 111, label: "(A:1,B:1,C:1)" , color:"rgb(234,179,245)" },
+    { id: 112, label: "(A:1,B:1,C:2)" , color:"rgb(213,250,178)"},
+    { id: 121, label: "(A:1,B:2,C:1)" , color:"rgb(213,250,178)"},
+    { id: 122, label: "(A:1,B:2,C:2)" , color:"rgb(213,250,178)"},
+    { id: 211, label: "(A:2,B:1,C:1)" , color:"rgb(213,250,178)"},
+		{ id: 212, label: "(A:2,B:1,C:2)" , color:"rgb(213,250,178)"},
+		{ id: 221, label: "(A:2,B:2,C:1)" , color:"rgb(213,250,178)"},
+		{ id: 222, label: "(A:2,B:2,C:2)" , color:"rgb(213,250,178)"}
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 111, to: 222 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork12");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+Here we see that the constant mapping that maps every vertex in \(P_3\) to \(1\) is colored purple, which represents vertex \(1\) in \(K_2\).<br>
+and the constant mapping that maps every vertex in \(P_3\) to \(2\) is colored green, which represents vertex \(2\) in \(K_2\).
+
+<div class="lemma" id = "ob1">
+	(Observation 1)
+Given a graph \(G\) and a proper suited coloring \(f\) of \(V(\mathcal{E}_n(G))\) for some \(n \in \mathbb{N}\),
+Then \(f(\phi)  \in Im(\phi) \).
+</div>
+<div class="proof">
+Consider a color \(b \notin Im(\phi) \), then \( (\bar{b}, \phi) \in E(\mathcal{E}_n(G))\). And so \( \phi\) could not have been
+given the color \(b\) in a proper suited coloring of \(V(\mathcal{E}_n(G))\).
+</div>
+
+<div class="definition">
+(Shitov). Given a suited colouring \(\phi: (K_n)^G \to [n]\). We know that \(\phi(\alpha) = b \in Im(\alpha)\).  So some vertex of \(G\) is colored \(b\) by \(\alpha\).
+If any \(b\) colored map \(\beta \in (K_n)^G\), maps a vertex in \(N[v] \subset V(G)\) to color \(b\), then we say \(b\) is \(v\)-\(\textbf{robust}\).
+</div>
+
+For example, in the above coloring of \(\mathcal{E}_2(P_3)\), the coor \(2\)(green) is <a href="threedhouse.html">\(B\)-robust</a>
+
+
+
+<!--
+The idea of the counterexample that Shitov came up with is using the following strategy:
+For any suited colouring, there is always a vertex with many robust colours(lemma 4). But Hedetniemi's conjecture will provide us with too many suited colourings and from which we can find one that does not have a vertex with many robust colours. -->
+
+
+<br>
+
+<div class ="lemma" id = "cl2">
+	(Claim 2)
+ Given graph \(|V(G)|=n\), a suited proper \(c\)-coloring \(\Psi\) of \(\mathcal{E}_c(G)\).
+ There exist a vertex \(v \in V(G)\) such that more than \(c-\sqrt[n]{n^3c^{n-1}}\) color classes \(b\)
+ are \(v\)-robust.
+</div>
+<a href="lemma4.html">proof</a>
+
+<div class="lemma">
+	(Claim 3, first statement)
+  Given graph \(G\) and \(c,q \in \mathbb{N} \), a suited proper coloring \( \Lambda : \mathcal{E}_c(G \boxtimes K_q) \to [c] \),
+	restriction of \(\Lambda\) to the mappings that are constant on the cliques \( \{g\} \times K_q \subset G \boxtimes K_q \) is a proper colorings
+	\( \psi : \mathcal{E}_c(\Gamma_G) \to [c] \) where we indentify clique \(\{g\} \times K_q\) to \(g\).
+</div>
+<a href="lemma5.html">proof</a>
+Let's see two colorings of our example \(P_3 \boxtimes K_3\):
+<div id="mynetwork18"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "FB" , color: "rgb(170,243,200)"},
+    { id: 2, label: "FC" ,color: "rgb(172,216,230)"},
+    { id: 3, label: "FA" ,color: "rgb(220,230,172)"},
+    { id: 4, label: "DB" ,color: "rgb(170,243,200)"},
+    { id: 5, label: "DC" ,color: "rgb(172,216,230)"},
+    { id: 6, label: "DA" ,color: "rgb(220,230,172)" },
+    { id: 7, label: "EB" ,color: "rgb(170,243,200)"},
+    { id: 8, label: "EC" ,color: "rgb(172,216,230)"},
+    { id: 9, label: "EA" ,color: "rgb(220,230,172)" },
+
+// "rgb(252,91,191)"
+		{ id: 11, label: "FB" , color: "rgb(249,214,164)"},
+		{ id: 12, label: "FC" ,color: "rgb(252,91,91)"},
+		{ id: 13, label: "FA" ,color: "rgb(252,91,191)"},
+		{ id: 14, label: "DB" ,color: "rgb(249,214,164)"},
+		{ id: 15, label: "DC" ,color: "rgb(252,91,91)"},
+		{ id: 16, label: "DA" ,color: "rgb(252,91,191)" },
+		{ id: 17, label: "EB" ,color: "rgb(249,214,164)"},
+		{ id: 18, label: "EC" ,color: "rgb(252,91,91)"},
+		{ id: 19, label: "EA" ,color: "rgb(252,91,191)" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+       { from: 1, to: 2 ,color: "blue"},
+    { from: 1, to: 3 ,color: "blue"},
+    { from: 4, to: 5 ,color: "blue"},
+    { from: 4, to: 6 ,color: "blue"},
+    { from: 7, to: 8 ,color: "blue"},
+    { from: 1, to: 4 , color: "rgb(170,243,200)"},
+    { from: 4, to: 7 , color: "rgb(170,243,200)"},
+    { from: 7, to: 1 , color: "rgb(170,243,200)"},
+    { from: 7, to: 9 ,color: "blue"},
+    { from: 3, to: 6 ,color: "rgb(220,230,172)"},
+    { from: 6, to: 9 ,color: "rgb(220,230,172)"},
+    { from: 9, to: 3 ,color: "rgb(220,230,172)"},
+
+    { from: 2, to: 5 ,color: "rgb(172,216,230)"},
+    { from: 5, to: 8 ,color: "rgb(172,216,230)"},
+    { from: 8, to: 2 ,color: "rgb(172,216,230)"},
+    { from: 1, to: 9 ,color: "blue"},
+    { from: 3, to: 7 ,color: "blue"},
+    { from: 1, to: 8 ,color: "blue"},
+    { from: 2, to: 7 ,color: "blue"},
+    { from: 1, to: 6 ,color: "blue"},
+    { from: 3, to: 4 ,color: "blue"},
+    { from: 1, to: 5 ,color: "blue"},
+    { from: 4, to: 2 ,color: "blue"},
+    { from: 8, to: 4 ,color: "blue"},
+    { from: 7, to: 6 ,color: "blue"},
+    { from: 7, to: 5 ,color: "blue"},
+    { from: 9, to: 4 ,color: "blue"},
+
+
+ { from: 11, to: 12 ,color: "blue"},
+ { from: 11, to: 13 ,color: "blue"},
+ { from: 14, to: 15 ,color: "blue"},
+ { from: 14, to: 16 ,color: "blue"},
+ { from: 17, to: 18 ,color: "blue"},
+ { from: 11, to: 14 , color: "rgb(249,214,164)"},
+ { from: 14, to: 17 , color: "rgb(249,214,164)"},
+ { from: 17, to: 11 , color: "rgb(249,214,164)"},
+ { from: 17, to: 19 ,color: "blue"},
+ { from: 13, to: 16 ,color: "rgb(252,91,191)"},
+ { from: 16, to: 19 ,color: "rgb(252,91,191)"},
+ { from: 19, to: 13 ,color: "rgb(252,91,191)"},
+ { from: 12, to: 15 ,color: "rgb(252,91,91)"},
+ { from: 15, to: 18 ,color: "rgb(252,91,91)"},
+ { from: 18, to: 12 ,color: "rgb(252,91,91)"},
+ { from: 11, to: 19 ,color: "blue"},
+ { from: 13, to: 17 ,color: "blue"},
+ { from: 11, to: 18 ,color: "blue"},
+ { from: 12, to: 17 ,color: "blue"},
+ { from: 11, to: 16 ,color: "blue"},
+ { from: 13, to: 14 ,color: "blue"},
+ { from: 11, to: 15 ,color: "blue"},
+ { from: 14, to: 12 ,color: "blue"},
+ { from: 18, to: 14 ,color: "blue"},
+ { from: 17, to: 16 ,color: "blue"},
+ { from: 17, to: 15 ,color: "blue"},
+ { from: 19, to: 14 ,color: "blue"}
+
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork18");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+
+The two ways to color \(P_3 \boxtimes K_3\), where all vertices in the same cluster \((g,K_3)\) receives the same color, can be translated to a coloring of \(\Gamma_{P_3}\):
+<div id="mynetwork19"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "A" ,color: "rgb(220,230,172)"},
+    { id: 2, label: "B" ,color:"rgb(170,243,200)"},
+    { id: 3, label: "C" ,color: "rgb(172,216,230)"},
+
+		{ id: 11, label: "A" ,color: "rgb(252,91,191)"},
+		{ id: 12, label: "B", color: "rgb(249,214,164)" },
+		{ id: 13, label: "C" ,color: "rgb(252,91,91)"}
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 ,color: "blue"},
+    { from: 2, to: 3 ,color: "blue"},
+    { from: 3, to: 3 },
+    { from: 1, to: 1 },
+    { from: 2, to: 2 },
+
+		{ from: 11, to: 12 ,color: "blue"},
+		{ from: 12, to: 13 ,color: "blue"},
+		{ from: 13, to: 13 },
+		{ from: 11, to: 11 },
+		{ from: 12, to: 12 }
+  ]);
+  // create a network
+  var container = document.getElementById("mynetwork19");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+This way, it is visually clear the correspondence between a suited proper coloring of \(P_3 \boxtimes K_3\) and suited proper coloring of \(\Gamma_{P_3}\).
+
+<div class="lemma" id = "cl3">
+	(Claim 3 rest )
+	Let \(G\) be a finite simple graph with \(n\) vertices and with finite girth \( \geq 6\). Then, for sufficiently large \(q\),
+	one has \(\chi(\mathcal{E}_c(G \boxtimes K_q)) > c \) with \(c= \lceil 3.1q \rceil \).
+</div>
+<div class="proof">
+By lemma 5, we get a proper coloring \(\psi : \mathcal{E}_c(\Gamma_G) \to [c] \) from the map \(\Lambda: \mathcal{E}_c(G \boxtimes K_q) \to [n] \).
+<br>By lemma 4, there is a vertex \(v = v(\psi) \in V(G)\) such that \(\geq c - \sqrt[n]{n^3c^{n-1}} \) color classes are \(v\)- robust.
+<br>
+\(\textbf{Claim:}\) The following vertices in \(\mathcal{E}_c(G \boxtimes K_q)\) is a clique:
+\(M := \{\mu_{q+1},...,\mu_c\} \) where we let \(i \in [q], t \in [c]-[q]\) and:
+\[\begin{gather*}
+   \mu_t(g,i) = i \text{ if } dist(v,g) \in \{0,2\} \\
+	 \mu_t(g,i) = q+i \text{ if } dist(v,g)=1 \\
+	 \mu_t(g,i) = t \text{ if } dist(v,g) \geq 3
+\end{gather*}
+\]
+\(\textbf{proof of claim:}\)
+Seeing an example would help understand,
+
+<div id="mynetwork13"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "(v,K_q)" ,value: 3, color: "rgb(170,243,200)"},
+    { id: 2, label: "(D_1,K_q)" ,value: 3, color: "yellow"},
+    { id: 3, label: "(D_2,K_q)" ,value: 3, color: "yellow"},
+		{ id: 4, label: "(D_3,K_q)" ,value: 3, color: "yellow"},
+		{ id: 5, label: "(T_1,K_q)" ,value: 3, color: "rgb(170,243,200)"},
+		{ id: 6, label: "(T_2,K_q)" ,value: 3, color: "rgb(170,243,200)"},
+		{ id: 7, label: "(B_1,K_q)" ,value: 3, color: "orange"},
+		{ id: 8, label: "(B_2,K_q)" ,value: 3, color: "orange"},
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 3 ,color: "rgb(226,239,249)",value:9, label: "q*q"},
+    { from: 1, to: 2 ,color: "rgb(226,239,249)",value:9, label: "q*q"},
+		{ from: 1, to: 4 ,color: "rgb(226,239,249)",value:9, label: "q*q"},
+		{ from: 5, to: 2 ,color: "rgb(226,239,249)",value:9, label: "q*q"},
+		{ from: 3, to: 6 ,color: "rgb(226,239,249)",value:9, label: "q*q"},
+		{ from: 5, to: 7 ,color: "rgb(226,239,249)",value:9, label: "q*q"},
+		{ from: 6, to: 8 ,color: "rgb(226,239,249)",value:9, label: "q*q"}
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork13");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+Here, we are seeing nodes that are within distance \(3\) from the node \(v\). Let's fix \(t \in \{q+1,...,c\}\).
+<br>
+Let's look at how \(\mu_t\) colors the graph \(G \boxtimes K_q\). For illustration purposes, let's assume \(p=3\) and
+<br>
+we associate
+<br>\(1\) to color purple,
+<br>\(2\) to color green
+<br> and \(3\) to color yellow.
+<br>
+Well, if \(u \in V(G)\) is such that \(dist(u,v) \in \{0,2\}\), then \((u,K_q)\) cluster is colored like so:
+
+
+<div id="mynetwork15"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "(u,1)" ,value: 3, color: "rgb(234,179,245)"},
+    { id: 2, label: "(u,2)" ,value: 3, color: "rgb(213,250,178)"},
+    { id: 3, label: "(u,3)" ,value: 3, color: "yellow"}
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 ,color: "rgb(134,179,245)"},
+    { from: 3, to: 2 ,color: "rgb(134,179,245)"},
+		{ from: 3, to: 1 ,color: "rgb(134,179,245)"}
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork15");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+The vertices in the green clusters of the example are all colored like so.
+<br>
+If if \(u \in V(G)\) is such that \(dist(u,v)=1\), then \((u,K_q)\) cluster is colored like the previous case, but using \(q\) different colors, say:
+
+<div id="mynetwork16"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "(u,1)" ,value: 3, color: "rgb(0,260,245)"},
+    { id: 2, label: "(u,2)" ,value: 3, color: "rgb(113,250,178)"},
+    { id: 3, label: "(u,3)" ,value: 3, color: "orange"}
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 ,color: "rgb(134,179,245)"},
+    { from: 3, to: 2 ,color: "rgb(134,179,245)"},
+		{ from: 3, to: 1 ,color: "rgb(134,179,245)"}
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork16");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+The vertices in the yellow clusters of the above example is colored this way.
+<br>
+Finally, if \(u \in G\) is such that \(dist(u,v) \geq 3\), then the verties in the cluster \((u,K_q)\) is color with the same color \(t\), say:
+
+<div id="mynetwork17"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "(u,1)" ,value: 3, color: "rgb(0,260,2)"},
+    { id: 2, label: "(u,2)" ,value: 3, color: "rgb(0,260,2)"},
+    { id: 3, label: "(u,3)" ,value: 3, color: "rgb(0,260,2)"}
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 ,color: "rgb(134,179,245)"},
+    { from: 3, to: 2 ,color: "rgb(134,179,245)"},
+		{ from: 3, to: 1 ,color: "rgb(134,179,245)"}
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork17");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+Now, we analyse why \(M := \{\mu_{q+1},...,\mu_c\} \) form a clique(complete graph).
+<br>
+If we have \((w,i),(u,j)\) where \(dist(u,v) \geq 3\) and \(dist(w,v) \geq 3\)  then they receives different colors under two differrent maps
+\(\mu_{\alpha}, \mu_{\beta}\) as one of them reveives color \(\alpha\) and the other receives color \(\beta\).
+<br>
+If we have \((w,i),(u,j)\) where \(dist(u,v) = 2\) and \(dist(w,v) \geq 3\)  then they receives different colors under two differrent maps
+\(\mu_{\alpha}, \mu_{\beta}\) as one receives colors in \(\{1,...,q\}\) and the other receives color in \(\{q+1,...,c\}\).
+<br>
+There are no edges between \( (u,i),(w,j)\) if \(dist(u,v)=2\) and \(dist(w,v)=2\) because the path from \(u\) to \(v\),
+the path from \(w\) to \(v\) and edge \((u,v)\) form a cycle of length less than \(6\) which contradict the girth requirment of \(G\).
+<br>
+If we have \((w,i),(u,j)\) where \(dist(u,v) = 2\) and \(dist(w,v) = 1\)  then they receives different colors under two differrent maps
+\(\mu_{\alpha}, \mu_{\beta}\) as one receives colors in \(\{1,...,q\}\) and the other receives color in \(\{q+1,...,2q\}\).
+<br>
+There are no edges between \( (u,i),(w,j)\) if \(dist(u,v)=1\) and \(dist(w,v)=1\) as they could form a cycle of length \(3\) in \(G\) violating the girth requirment.
+<br>
+If we have \((w,i),(v,j)\) where \(dist(w,v) = 1\)  then they receives different colors under two differrent maps
+\(\mu_{\alpha}, \mu_{\beta}\) as one receives colors in \(\{1,...,q\}\) and the other receives color in \(\{q+1,...,2q\}\).
+<br>
+
+Hence vertices in \(M\) form a clique.
+<br>
+Now, as \(c = \lceil 3.1 q \rceil \), \(|M| \geq \lceil 3.1q \rceil -q >2q \). So as all vertices in \(M\) receives different colors, there must be
+\(\tau \in \{q+1,...,c\}\) such that \(\Lambda(\mu_{\tau}) \notin \{1,...,2q\}\). So since the only possible colors in \(Im(\mu_{\tau})\) that could be
+\(\tau\) is in vertices \((u,i)\) where \(dist(u,v) \geq 3\), we have \(\tau\) is not \(v\)-robust. Consider the ratio of number of no \(v\)-robust colors over \(c-2q-1\):
+
+\[ \frac{\sqrt[n]{n^3(3.1q)^{n-1}}}{c-2q-1} = \frac{\sqrt[n]{n^3(3.1q)^{n-1}}}{1.1q} = \frac{n^3(3.1q)^{n-1}}{1.1^n q^n} \to 0 \text{ as } q \to \infty\]
+
+So for large enough \(q\), there must be a color\(\sigma \notin \{1,...,2q,\tau\}\) that is \(v\)-robust.
+
+Consider a map \(\nu : G \boxtimes K_q \to \{1,...,c\}\):
+\[\begin{cases}
+\nu(g,i) = \tau , \text{ if } g \in N(v) \\
+\nu(g,i) = \sigma , \text{ if } dist(v,g) \geq 2
+\end{cases}
+\]
+
+\(\nu\) is adjacent to \(\mu_{\tau}\) but has the same color as \(\mu_{\tau}\). So that is a contradiction, so \(\chi(\mathcal{E}_c(G \boxtimes K_q)) > c \).
+
+<h2 id = "refu">The counterexample</h2>
+
+Consider graph \(G\) such that girth of \(G\) is at least \(6\) and \(\chi_f(G) > 3.1\).
+Existance of such graph \(G\) is garanteed by classical result.
+Then we let \(c = \lceil 3.1 q \rceil\) and take \(q\) large enough so that
+\[\chi( \mathcal{E}_c(G \boxtimes K_q)) >c \text{(by claim 3) and } \chi((G \boxtimes K_q)) \geq q \cdot \chi_f(G) >c  \]
+However,
+\[ \chi(\mathcal{E}_c(G \boxtimes K_q) \times (G \boxtimes K_q))=c \]
+The last claim is because \(\chi(G \times \mathcal{E}_c(G))=c \) and this is true because of the coloring:
+\[ \phi:  V(G \times \mathcal{E}_c(G)) \to [c] \text{ by }  \phi((u,f)) \to f(u) \]
+<!-- So this is the proof finally. -->
+<!-- <br>
+
+
+The only thing left is the classical result part and the use of fractional chromatic number part.
+<br> -->
+<!-- Thank you for being patient and compassionate and understanding and forgiving and
+
+not inpulsive and knows how to put your anger in an hamless way and
+
+not being deceiving and not being a fox etc etc...
+<br>
+OK alright.... cheers.... chao....
+
+<br>
+
+<h1>Your number 1 harderst worker  the desk</h1> -->
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <h2> Some facts about exponential graphs</h2>
+
+<br>
+We built a database of examples graph using networkX. We also computed some basic graph properties.
+<br>
+Partial data can be viewed <a href="pdffiles/grahhhhhh.csv"> here </a>.
+<br>
+We have made drawings of graphs \(G\) with their \(\mathcal{E}_c(G)\) of some values of \(c\):
+<ul>
+<li>Here is  <a href="pdffiles/multipage-6.pdf">\(c = 2\)</a> and each page contains the exponential graph on left and the graph on right.</li>
+<li>Here is <a href="pdffiles/multipage-9.pdf">\(c = 3\)</a> and each page contains one graph and each graph and its exponential graph appears in adjacent pages. </li>
+
+</ul>
+
+<br>
+
+
+From the generated examples, we have smart easy remarks:
+
+<div class="lemma">
+  The exponential graph \(\mathcal{E}_c(G)\) of the disjoint union of singleton vertices graph \(G\) on \(n\) vertices are complete graphs on \(c^n\) vertices.
+</div>
+<div class="proof">
+  This is because the statement : \(\forall u,v \in c^{[V(R_0^n)]}, \forall (x,y) \in E(R_0^n), u(x) \neq v(y) \wedge v(x) \neq u(y)\) is trivially true.
+</div>
+
+<div class="lemma">
+ Given a connected graph \(G\), then \(\mathcal{E}_2(G) \) consitsts of an edge and the rest are singleton vertices.
+</div>
+<div class="proof">
+	The edge in \(\mathcal{E}_2(G)\) represents the connection between the trivial maps that map all vertices in \(G\) to one of the two colors.
+	<br>
+	We break the problem into cases:
+	<ol>
+		<li> if the \(G\) is just an edge, then this can be verified to satisfy the lemma. </li>
+		<li> Otherwise \(G\) has a path of length \(2\).
+			<br>
+			we want, by contradiction, find a no trivial coloring of \(G\) that is not an isolated vetex in \(\mathcal{E}_2(G)\).
+			<br>
+			If a coloring of \(V(G)\), where on the path of length \(2\), the middle vertex is adjacent to vertices of different color.
+			<br>
+			Then that coloring is not adjacent to any other coloring.
+			<br>
+			This is because no matter how you color the middle vertex, it will have the same color as one of its neighbhor in that path.</li>
+		<li> If \(G\) has a cycle of odd lenght, and we have a no triavial coloring of \(G\) then we get back to case \(2\) so we are left with case that  \(G\) must be bipartite.
+			<br> By avoiding case \(2\) means we can only give proper coloring of \(G\),
+			<br>
+			but a proper coloring of a bipartite graph can only be adjacent to itself in \(\mathcal{E}_2(G)\) so it is again an isolated vertex in \(\mathcal{E}_2(G)\).
+		</li>
+	</ol>
+   So all no trivial coloring of \(V(G)\) are not connected to any other colorings. So claim in the lemma must be true.
+</div>
+
+
+<h2> Alternative ways </h2>
+<div class="definition">
+The \(\textbf{Hajos sum}\) of graphs \(G\) and \(H\) with respect to edges \(ab \in E(G)\)
+and \(xy \in E(H)\), is the graph obtained from the disjoint union of \(G\) and \(H\)
+by contracting the vertices \(a\) and \(x\), removing the edges \(ab\) and \(xy\), and joining \(b\) with \(y\)
+</div>
+Let see an example, we let the path \(E-D-F\) be the graph \(G\) and the cycle \(B-A-C-B\) be the graph \(H\).
+then the Hajos sum with respect to edges \(ED\) and \(BA\) is:
+
+<div id="mynetwork14"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "EB" },
+    { id: 2, label: "C" },
+    { id: 3, label: "A" },
+    { id: 4, label: "D" },
+    { id: 5, label: "F" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 2, to: 3 },
+    { from: 3, to: 4 },
+    { from: 4, to: 5 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork14");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+
+
+<div class="definition">
+	A graph \(G\) is called \(\textbf{multiplicative}\) if for all graphs \(F,H\),
+	if \(F \nrightarrow G\) and \(H \nrightarrow G\), then \(F \times H \nrightarrow G\).
+</div>
+It is not known wether the problem of asserting if a graph is multiplicative or not is decidable or not.
+Exponential graphs are the best tools to study the multiplicative graphs.
+<div class= "definition">
+Fix integer \(n\), a graph \(G\) is called \( \textbf{Persistent}\), if \(\chi(G \times H)=n+1 \) for any graph \(H\) with \(\chi(H)=n+1\).
+</div>
+
+<div class= "definition">
+ A graph \(G\) is called \(\textbf{Strongly persistent} \) if it is persistent and the Hajos sum with any persistent graph is also persistent.
+</div>
+
+<div class="definition">
+	for a given set of graphs, we refer to the following operations:
+	<ul>
+     <li>Hajos sum</li>
+		 <li>Adding vertices and edges</li>
+		 <li>Contracting nonadjacent vertices</li>
+  </ul>
+	as the \(\textbf{three operations}\)
+</div>
+
+The three operations will not decrease the chromatic number
+<div class="theorem">
+	(Sauer and Zhu) If graph \(G\) is constructed using the three oprations on copies of \(K_{n+1}\),
+	and if at most one contraction is perfomed, then \(G\) is strongly persistent.
+	Futhermore, Hajos sum of strongly persistent graphs is a strongly persistent graph.
+
+</div>
+
+The Hedetmiemi's conjecture is equivalent to the statement: The Hajos sum of persistent graphs is persistent.
+
+<br>
+
+<h2> Algebraic views </h2>
+
+<div class ="lemma">
+The adjacency matrix of \( \mathcal{E}_n(G)\) where \(G\) is \(0\)-regular graph with \(m\) vertices is
+	an \(n^m \times n^m\) matrix with all \(1\)'s off diagonal and \(0\)'s on the diagonal.
+</div>
+
+<div class ="lemma">
+The adjacency matrix of \( \mathcal{E}_2(C_n)\) is an \( 2^n \times 2^n \) matrix where all entries are \(0\)'s
+except the \( (2^n,1),(1,2^n)\) positions where the value in those entries is \(1\).
+	<div>
+
+<div class="lemma">
+	The adjacency matrix of \( \mathcal{E}_2(K_n)\) is an \( 2^n \times 2^n \) matrix where all entries are \(0\)'s
+	except the \( (2^n,1),(1,2^n)\) positions where the value in those entries is \(1\). -->
+
+	<!-- <h2> Research!</h2>
+
+<div class="definition">
+A graph is called \(\textbf{oldcream}\) if it is persistant and multiplicative.
+	<div>
+<div class="definition">
+A graph is called \(\textbf{Emotionally Intelligent }\)  if it is the exponential graph \(\mathcal{E}_p(\Gamma)\) of
+some Cayley graph \(\Gamma\) and some prime number \(p\).
+</div>
+
+<div class="definition">
+	A graph \(G\) is called \(\textbf{krazi itman}\) if it is odd and the injective chromatic number of \(G \times H\) is equals to
+	\(\min(\chi_i(G),\chi_i(H))\) for some graph \(H\).
+</div>
+
+<div class="definition">
+ A graph is called \(\textbf{lulu}\) if it is the Cayley graph of some perfect group.
+</div>
+
+<div class="definition">
+A graph \(G\) is called \(\textbf{plagerismic}\) if it is the cayley graph of a group admitting a perfect code.
+</div>
+
+<h3>lolololololololololol SInce nobody iz watching me, I guass aya ll just hav csum fun with dese babs </h3> -->
+<!-- <h2>Questions</h2>
+<ul>
+<li>There is a typo in Claim2 of the paper by Shitov where in the beginning, it should be "Consider a graph \(\Gamma\) with \(|V(\Gamma)|=n\)"</li>
+<li>In the second paragraph of the proof of Claim2 in the paper by Shitov, the conclusion that "\( \Psi(\varphi)=b\) cannot hold unless there is a vertex \( w  \in N(u)\)
+	satisfying \(\varphi(w)=b\) " seems to be not true if \(N(u)\) was to be considered the closed neighbehood of \(u\). As we could have set \(\varphi(u)=b\) and
+	\( \varphi(v) \neq b , \forall v \in V(G)-\{u\} \).We can verify that since \(u\) is the only vertex where \(\psi_{ub}(u)=b\). and
+	\(\psi_{ub}(u') \neq \varphi(u') \forall u' \neq u\), then \(\varphi, \psi_{ub}\) are connected and receives the same color under \(\Psi\), a contradiction.
+	  Nevertheless, the argument could probably (don't understand yet) work in different way as shown in a paper by Shinko.
+</ul> -->
+
+<h2> References </h2>
+We used the following references:
+<br>
+<ul>
+	<li><a href="../pdffiles/gtn5406rp.pdf">HEDETNIEMI’S CONJECTURE,40 YEARS LATER Claude Tardif, 2008, NY Academy of Science</a></li>
+  <li><a href="../pdffiles/coloring-survey.pdf">Coloring graph products-Asurvey, Sandi Klavzar, 1992 Discrete Mathematics</a></li>
+	<li><a href="../pdffiles/hedetniemi.pdf">HEDETNIEMI'S CONJECTURE, Forte Shinko, 2019</a></li>
+	<li><a href="../pdffiles/euclid.twjm.1500406890.pdf">A SURVEY ON HEDETNIEMI'S CONJECTURE, Xuding Zhu ,1998, TW JOURNAL OF MATHEMATICS</a></li>
+  <li><a href="../pdffiles/hedt2.pdf">Relatively small counterexamples to Hedetniemi's conjecture, Xuding Zhu, June 30 2020, arXiv:2004.09028v4</a></li>
+</ul>
+</body>
+
+
+
+
+</html>
+<!-- Let's look at first how adding all diagonals of \(C_6,C_12\) look like:
+<br>
+This one is for \(C_6\):
+<div id="mynetwork1"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "1" },
+    { id: 2, label: "2" },
+    { id: 3, label: "3" },
+    { id: 4, label: "4" },
+    { id: 5, label: "5" },
+    { id: 6, label: "6" },
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 2, to: 3 },
+    { from: 4, to: 3 },
+    { from: 4, to: 5 },
+    { from: 5, to: 6 },
+    { from: 6, to: 1 },
+    { from: 1, to: 4 },
+    { from: 2, to: 5 },
+    { from: 3, to: 6 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork1");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+This one is for \(C_{12}\) :
+
+<div id="mynetwork2"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "1" },
+    { id: 2, label: "2" },
+    { id: 3, label: "3" },
+    { id: 4, label: "4" },
+    { id: 5, label: "5" },
+    { id: 6, label: "6" },
+    { id: 7, label: "7" },
+    { id: 8, label: "8" },
+    { id: 9, label: "9" },
+    { id: 10, label: "10" },
+    { id: 11, label: "11" },
+    { id: 12, label: "12" },
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 2, to: 3 },
+    { from: 4, to: 3 },
+    { from: 4, to: 5 },
+    { from: 5, to: 6 },
+    { from: 6, to: 7 },
+    { from: 7, to: 8 },
+    { from: 8, to: 9 },
+    { from: 9, to: 10 },
+    { from: 11, to: 10 },
+    { from: 11, to: 12 },
+    { from: 12, to: 1 },
+    { from: 1, to: 7 },
+    { from: 2, to: 8 },
+    { from: 3, to: 9 },
+    { from: 4, to: 10 },
+    { from: 5, to: 11 },
+    { from: 6, to: 12 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork2");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+We'll first study the class of graph \(C_{6t}, t \in \mathbb{N}\) based on the tensor product methods on
+the adjacency and laplacian matrces of the graph.
+Let's first look at the adjacency matrix of \(c_{it} ,i \in \mathbb{N}\)
+
+
+</body>
+</html> -->

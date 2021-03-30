@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>切枝的最低成本(Minimum Cost to Cut a Stick)</h2>
+    给定长度为n个单位的木棍。棒标记为0到n。例如，长度为6的棍子标记如下：
+    <div><img src="../images/stick.jpg"></img></div>
+    给定整数数组cuts，其中cuts[i]表示我们应在其处执行剪切的位置。
+    我们应该按顺序执行剪切，可以根据需要更改剪切的顺序。
+    一次切割的成本是要切割的棒的长度，总成本是所有切割成本的总和。
+    当我们切割一根木棍时，它将被分成两个较小的木棍（即，它们的长度之和为切割前木棍的长度）。
+    请参考第一个示例以获得更好的解释。
+    返回削减的最低总费用。
+
+    <br>
+    Given a wooden stick of length \(n\) units. The stick is labelled from \(0\) to \(n\).
+    For example, a stick of length \(6\) is labelled as follows:
+    Given an integer array cuts where \(cuts[i]\) denotes a position you should perform a cut at.
+    You should perform the cuts in order, you can change the order of the cuts as you wish.
+    The cost of one cut is the length of the stick to be cut, the total cost is the sum of costs of all cuts.
+    When you cut a stick, it will be split into two smaller sticks (i.e. the sum of their lengths is the length of the stick before the cut).
+    Please refer to the first example for a better explanation.
+    Return the minimum total cost of the cuts.
+    <hr>
+    例:
+    <div class ="table1">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+      </style>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">输入：</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28"><img src="../images/stick1.jpg"</td>
+          <th class="tg-fv28">n=7, cuts=[1,3,4,5]</th>
+        </tr>
+        <tr>
+          <td class="tg-fv28">输出:</td>
+          <td class="tg-fv28">16</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">说明:</td>
+          <td class="tg-fv28">使用切割顺序= [3,5,1,4]</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    Example:
+    <div>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">Input:</th>
+                    <th class="tg-fv28">n = 9, cuts = [5,6,1,4,2]</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">Output:</td>
+          <td class="tg-fv28">22</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">Explanation:</td>
+          <td class="tg-fv28">the order [4, 6, 5, 2, 1] has total cost = 22 which is the minimum possible.</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <hr>
+    <label for="tagStickLength">棒长:(Length Of Stick)</label><br>
+    <input type="number" id = "tagStickLength" class="numbersonly" value="30"><br>
+    <label for="tagCutPlaces">在哪里切:(where to cut)</label><br>
+    <input type="text" id = "tagCutPlaces" class="numbersonly" value="1,3,15,7,8"><br>
+    <input type="Button" onclick="computeResult()" value="计算最低成本(Compute minimum cost)" /> <br>
+
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+    <script>
+      var inputSequenceString;
+      var resultt;
+			var coinNeeded=[];
+			var coinNeededDict ="";
+      var inputNumbersList = [];
+      var totalMoney = 0;
+			var dp =[];
+			var visited;
+			var cutOrder =[];
+
+			function concatenateList(a,b){
+				var result = [];
+				for(var i = 0 ; i< a.length ; i++){
+					result.push(a[i]);
+				}
+				for(var j = 0; j < b.length ; j++){
+					result.push(b[j]);
+				}
+				return result;
+			}
+
+			function fillMemo(){
+				for(var i = 0; i<= totalMoney ; i++){
+					var tempRow = [];
+					var temprow1 = [];
+					var tempRow3 =[];
+					for(var j = 0; j<= totalMoney; j++){
+						tempRow.push(0);
+						temprow1.push(0);
+						tempRow3.push([]);
+					}
+					dp.push(tempRow);
+					visited.push(temprow1);
+					cutOrder.push(tempRow3);
+				}
+			}
+
+      function computeOptimalOrder(i,j){
+				if(visited[i][j]==1){
+					return dp[i][j];
+				}
+				var min = Number.MAX_SAFE_INTEGER;
+				var templl=[];
+				for(var k =0; k < inputNumbersList.length ; k++){
+					if(inputNumbersList[k]<j && inputNumbersList[k]>i){
+						var tempa = computeOptimalOrder(i,inputNumbersList[k]);
+						var tempb = computeOptimalOrder(inputNumbersList[k],j);
+						if(min >= j-i + tempa +tempb) {
+							min = j-i + tempa + tempb;
+							var templ = concatenateList([inputNumbersList[k]],cutOrder[i][inputNumbersList[k]]);
+							templl = concatenateList(templ, cutOrder[inputNumbersList[k]][j] );
+						}
+					}
+				}
+				visited[i][j]=1;
+				if(min === Number.MAX_SAFE_INTEGER){
+					dp[i][j]=0;
+					cutOrder[i][j]=[];
+				}
+				else{
+					dp[i][j]=min;
+					cutOrder[i][j] = templl;
+				}
+				return dp[i][j];
+			}
+
+      function transformStringListToIntegerList(aStringList){
+        var theCorrepondingIntegerList = []; //声明一个变量，该变量包含一个空列表，该空列表将用于存储转换后的整数列表(Declare a variable that holds an empty list that will be used to store the transformed integer list.)
+        for(var index = 0 ; index < aStringList.length ; index++){ //通过使用for循环，我们遍历字符串列表中的所有元素，并对每个元素进行转换(By sing a for loop, we iterate over all elements in the list of string and perform the transformation to each of the elments)
+          theCorrepondingIntegerList.push(parseFloat(aStringList[index])); // 将字符串元素转换为整数元素，然后将结果附加到指定的整数列表中(transform the string element to an integer element and append the result into the designated integer list)
+        }
+        return theCorrepondingIntegerList;
+      }
+      function computeResult(){
+				cutOrder =[];
+				dp =[];
+				visited = [];
+				inputSequenceString = "";
+	      resultt = 0;
+				coinNeeded=[];
+				coinNeededDict ="";
+	      inputNumbersList = [];
+	      totalMoney = 0;
+        var inputSequenceString = document.getElementById("tagCutPlaces").value;
+        if(inputSequenceString.match('[^, 1-9]')){
+            document.getElementById("tagMessage").innerHTML= "错误：输入的切的地方的格式是错的(error: Invalid cut places input string)";
+            return -1;
+        }
+        var inputNumbersStringList = inputSequenceString.split(",");
+        inputNumbersList = transformStringListToIntegerList(inputNumbersStringList);
+
+        totalMoney = parseFloat(document.getElementById("tagStickLength").value);
+        if(isNaN(totalMoney)){ //If number of food entered is not a number, display an an explainatory error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的棒长不是数字(error: the length of stick entered is not a number)"; // Put the error message inside the msg element in HTML.
+          return false;
+        }
+        if(totalMoney < 0 ){ //If the number of type of food or the number of type of nutrients entered is a negetive number, display an error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的棒长必须非负(error: the length of stick needs to be no negative)";
+          return false;
+        }
+				if(!(Number.isInteger(totalMoney))){
+					document.getElementById("msg").innerHTML= "error: 棒长必须为整数(stick length needs to be an Integer).";
+					return false;
+				}
+        console.log(inputNumbersList);
+        console.log(totalMoney);
+				fillMemo();
+				resultt = computeOptimalOrder(0,totalMoney);
+				//console.log();
+				console.log(cutOrder[0][totalMoney]);
+				displayResult()
+      }
+      function displayResult(){
+        clearTable("tagOutput")
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+
+        resultBody.appendChild(createTitleRow("如下切枝：(minimum cost and cut order is as follow)"));
+        resultBody.appendChild(createDescriptionRow("最低成本(Minimum cost is)",resultt));
+        resultBody.appendChild(createDescriptionRow("切枝顺序(cut order is)",cutOrder[0][totalMoney]));
+        resultTbl.append(resultBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>

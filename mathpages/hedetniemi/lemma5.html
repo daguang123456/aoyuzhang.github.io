@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="../styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+
+  <div class="lemma">
+  	(lemma 5)
+    Given graph \(G\) and \(c,q \in \mathbb{N} \), a suited proper coloring \( \Lambda : \mathcal{E}_c(G \boxtimes K_q) \to [c] \),
+  	restriction of \(\Lambda\) to the mappings that are constant on the cliques \( \{g\} \times K_q \subset G \boxtimes K_q \) is a proper colorings
+  	\( \psi : \mathcal{E}_c(\Gamma_G) \to [c] \) where we indentify clique \(\{g\} \times K_q\) to \(g\).
+  </div>
+  <div class="proof">
+  We associate the map \(f \in \mathcal{E}_c(\Gamma_G)\) with the map \(g \in \mathcal{E}_c(G \boxtimes K_q) \) if \(g\) is constant
+  on all cliques \( \{m\} \times K_q \subset (G \boxtimes K_q) \) and \(f(m) = g((m,d)) , d \in V(K_q), \forall m \in V(G)\).
+  We write \(f \sim g\) if we can associate \(f\) with \(g\).
+  Next, we just define \(\psi : \mathcal{E}_c(\Gamma_G) \to [c] \) as \(\psi(f) := \Lambda(g) \) if \(f \sim g\).
+  It remains to show \(\psi\) is a proper coloring of \(\mathcal{E}_c(\Gamma_G)\).
+  So suppose that \( (a,b) \in E(\mathcal{E}_c(\Gamma_G)) \), we want to show \(\psi(a) \neq \psi(b) \).
+  We know that \(\forall (u,v) \in E(\mathcal{E}_c(\Gamma_G)), a(u) \neq b(v) \). And now, let \(k,l\ \in \mathcal{E}_c(G \boxtimes K_q) \)
+  be such that \(a \sim k, b \sim l\). It suffices to show \(\Lambda(k) \neq \Lambda(l)\).
+  There are three types of edges in \(\mathcal{E}_c(G \boxtimes K_q)\), we have
+  \[ \begin{gather*}
+   ((u_1,v_1),(u_1,v_2)), u_1 \in V(G)\\
+   ((u_1,v_1),(u_2,v_2)), (u_1,u_2) \in E(G)\\
+   ((u_1,v_1),(u_2,v_1)))
+   \end{gather*}
+   \]
+   For the first type, we have \(k((u_1,v_1))=a(u_1) \neq b(u_1) = l((u_1,v_2))\). Here we used the fact that
+   \((u_1,u_1) \in E(\Gamma_G)\).
+   For the second type, we hace \(k((u_1,v_1))=a(u_1) \neq b(u_2) = l((u_2,v_2))\). This is clear as
+  \((u_1,u_2) \in E(\Gamma_G)\).
+  For the third type, we have \(k((u_1,v_1))=a(u_1) \neq b(u_2) = l((u_2,v_1))\). This is clear as
+  \((u_1,u_2) \in E(\Gamma_G)\).
+  <br>
+  Hence, \( \Lambda(k) \neq \Lambda(l) \) and this implies \( \psi(a) \neq \psi(b)\) and this implies \(\psi\) is a proper coloring.
+  </div>
+</html>

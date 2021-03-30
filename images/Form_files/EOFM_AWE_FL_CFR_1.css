@@ -1,0 +1,58 @@
+
+
+
+.ps-htmlarea table {
+  width: 100%;
+  border-spacing:0;
+}
+
+.ps-htmlarea th, .ps-htmlarea td {
+  padding: 0em; 
+  text-align:left;
+}
+
+.ps-htmlarea table table table table td{
+  padding:0em; 
+}
+
+.ps-htmlarea table table table table table td{
+  padding:0.2em; 
+}
+
+.ps-htmlarea .awThreadBoxBody table {
+  width: auto;
+}
+
+.ps-htmlarea .awStatusNodeNotRouted table {
+  width: 100%;
+}
+
+.ps-htmlarea .awStatusNodePending table {
+  width: 100%;
+}
+
+
+.ps-htmlarea .awStatusNodeNotRouted td {
+  padding:0em; 
+}
+
+.ps-htmlarea .awStatusNodePending td {
+  padding:0em; 
+}
+
+.ps-htmlarea .awStatusNodeNotRouted table td {
+  padding:0.2em; 
+}
+
+.ps-htmlarea .awStatusNodePending table td {
+  padding:0.2em; 
+}
+
+
+.ps-htmlarea .awThreadBoxBody table table table table td {
+  padding: 0;
+}
+
+.ps-htmlarea .awThreadBoxBody table table table table img {
+  vertical-align: middle;
+}

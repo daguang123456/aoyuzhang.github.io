@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="../styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+.table1{
+	width:600px;
+	height:560px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+.table2{
+  width:300px;
+  height:450px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+.table3{
+  width:300px;
+  height:450px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+.table4{
+  width:800px;
+  height:700px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork14 {
+  width: 500px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork5 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork6 {
+  width: 500px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork7 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork8 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork9 {
+  width: 800px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork10 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork11 {
+  width: 1000px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork12 {
+  width: 500px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork13 {
+  width: 500px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork15 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+#mynetwork16 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork17 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork18 {
+  width: 800px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork19 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+#mynetwork20 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+
+/* #mynetwork1 {
+  width: 500px;
+  height: 300px;
+  margin: 0 auto;
+}
+#mynetwork2 {
+  width: 500px;
+  height: 300px;
+  margin: 0 auto;
+} */
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+<h2><a href="../pdffiles/sensitivity.pdf">Induced subgraphs of hypercubes and a proof of the Sensitivity Conjecture</a></h2> by Hao Huang
+<br> Thank professor Hao Huang for making a breakthrough in solving the Sensitivity Conjecture and letting us present his work.
+So we begin by the definition of a n-dimensional hypercube graph.
+<div class="definition">
+A \(\textbf{n-dimensional hypercube graph}\), denoted by \(\mathbf{Q}^n\), is a graph whose vertices are vectors in \(\{0,1\}^n\) and two vectors are adjacent if they differ in exactly one coordinate.
+</div>
+Here is \(\mathbf{Q}^3\):
+
+<div id="mynetwork10"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "000" },
+    { id: 2, label: "001" },
+    { id: 3, label: "010" },
+    { id: 4, label: "011" },
+    { id: 5, label: "100" },
+    { id: 6, label: "101" },
+    { id: 7, label: "110" },
+    { id: 8, label: "111" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 1, to: 3 },
+    { from: 1, to: 5 },
+    { from: 2, to: 4 },
+    { from: 2, to: 6 },
+    { from: 3, to: 4 },
+    { from: 3, to: 7 },
+    { from: 4, to: 8 },
+
+    { from: 5, to: 7 },
+    { from: 5, to: 6 },
+    { from: 6, to: 8 },
+    { from: 7, to: 8 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork10");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+<div class="definition">
+For a simple graph \(G=(V=\{v_1,v_2,...,v_n\},E)\), the adjacency matrix is a square matrix \(A\) of size \(|V| \times |V|\) such that there is a \(1\) in the \(i,j\) entry of \(A\) if \((v_i,v_j) \in E\).
+</div>
+
+Here is adjacency matrix of \(\mathbf{Q}^3\):
+
+<div class ="table1">
+  <style type="text/css">
+  .tg  {border-collapse:collapse;border-spacing:0;}
+  .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+    overflow:hidden;padding:10px 5px;word-break:normal;}
+  .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+    font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+  .tg .tg-fv28{background-color:#ffccc9;border-color:#fe0000;text-align:left;vertical-align:top}
+  .tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+  </style>
+  <table class="tg">
+  <thead>
+    <tr>
+      <th class="tg-iifz"></th>
+      <th class="tg-iifz">\(1:(0,0,0)\)<br></th>
+      <th class="tg-iifz">\(2:(0,0,1)\)</th>
+      <th class="tg-iifz">\(3:(0,1,0)\)</th>
+      <th class="tg-iifz">\(4:(0,1,1)\)</th>
+      <th class="tg-iifz">\(5:(1,0,0)\)</th>
+      <th class="tg-iifz">\(6:(1,0,1)\)</th>
+      <th class="tg-iifz">\(7:(1,1,0)\)</th>
+      <th class="tg-iifz">\(8:(1,1,1)\)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tg-iifz">\(1:(0,0,0)\)</td>
+      <td class="tg-fv28">0</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">0</td>
+    </tr>
+    <tr>
+      <td class="tg-iifz">\(2:(0,0,1)\)</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-fv28">0</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">0</td>
+    </tr>
+    <tr>
+      <td class="tg-iifz">\(3:(0,1,0)\)</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-fv28">0</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">0</td>
+    </tr>
+    <tr>
+      <td class="tg-iifz">\(4:(0,1,1)\)</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-fv28">0</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">1</td>
+    </tr>
+    <tr>
+      <td class="tg-iifz">\(5:(1,0,0)\)</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-fv28">0</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">0</td>
+    </tr>
+    <tr>
+      <td class="tg-iifz">\(6:(1,0,1)\)</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-fv28">0</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">1</td>
+    </tr>
+    <tr>
+      <td class="tg-iifz">\(7:(1,1,0)\)</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-fv28">0</td>
+      <td class="tg-iifz">1</td>
+    </tr>
+    <tr>
+      <td class="tg-iifz">\(8:(1,1,1)\)</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">0</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-fv28">0</td>
+    </tr>
+  </tbody>
+  </table>
+</div>
+
+more compactly:
+\[\begin{bmatrix}
+0 & 1 & 1 & 0 & 1 & 0 & 0 & 0\\
+1 & 0 & 0 & 1 & 0 & 1 & 0 & 0\\
+1 & 0 & 0 & 1 & 0 & 0 & 1 & 0\\
+0 & 1 & 1 & 0 & 0 & 0 & 0 & 1\\
+1 & 0 & 0 & 0 & 0 & 0 & 1 & 0\\
+0 & 1 & 0 & 0 & 1 & 0 & 0 & 1\\
+0 & 0 & 1 & 0 & 1 & 0 & 0 & 1\\
+0 & 0 & 0 & 1 & 0 & 1 & 1 & 0
+\end{bmatrix}
+\]
+
+
+<div class = "definition">
+Given \(G=(V,E)\) a graph, and a subset of vertex set \(S \subset V\), then the \(\textbf{induced subgraph}\) \(G[S]\) is a graph whose vertex set is \(S\) and whose edge set is all possible edges in \(G\) whose end vertices are in \(S\).
+</div>
+For example, the induced subgraph \(H\) on some \(5\) random vertices of \(\mathbf{Q}^3\),say \(S= \{000, 001, 010, 011, 100\}\) and so \(H=G[S]\):
+
+<div id="mynetwork15"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "000" },
+    { id: 2, label: "001" },
+    { id: 3, label: "010" },
+    { id: 4, label: "011" },
+    { id: 5, label: "100" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 1, to: 3 },
+    { from: 1, to: 5 },
+    { from: 2, to: 4 },
+
+    { from: 3, to: 4 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork15");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+Now we have all the definitions that we need to state the main result of the paper:
+
+<div class = "theorem">
+For every interger \(n \geq 1 \), and \(H\) an arbitrary induced subgraph of \(\mathcal{Q}^n\) with \(2^{n-1}+1\) vertices, then
+\[\triangle(H) \geq \sqrt{n}\].
+Remember that \( \triangle(H)\) means the maximum degree of any vertex in the graph \(H\) and the degree of a vertex is the number of edges connected to it.
+</div>
+
+Ok let's look at more definitions.
+
+Let \(H = G[S]\) be an induced graph of \(\mathbf{Q}^n\), then we denote \(\mathbf{Q}^n - H\) the induced induced subgraph of \(\mathbf{Q}^n\) on the vertex set \(V(\mathbf{Q}^n)-V(H)\), namely induced subgraph on all vertices not in \(S\).
+<br>
+for example, we have the \(\mathbf{Q}^3 - H\) as follow, where \(H\) is the above example induced subgraph:
+
+<div id="mynetwork16"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 6, label: "101" },
+    { id: 7, label: "110" },
+    { id: 8, label: "111" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 6, to: 8 },
+    { from: 7, to: 8 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork16");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+We denote \(\Gamma(H) = \max\{\triangle(H), \triangle(\mathbf{Q}^n -H)\}\).
+For example, \(H\) in the example above, we have \(\Gamma(H) = 3 \)
+
+Now, we haven't talk about what is the sensitivity conjecture yet. We'll now look at several definition that will be helpful towards the proof of the sensitivity conjecture.
+<div class = "definition">
+Given a boolean function \(f\), the \(\textbf{degree}\) of \(f\) is denoted by \(deg(f)\) is the degree of the unique multilinear real polynomial that represent \(f\) where \(f\) is defined as:
+\[f(x) = \sum_{I \subset [n]} [\alpha_I \prod_{i \in I} x_i] \]
+</div>
+Consider the following boolean function \(f\):
+<div class ="table2">
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+.tg .tg-19p1{background-color:#ed79ff;border-color:#fe0000;text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-iifz">\(x_3\)</th>
+    <th class="tg-iifz">\(x_2\)</th>
+    <th class="tg-iifz">\(x_1\)</th>
+    <th class="tg-iifz">\(f(x_1,x_2,x_3)\)</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-19p1">0</td>
+    <td class="tg-19p1">0</td>
+    <td class="tg-19p1">0</td>
+    <td class="tg-19p1">1</td>
+  </tr>
+  <tr>
+    <td class="tg-19p1">0</td>
+    <td class="tg-19p1">0</td>
+    <td class="tg-19p1">1</td>
+    <td class="tg-19p1">1</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">0</td>
+    <td class="tg-iifz">1</td>
+    <td class="tg-iifz">0</td>
+    <td class="tg-iifz">0</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">0</td>
+    <td class="tg-iifz">1</td>
+    <td class="tg-iifz">1</td>
+    <td class="tg-iifz">0</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">1</td>
+    <td class="tg-iifz">0</td>
+    <td class="tg-iifz">0</td>
+    <td class="tg-iifz">0</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">1</td>
+    <td class="tg-iifz">0</td>
+    <td class="tg-iifz">1</td>
+    <td class="tg-iifz">0</td>
+  </tr>
+  <tr>
+    <td class="tg-19p1">1</td>
+    <td class="tg-19p1">1</td>
+    <td class="tg-19p1">0</td>
+    <td class="tg-19p1">1</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">1</td>
+    <td class="tg-iifz">1</td>
+    <td class="tg-iifz">1</td>
+    <td class="tg-iifz">0</td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+Then its polynoimal representation takes the form:
+\[ax_1x_2x_3 +bx_1x_2 +c x_1x_3 +d x_2x_3 +e x_1 +fx_2 +g x_3 +h \]
+
+To find the coefficients of the polynomial,  we look at all places in which \(f\) evaluates to \(1\) and we make a term of conjunction of variables that gave that output \(1\) and we do a disjuntion of those made terms. For example, we get for our above example boolean function:
+
+\[(\bar{x_3} \wedge \bar{x_2} \wedge \bar{x_1}) \vee (\bar{x_3} \wedge \bar{x_2} \wedge x_1) \vee (x_3 \wedge x_2 \wedge \bar{x_1}) \]
+
+Now, we are ready to build a polynomial that represent \(f\) by using the following rules:
+<ul>
+  <li> \(x_i \vee x_j \) is equivalent to \(x_i+x_j\)</li>
+  <li> \(x_i \wedge x_j \) is equivalent to \(x_i x_j\)</li>
+  <li> \(\bar{x_i} \) is equivalent to \(1-x_i\)</li>
+</ul>
+And so we get:
+\[
+(1-x_3)(1-x_2)(1-x_1)+(1-x_3)(1-x_2)x_1+x_3x_2(1-x_1)
+\]
+Exapand and we get:
+\[ 1-x_2-x_3+2x_3x_2-x_1x_2x_3\]
+
+<div class ="definition">
+Given a boolean function \(f\) and its unique multinomial representation \(f(x) = \sum_{I \subset [n]} [\alpha_I \prod_{i \in I} x_i]\), the coefficient \(\alpha_I \) is denoted by \(\hat{f}(I)\) and is called \(\textbf{The Fourier transform }\) of \(f\) at \(I\).
+  </div>
+For \(x \in \{0,1\}^n\), and \(S \subset [n]\), we denote \(x^S\) the binary vector obtained from \(x\) by flipping all indices in \(S\).
+For example, suppose \(n=3\), \(x=(1,0,1)\) and \(S=\{1,2\}\) then \(x^S = (0,1,1)\).
+<br>
+
+This polynomial represenation of a boolean function is what involved in the proof the the sensitivity conjecture.
+<br>
+We now introduce sensitivity of a boolean function.
+<div class="definition">
+For a function \(f : \{0,1\}^n \to \{0,1\} \), the \(\textbf{local sensitivity}\) \(s(f,x)\) on the input \(x\) is defined as the number of indices \(i\) such that
+\(f(x) \neq f(x^{i})\). Then from the local sensitivity, we can get the \(\textbf{sensitivity}\) of the boolean function to be defined as :\[s(f)= \max_x s(f,x) \].
+</div>
+Sensitivity is then, is an indication of how many varaibles are the determining factors that will change the result of a bolean function. It is as if the other variable are not very important towards the evaluation of the boolean function.
+We look at our above example of boolean function that was used to explain polunomial representation. It is easier to visualize it in the hypercube \(\mathcal{Q}^3\) where we color the corner purple if \(f\) at that coner is \(1\) and green otherwise:
+
+<div id="mynetwork7"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "000" , color : "#ed79ff" },
+    { id: 2, label: "001" , color : "#ed79ff"},
+    { id: 3, label: "010" , color : "#38fff8"},
+    { id: 4, label: "011" , color : "#38fff8"},
+    { id: 5, label: "100" , color : "#38fff8"},
+    { id: 6, label: "101" , color : "#38fff8"},
+    { id: 7, label: "110" , color : "#ed79ff"},
+    { id: 8, label: "111" , color : "#38fff8"}
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 , color: "blue"},
+    { from: 1, to: 3 , color: "blue"},
+    { from: 1, to: 5 , color: "blue"},
+    { from: 2, to: 4 , color: "blue"},
+    { from: 2, to: 6 , color: "blue"},
+    { from: 3, to: 4 , color: "blue"},
+    { from: 3, to: 7 , color: "blue"},
+    { from: 4, to: 8 , color: "blue"},
+
+    { from: 5, to: 7 , color: "blue"},
+    { from: 5, to: 6 , color: "blue"},
+    { from: 6, to: 8 , color: "blue"},
+    { from: 7, to: 8 , color: "blue"}
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork7");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+From here, the sensitivity of the boolean function \(f\) in our example can be seen from the table of sensitivity of each inputs:
+
+<div class ="table3">
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+.tg .tg-19p1{background-color:#ed79ff;border-color:#fe0000;text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-iifz">\(x=(x_3x_2x_1)\)</th>
+    <th class="tg-iifz">\(s(f,x)\)</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-19p1">\(000\)</td>
+    <td class="tg-19p1">2</td>
+  </tr>
+  <tr>
+    <td class="tg-19p1">\(001\)</td>
+    <td class="tg-19p1">2</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">\(010\)</td>
+    <td class="tg-iifz">2</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">\(011\)</td>
+    <td class="tg-iifz">1</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">\(100\)</td>
+    <td class="tg-iifz">2</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">\(101\)</td>
+    <td class="tg-iifz">1</td>
+  </tr>
+  <tr>
+    <td class="tg-19p1">\(110\)</td>
+    <td class="tg-19p1">3</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">\(111\)</td>
+    <td class="tg-iifz">1</td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+Namely, it is max of all \(s(f,x)\) which is \(s(f) = 3\).
+Ok now, we introduce the notion of block sensitivity which generalize the sensitivity notion above and the sensitivity conjecture is about the relationship between the two.
+<div class ="definition">
+Given boolean function \(f : \{0,1\}^n \to \{0,1\} \), the \(\textbf{local block sensitivity}\) \(bs(f,x)\) is the maximum number of disjoint subsets
+\(B_1,...,B_k\) of \([n]\) such that for each \(B_i\), \(f(x) \neq f(x^{B_i})\). The \(\textbf{block sensitivity}\) \(bs(f) = \max_x bs(f,x)\)
+The subsets \(B_i\) are refered to as blocks
+</div>
+
+We compute block sensitivity of our example boolean function \(f\) from the table of its block sensitivity from each input:
+
+<div class ="table4">
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-h3q6{background-color:#ffc702;text-align:left;vertical-align:top}
+.tg .tg-yofg{background-color:#9aff99;text-align:left;vertical-align:top}
+.tg .tg-cxgh{background-color:#ffcb2f;text-align:left;vertical-align:top}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+.tg .tg-99c3{background-color:#38fff8;text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-0lax"></th>
+    <th class="tg-yofg">\(x=(0,0,0)\)</th>
+    <th class="tg-yofg">\(x=(0,0,1)\)</th>
+    <th class="tg-yofg">\(x=(0,1,0)\)</th>
+    <th class="tg-yofg">\(x=(0,1,1)\)</th>
+    <th class="tg-yofg">\(x=(1,0,0)\)</th>
+    <th class="tg-yofg">\(x=(1,0,1)\)</th>
+    <th class="tg-yofg">\(x=(1,1,0)\)</th>
+    <th class="tg-yofg">\(x=(1,1,1)\)</th>
+    <th class="tg-0lax"></th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-yofg">\(\{x_1\}\)</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-yofg">1</td>
+  </tr>
+  <tr>
+    <td class="tg-yofg">\(\{x_2\}\)</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">N</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-yofg">1</td>
+  </tr>
+  <tr>
+    <td class="tg-yofg">\(\{x_3\}\)</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-yofg">1</td>
+  </tr>
+  <tr>
+    <td class="tg-yofg">\(\{x_2,x_3\}\)</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-cxgh">N</td>
+    <td class="tg-cxgh">N</td>
+    <td class="tg-cxgh">N</td>
+    <td class="tg-cxgh">N</td>
+    <td class="tg-cxgh">N</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-yofg">1</td>
+  </tr>
+  <tr>
+    <td class="tg-yofg">\(\{x_1,x_3\}\)</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-yofg">1</td>
+  </tr>
+  <tr>
+    <td class="tg-yofg">\(\{x_1,x_2\}\)</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-yofg">1</td>
+  </tr>
+  <tr>
+    <td class="tg-yofg">\(\{x_1,x_2,x_3\}\)</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-yofg">1</td>
+  </tr>
+  <tr>
+    <td class="tg-yofg">\(\{x_1\},\{x_2,x_3\}\)</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-yofg">2</td>
+  </tr>
+  <tr>
+    <td class="tg-yofg">\(\{x_1\},\{x_2\}\)</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-yofg">2</td>
+  </tr>
+  <tr>
+    <td class="tg-yofg">\(\{x_1\},\{x_3\}\)</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-yofg">2</td>
+  </tr>
+  <tr>
+    <td class="tg-yofg">\(\{x_2\},\{x_3\}\)</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-yofg">2</td>
+  </tr>
+  <tr>
+    <td class="tg-yofg">\(\{x_2\},\{x_1,x_3\}\)</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-yofg">2</td>
+  </tr>
+  <tr>
+    <td class="tg-yofg">\(\{x_3\},\{x_2\},\{x_1\}\)</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-yofg">3</td>
+  </tr>
+  <tr>
+    <td class="tg-yofg">\(\{x_3\},\{x_1,x_2\}\)</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-99c3">Y</td>
+    <td class="tg-h3q6">N</td>
+    <td class="tg-yofg">2</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax"></td>
+    <td class="tg-yofg">2</td>
+    <td class="tg-yofg">2</td>
+    <td class="tg-yofg">2</td>
+    <td class="tg-yofg">2</td>
+    <td class="tg-yofg">2</td>
+    <td class="tg-yofg">2</td>
+    <td class="tg-yofg">3</td>
+    <td class="tg-yofg">2</td>
+    <td class="tg-0lax"></td>
+  </tr>
+</tbody>
+</table>
+</div>
+So we have \(bs(f)=3\) in our example.
+<br>
+We can make element in each block be singleton element and then this means that the block sensitivity is at least as large as sensitivity for a boolean function: \(bs(f) \geq s(f)\).
+So the sensitivity conjecture is that these two quantities are polynomially related:
+<br>
+\(\textbf{Sensitivity Conjecture}\):
+There exists an absolute constant \(C >0 \) such that for any boolean function \(f\),
+\(bs(f) \leq s(f)^C \)
+
+So the sensitivity conjecture can be proved in the manner described below, in particular, if we could show that the main result of the paper, we could use that result to fill the gap in the below arguments toward the proof of the sensitivity conjecture.
+<div class = "lemma">
+The following are equivalent for any monotone function \(h : \mathbb{N} \to \mathbb{R} \):
+<ol>
+  <li>For any induced subgraph \(H\) of \(Q^n\) where \(|V(H)| \neq 2^{n-1} \), we have \(\Gamma(H) \geq h(n)\)</li>
+  <li>For any boolean function \(f\), we have \(s(f) \geq h(deg(f)) \)</li>
+</ol>
+</div>
+<div class = "proof">
+We associate to the subgraph \(G\), a boolean function \(g\) such that
+  \(g(x) =1 \iff x \in V(G) \). Now notice that \(s(g,x)\) counts the number of neighbhors of \(x\) in \(Q^n\) that is not adjacent to \(x\) in \(G\). Therefore, \(deg_G(x) = n - s(g,x) \). By the same reasoning, we have for \(x \in Q^n-G \Rightarrow deg_{Q^n-G}(x) = n - s(g,x)\).  Let's denote by \(E(g)\), the average value of \(g\).
+  Ok so we can translate the two statments in the claim into:
+<ol>
+  <li>For any boolean function \(g :\{0,1\}^n \to \{0,1\}\) with \(E(g) \neq 2^{n-2} \), then \(\exists x, s(g,x) \leq n-h(n)\)</li>
+  <li>For any boolean function \(f\), \(s(f) < h(n) \Rightarrow deg(f) < n\)</li>
+</ol>
+So we consider
+\[ g(x) =f(x)p(x) \]
+where \(p(x)\) is the function that returns \(1\) if \(x\) contains even number of \(0\), else it return \(0\). Now, \(s(g,x)\)....
+</div>
+
+<div class = "theorem">
+For every boolean function \(f\)
+\[ s(f) \geq \sqrt{deg(f)} \]
+</div>
+<div class = "proof">
+If we define \(h(n) = \sqrt{n}\), then if we can show that for any induced subgraph \(H\) of \(\mathcal{Q}^n\) with \(|V(H)| \neq 2^{n-1}\), then \(\Gamma(H) \geq h(n)\), then that proves the lemma using the above lemma.
+But \(\Gamma(H) \geq h(n)\) is the main result of this paper.
+</div>
+
+<div class ="theorem">
+For every boolean function \(f\),
+\[bs(f) \leq s(f)^4\]
+</div>
+<div class ="proof">
+Based on result by Tal, we have \(bs(f) \leq deg(f)^2\). Combining this result with the above lemma, we get that :
+\[bs(f) \leq s(f)^4\]
+</div>
+
+Ok so now we are ready to proof the main result of the paper, we first state the Cauchy interlacing theorem that we'll use:
+
+<div class ="theorem">
+Let \(A\) be a symmetric \(n \times n\) matrix, and \(B\) be a \(m \times m \) principal submatrix \(A\) consiting of the first \(m\) rows and \(m\) columns of \(A\) for some \(m < n \).
+If \(\lambda_1 \geq \lambda_2 \geq ...\lambda_n\) are the eigenvalues of \(A\) and \( \mu_1 \geq \mu_2 \geq ... \mu_m\) are the eigenvalues of \(B\) then:
+\[\forall 1 \leq i \leq m, \lambda_i \geq \mu_i \geq \lambda_{i+n-m} \]
+</div>
+
+We have another presentation dedicated to this theorem. Now, let's look at the following sequence of matrices:
+
+  <div class = "lemma">
+    We define a sequence of symmetric square matrices iteratively as follow:
+    \[ A_1 = \begin{bmatrix}
+      0 & 1\\
+      1 & 0
+    \end{bmatrix},
+    A_n =
+    \begin{bmatrix}
+    A_{n-1} & I \\
+    I & -A_{n-1}
+    \end{bmatrix}\]
+    Then \(A_n \) is a \(2^n \times 2^n \) matrix whose eigenvalues are \(\sqrt{n}\) of multiplicity \(2^{n-1}\), and \(-\sqrt{n}\) of multiplicity \(2^{n-1}\).
+  </div>
+	<div class ="proof">
+		We first show that \(A_n^2 =nI\). we do so by induction on \(n\).
+		<ul>
+			<li>Base case, \(n=1\), then \(A_1^2=I\) </li>
+			<li>Inductive step: Suppose that the claim is true for \(n = \{1,...,k\}\), we now show that \(A_{k+1}^2 = (k+1)I\).
+			By definition,
+			\[A_{k+1}=
+			\begin{bmatrix}
+       A_k & I \\
+			 I & -A_k
+			 \end{bmatrix}
+			 \]
+			 so by inductive hypothesis, we get:
+			 \[
+			 A_{k+1}^2=
+ 			\begin{bmatrix}
+        A_k^2+I & 0 \\
+ 			 0 & A_k^2+I
+ 			 \end{bmatrix}
+			 = \begin{bmatrix}
+       kI+I & 0\\
+			 0 & kI+I
+			 \end{bmatrix} = (k+1)I\]
+			 </li>
+		</ul>
+		So if \(v\) is an eigenvector of \(A_n\) with eigenvalue \(\lambda\), then \(nv = nI v = A_n A_n v = \lambda A_n v= \lambda^2 v\). Therefore, eigenvalue of \(A_n\) must be \( \pm \sqrt{n}\).
+		And since \(Tr(A_n) =0\) by construction of \(A_n\) and that the sum of eigenvalues equals the trace, it must be that each \(\pm \sqrt{n}\) happends half of times.
+	</div>
+	If we change all \(-1\) in \(A_n\) to \(1\) then the resulting matrix correspond to the adjacency matrix of the hypercube \(\mathcal{Q}^n\).
+	This is seen by the fact that we make \(\mathcal{Q_n}\) from two copy of \(\mathcal{Q}^{n-1}\) by gluing their corresponding vertices.
+
+  <div class = "lemma">
+    Suppose \(H\) is an m-vertex undirected graph, and \(A\) is a symmetric matrix whose entries are in \(\{-1,0,1\}\) and whose rows and columns are indexed by \(V(H)\), and whenever \(u\) and \(v\) are non-adjacent in \(H\), \(A_{u,v}=0\).
+  </div>
+<div class = "proof">
+let \(v\) be a eigenvector corresponding to \(\lambda_1\), then \(\lambda_1v =Av\). Whithout loss of generality, assume \(v_1\) is the coordinate of \(v\) that has the largest absolute value. Then
+\[ \lambda_1v_1 = |(Av)_1| = |\sum_{j=1}^m A_{1,j}v_j| \leq \sum_{j=1} |A_{1,j}v_j| \leq  \triangle(H)|v_1| \]
+From this we conclude:
+\[\lambda_1 \leq \triangle(H)\]
+</div>
+
+So with the above three results, we are ready to prove the main result of the paper:
+
+<hr>
+Reference:
+<a href = "../pdffiles/equivcube.pdf">The Equivalence of Two Problems on the Cube</a>
+</body>
+
+
+
+
+
+
+</html>

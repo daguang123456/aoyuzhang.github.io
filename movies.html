@@ -1,0 +1,38 @@
+<!DOCTYPE>
+<html>
+<head>
+  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8"/>
+</head>
+
+<body>
+<a href="movies/mummy2/mummy2cd1.rmvb" >The Mummy Return(2001)part1(cn sub)</a><br>
+<a href="movies/mummy2/mummy2cd2.rmvb" >The Mummy Return(2001)part2(cn sub)</a><br>
+<a href="movies/mummy2/mummy2cd3.rmvb" >The Mummy Return(2001)part3(cn sub)</a><br>
+<a href="movies/mummy2/mummy2cd1.rmvb" >Harry Potter And Golden Globe(2005)part1(cn sub)</a>
+<a href="movies/mummy2/mummy2cd1.rmvb" >Harry Potter And Golden Globe(2005)part2(cn sub)</a>
+
+<button onclick="playVid()" type="button">Play Video</button>
+<button onclick="pauseVid()" type="button">Pause Video</button><br>
+
+<video id="myVideo" width="320" height="176">
+  <source src="movies/mummy2/mummy2cd1.rmvb" >
+  Your browser does not support HTML5 video.
+</video>
+
+
+<script>
+var vid = document.getElementById("myVideo");
+
+function playVid() {
+  vid.play();
+}
+
+function pauseVid() {
+  vid.pause();
+}
+</script>
+
+</body>
+
+</html>

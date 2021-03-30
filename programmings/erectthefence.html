@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	  <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+      .chart{
+        width: 1000px;
+        height: 800px;
+        border: 1px solid lightgray;
+        margin: 0 auto;
+        background-color: coral;
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>竖起篱笆(Erect The Fence)</h2>
+    有一些树，其中的每棵树在二维花园中由（x，y）坐标表示。我们的工作是用最短的绳索将整个花园围起来，因为这样做很昂贵。只有把所有的树木都围起来，花园才能被围起来。我们的任务是帮助找到完全位于围栏外围的树木的坐标。
+    <br>
+    There are some trees, where each tree is represented by (x,y) coordinate in a two-dimensional garden.
+    Our job is to fence the entire garden using the minimum length of rope as it is expensive.
+    The garden is well fenced only if all the trees are enclosed. Our task is to help find the coordinates of trees which are exactly located on the fence perimeter.
+    <hr>
+    <label for="tagXCoordinate">树的x-坐标:(x-coordinate of the tree)</label><br>
+    <input type="number" step ="0.01" id = "tagXCoordinate" class="numbersonly" value="2"><br>
+    <label for="tagYCoordinate">树的y-坐标:(y-coordinate of the tree)</label><br>
+    <input type="number" step ="0.01" id = "tagYCoordinate" class="numbersonly" value="2"><br>
+
+    <input type="Button" onclick="addTree()" value="添加树(Add Tree)" />
+    <input type="Button" onclick="removeTree()" value="删除树(remove Tree)" /> <br>
+    <div class = "chart">
+      <canvas id="myChart"></canvas>
+    </div>
+    <input type="Button" onclick="findPerimeterVertices()" value="找篱笆顶点(Find perimeter vertices)" /> <br>
+    <br>
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+
+
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+    <script>
+      var datas = new Set(); // use to store data points
+      // var colors =
+
+      var ctx = document.getElementById('myChart').getContext('2d');
+
+      function createDataPointFromSet(){
+        var result = [];
+        for (let item of datas){
+          result.push(item);
+        }
+        return result;
+      }
+
+      function drawGraph(){
+        var scatterChart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Coordinate Of trees',
+                    data: createDataPointFromSet(),
+                    backgroundColor: "yellow"
+                }]
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        type: 'linear',
+                        position: 'bottom'
+                    }]
+                }
+            }
+        });
+      }
+
+      function addTree(){
+        var tempXCoordinate = document.getElementById("tagXCoordinate").value;
+        var tempYCoordinate = document.getElementById("tagYCoordinate").value;
+        datas.add({x: tempXCoordinate, y: tempYCoordinate});
+        console.log(datas);
+        drawGraph();
+      }
+
+      var inputSequenceString ; //声明一个变量，该变量用于存储用户输入的输入字符串(Declare a variable used to store the input string entered by the user)
+      var inputNumbersList = []; //声明一个变量以存储程序要使用的整数列表(declare a variavle to store the list of integers to be used by the program)
+      var inputIntegerSet;
+      var globalMaxLength = 0; //声明一个变量以存储迄今为止该算法找到的最长序列长度(Declare a variable to store the longest sequence length found by the algorithm so far)
+      var localMaxLength = 0; //声明一个变量以存储算法正在分析的序列长度 (Declare a variable to store the sequence length that is being analysed by the algorithm )
+      var initialNumberInMaxLengthSequence = 0;
+      /**
+       * 该方法用于将代表整数的字符串列表转换为整数列表(The method is used to transform a list of strings that represent integers to a list of intergers)
+       * @param {String List Object}     aStringList       The list of strings that needs to be converted into a list of integers.
+       * @param {字符串列表对象}        aStringList     需要转换为整数列表的字符串列表
+       */
+      function transformStringListToIntegerList(aStringList){
+        var theCorrepondingIntegerList = []; //声明一个变量，该变量包含一个空列表，该空列表将用于存储转换后的整数列表(Declare a variable that holds an empty list that will be used to store the transformed integer list.)
+        for(var index = 0 ; index < aStringList.length ; index++){ //通过使用for循环，我们遍历字符串列表中的所有元素，并对每个元素进行转换(By sing a for loop, we iterate over all elements in the list of string and perform the transformation to each of the elments)
+          theCorrepondingIntegerList.push(parseFloat(aStringList[index])); // 将字符串元素转换为整数元素，然后将结果附加到指定的整数列表中(transform the string element to an integer element and append the result into the designated integer list)
+        }
+        return theCorrepondingIntegerList;
+      }
+      /**
+        *
+       */
+      function computeResult(){
+        // 获取输入序列并检查输入的格式是否正确. (get input sequence and check if the input is valid)
+        var inputSequenceString = document.getElementById("tagIntegerSequence").value; //获取由其id字符串指定的html元素的值(get value of html element specified by its id string)
+        if(inputSequenceString.match('[^-, 0-9]')){  //检查输入字符串是否仅包含逗号和数字 (Check if the input string contains only commas and digits)
+            document.getElementById("tagMessage").innerHTML= "错误：输入的字符串只需要包含逗号或数字或负号(error: the input string needs to contain only commas or digits or negative sign)";
+            return -1;
+        }
+        var inputNumbersStringList = inputSequenceString.split(","); //通过使用字符串中的逗号将输入字符串分成多个元素，使输入字符串成为元素列表。结果列表是一个字符串列表，我们必须将其转换为数字(make the input string into a list of elements by separating the input string into elements using the commas in the string. The resulting list is a list of string that we'll have to convert into numbers)
+        inputNumbersList = transformStringListToIntegerList(inputNumbersStringList); //将字符串列表转换为整数列表(transform the list of string to list of integers).
+        //console.log(inputNumbersList);
+				initialNumberInMaxLengthSequence = inputNumbersList[0];
+        inputIntegerSet = new Set(inputNumbersList);
+        globalMaxLength = 1;
+        for (var number of inputIntegerSet){
+          localMaxLength = 1;
+          // console.log(item)
+          if(inputIntegerSet.has(number-1)){
+            continue;
+          }
+          var tempNum = number;
+          while(inputIntegerSet.has(tempNum+1)){
+            localMaxLength++;
+            tempNum++;
+          }
+          if(globalMaxLength < localMaxLength){
+            globalMaxLength = localMaxLength;
+            initialNumberInMaxLengthSequence = number;
+          }
+        }
+        console.log(globalMaxLength);
+        displayResult();
+
+      }
+      function displayResult(){
+        clearTable("tagOutput")
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("最长序列及其长度如下(The Longest Sequence And Its Length Is As Follow)"));
+        var longestSequenceStr = "["+initialNumberInMaxLengthSequence;
+        var tempNum = initialNumberInMaxLengthSequence;
+        while(inputIntegerSet.has(tempNum+1)){
+          longestSequenceStr = longestSequenceStr+","+(tempNum+1);
+          tempNum++;
+        }
+        longestSequenceStr = longestSequenceStr +"]";
+        resultBody.appendChild(createDescriptionRow("最长的数字序列是(The longest sequence of numbers are)",longestSequenceStr));
+        resultBody.appendChild(createDescriptionRow("其长度是(The length of the longest sequence of numbers is)",globalMaxLength));
+        resultTbl.append(resultBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>

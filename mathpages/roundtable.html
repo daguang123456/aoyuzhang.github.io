@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+<!-- 	        <link rel="stylesheet" href="tensorntut.css"> -->
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+	 <meta charset="utf-8">
+
+	  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+	  <script id="MathJax-script" async
+	          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+	  </script>
+<!-- 	  <script type="text/javascript" src="//unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script> -->
+	  <script
+  type="text/javascript"
+  src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"
+></script>
+
+  <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+	  <style>
+	.theorem {
+	    display: block;
+	    margin: 12px 0;
+	    font-style: italic;
+	}
+	.theorem:before {
+	    content: "Theorem.";
+	    font-weight: bold;
+	    font-style: normal;
+	}
+	.lemma {
+	    display: block;
+	    margin: 12px 0;
+	    font-style: italic;
+	}
+	.lemma:before {
+	    content: "Lemma.";
+	    font-weight: bold;
+	    font-style: normal;
+	}
+	.proof {
+	    display: block;
+	    margin: 12px 0;
+	    font-style: normal;
+	}
+	.proof:before {
+	    content: "Proof.";
+	    font-style: italic;
+	}
+	.proof:after {
+	    content: "\25FC";
+	    float:right;
+	}
+	.definition {
+	    display: block;
+	    margin: 12px 0;
+	    font-style: normal;
+	}
+	.definition:before {
+	    content: "Definition.";
+	    font-weight: bold;
+	    font-style: normal;
+	}
+	#mynetwork1 {
+	  width: 500px;
+	  height: 300px;
+	  /*border: 1px solid lightgray;*/
+	  margin: 0 auto;
+	}
+
+	.table1{
+		width: 300px;
+		height: 200px;
+		/*border: 1px solid lightgray;*/
+		margin: 0 auto;
+	}
+	.gadget {
+		width : 500px;
+		height: 500px;
+  border: 5px outset red;
+  background-color: lightblue;
+  text-align: center;
+  margin: 0 auto;
+}
+
+
+
+
+	</style>
+	<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+	<script type="text/javascript" src="https://unpkg.com/vis-graph3d@latest/dist/vis-graph3d.min.js"></script>
+	  </head>
+  </head>
+
+<body>
+  Hello, ok well,to start,
+  <br>
+A group of \(n\) people sits down, uniformyly at random around a round table. What is the probability that two person A,B sits next to each other?
+<br>
+The solution is just that say we want to know the probability that person A and person B sits next to each other, then out of the \(n-1\) places, only two are next to person A,
+So the probability that person B sits next to person A, is just the probability of choosing the two places that are adjacent to person A out of the
+\(n-1\) choices and that gives: \(\frac{2}{n-1}\).
+<br>
+Now consider \(ab\) couples sitting at \(a\) tables with \(2b\) seats each. What is the probability that there are in total exactly \(k\) couples sitting at the same talbe?
+<br>
+\(\textbf{Solution:}\)<br>
+A couple is called good if they sit on the same table.
+Let \(C\) be the event that the couples \(1,...,k\) sits on the same table and the rest of couples don't sits on the same table.
+Ok so now, the probability that there are exactly \(k\) good couples is going to be \(\binom{ab}{k}P(C)\).
+Ok so we just need to compute \(P(C)\). Let's denote \(\pi_n\) the probability that couples \(1,...,n\) are good couples.
+Ok now we define the following events:
+<ul>
+  <li> \(A = \{ \text{couples }1,...,k\text{ are good} \} \)</li>
+  <li> \(A_n = \{ \text{couples }1,...,k,\text{and n are good} \} \) </li>
+</ul>
+
+So notice that the events \(A_i\) are subsets of event \(A\). So now, the event \(C\) is just event \( A-  \cup_{i=k+1}^{ab} A_i \). And so we have
+\[P(C)=P(A) - P(\cup_{i=k+1}^{ab} A_i)\]
+So then we use the inlusion exclusion principal to find \(P(C) = P(A) - \sum_{t=1}^{ab - k} \sum_{i_1,...,i_t}(-1)^{t+1}P(A_{i_1} \cap ... \cap A_{i_t}) \)
+Ok so \(P(A_{i1} \cap ... \cap A_{it}) = \pi_{k+t} \) by definition. There are \(\binom{ab-k}{t}\) terms of the form in the summation.  Sow we get:
+\[P(C) = \sum_{t=0}^{ab-k}(-1)^t \binom{ab-k}{t} \pi_{k+t} \].
+So now, we just have to calculate \(\pi_n\).
+<br>
+Ok so we have \(2ab\) people and we want the first \(n\) couples to be sitting on same table. Ok let's denote \(n_1,n_2,...n_a\) to be the number of couples that sits on table \(1,...,a\).
+Ok There are \(\binom{n}{n_1,...,n_a} \) ways to put the \(n\) couples around the \(a\) tables. Then there are \(\binom{2ab-2n}{ab-2n_1,...,2b-2n_a} \) ways to choose table for the remaining
+people to sit on the table. So the number of ways that the first \(n\) couples are good is
+\[ \sum_{n_1+...n_a=n} \binom{n}{n_1,...,n_a} \binom{2ab - 2n}{2b-2n_1,...,2b-2n_a} \]
+Ok so the total number of ways to assign table to the people is \(\binom{(2ab)!^a}{(2ab)!}\)
+</html>

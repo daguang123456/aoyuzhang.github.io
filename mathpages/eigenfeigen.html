@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="../styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+.table1{
+	width: 300px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 1px;
+}
+
+ #mynetwork1 {
+  width: 500px;
+  height: 300px;
+  margin: 0 auto;
+}
+
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+<h2><a href ="../pdffiles/eigen.pdf">EIGENVECTORS FROM EIGENVALUES</a></h2>
+by Peter Denton, Stephen Parke, Terence Tao, Xining Zhang
+<br>
+Thank professors Peter Denton, Stephen Parke, Terence Tao, Xining Zhang for a marvelous discovery of mathematics suddlety from physics.
+<br>
+
+<h2>Table Of Content:</h2>
+<ul>
+	<li><a href="eigenfeigen.html#intr">Introduction</a></li>
+	<li><a href="eigenfeigen.html#lem1">Lemma 1</a></li>
+	<li><a href="eigenfeigen.html#lem2">Lemma 2</a></li>
+	<li><a href="eigenfeigen.html#cor3">Corollary 3</a></li>
+	<li><a href="eigenfeigen.html#refu">Discussion</a></li>
+</ul>
+<br>
+<!-- <h2>Table Of Content:</h2>
+<ul>
+	<li><a href="hedtniemi.html#intr">Introduction</a></li>
+	<li><a href="hedtniemi.html#ob1">Observation 1</a></li>
+	<li><a href="hedtniemi.html#cl2">Claim 2</a></li>
+	<li><a href="hedtniemi.html#cl3">Claim 3</a></li>
+	<li><a href="hedtniemi.html#refu">The Counterexample</a></li>
+</ul> -->
+
+<h2 id = "intr">Introduction</h2>
+
+<div class="definition">
+A \(\textbf{Hemitian}\) matrix is a complex valued matrix \(M\) such that it equals its conjugate transpose.
+</div>
+
+<h3 id = "ex1">Matrix 1:</h3>
+\[A=\begin{bmatrix}
+7 & 1+i & 2+2i \\
+1-i & 1 & 2 \\
+2-2i & 2 & 4
+\end{bmatrix} A^T= \begin{bmatrix}
+7 & 1-i & 2-2i \\
+1+i & 1 & 2 \\
+2+2i & 2 & 4
+\end{bmatrix} \bar{A^T} =
+\begin{bmatrix}
+7 & 1+i & 2+2i \\
+1-i & 1 & 2 \\
+2-2i & 2 & 4
+\end{bmatrix} \]
+
+<div class = "definition">
+Given a matrix \(M\), there are vectors \(v\) for which, if you multiply \(v\) by \(M\), it has the effect of stretch \(v\) by an amount \(\lambda\).
+namely, \[Mv= \lambda v\]
+In this case, we call \(\lambda \) an \(\textbf{eigenvalue}\) of \(M\) and \( v\) an \(\textbf{eigenvector}\) of \(M\) associated with eigenvalue \(\lambda\).
+By convention, we write \(\lambda_i(M)\) for the \(i^{th}\) largest eigenvalue of \(M\).
+</div>
+
+We compute properties of matrix 1:
+<div class="table1">
+  <style type="text/css">
+  .tg  {border-collapse:collapse;border-spacing:0;}
+  .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+    overflow:hidden;padding:10px 5px;word-break:normal;}
+  .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+    font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+  .tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+  </style>
+  <table class="tg">
+  <thead>
+    <tr>
+      <th class="tg-iifz">Determinant</th>
+      <th class="tg-iifz">0</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tg-iifz">Trace</td>
+      <td class="tg-iifz">12</td>
+    </tr>
+    <tr>
+      <td class="tg-iifz">Characteristic polynomial</td>
+      <td class="tg-iifz">\(-25 \lambda + 12 (\lambda)^2 - (\lambda)^3\)</td>
+    </tr>
+    <tr>
+      <td class="tg-iifz">Eigenvalues</td>
+      <td class="tg-iifz">\( \lambda_1 = 6+\sqrt{11}, \lambda_2 = 6-\sqrt{11}, \lambda_3 = 0 \)</td>
+    </tr>
+    <tr>
+      <td class="tg-iifz">Eigenvectors</td>
+      <td class="tg-iifz"> \(v_1 \approx (1.07916 + 1.07916 i, 0.5, 1), v_2 \approx (-0.579156 - 0.579156 i, 0.5, 1), v_3 \approx (0, -2, 1)\)</td>
+    </tr>
+  </tbody>
+  </table>
+</div>
+
+<div class="lemma" id = "lem1">
+	(lemma 1)
+Let one eigenvalue of \(n \times n\) matrix \(A\) be zero, say \(\lambda_n(A)=0\). Then
+\[ \prod_{i=1}^{n-1} \lambda_i(A)|det(B \quad v_n)|^2 = det(B^*AB)\]
+for any \(n \times n-1 \) matrix \(B\).
+</div>
+<div class="proof">
+We'll illustrate with example,
+  <br>
+So we create \(3 \times 2 \) matrix B:
+\[
+\begin{bmatrix}
+1 & 2 \\
+3 & 4 \\
+5 & 6
+\end{bmatrix}
+\]
+Refering to matrix \(A\) above, we diagonalize \(A= VDV^*\).
+\[
+\begin{bmatrix}
+0 & (\frac{-1}{4}-\frac{i}{4})(\sqrt{11}-1) & (\frac{1}{4}+\frac{i}{4})(\sqrt{11}+1) \\
+-2 & \frac{1}{2} & \frac{1}{2}  \\
+1 & 1 & 1
+\end{bmatrix}
+
+\begin{bmatrix}
+0 & 0 & 0\\
+0 & 6- \sqrt{11} & 0 \\
+0 & 0 & 6+\sqrt{11}
+\end{bmatrix}
+
+\begin{bmatrix}
+0 & \frac{-2}{5} & \frac{1}{5} \\
+-\frac{1-i}{\sqrt{11}} & \frac{1}{55}(11+ \sqrt{11}) & \frac{2}{55}(11+\sqrt{11}) \\
+\frac{1-i}{\sqrt{11}} & \frac{1}{5}- \frac{1}{5 \sqrt{11}} & -\frac{2}{55}(\sqrt{11} - 11)
+\end{bmatrix}
+\]
+
+
+
+Now we need columns of \(V\) to be unitary and we order the eigenvalue from large to smallest in the diagonal of the diagonal matrix:
+\[
+\begin{bmatrix}
+0.57042 + 0.57042 i & -0.417878 - 0.417878 i & 0\\
+0.264289 & 0.360765 & -\frac{2}{\sqrt{5}}\\
+0.528578 & 0.721529 & \frac{1}{\sqrt{5}}
+<!-- 0.910362 + 0.228846 i & -0.590124 - 0.353033 i & 0\\
+0.263911 - 0.157881 i & 0.407126 - 0.102343 i & \frac{-2}{\sqrt{5}}\\
+0.527821 - 0.315762 i & 0.814251 - 0.204687 i & \frac{1}{\sqrt{5}} -->
+\end{bmatrix}
+\begin{bmatrix}
+6+\sqrt{11} & 0 & 0\\
+0 & 6-\sqrt{11} & 0\\
+0 & 0 &0
+\end{bmatrix}
+\begin{bmatrix}
+0.57042 - 0.57042 i & 0.264289  & 0.528578 \\
+-0.417878 + 0.417878 i & 0.360765 & 0.721529 \\
+0 & -\frac{2}{\sqrt{5}} & \frac{1}{\sqrt{5}}
+
+<!-- 0.910362 - 0.228846 i & 0.263911 + 0.157881 i & 0.527821 + 0.315762 i\\
+-0.590124 + 0.353033 i & 0.407126 + 0.102343 i & 0.814251 + 0.204687 i\\
+0 & \frac{-2}{\sqrt{5}} & \frac{1}{\sqrt{5}} -->
+\end{bmatrix}
+\]
+We first states several facts that we'll use:
+<ol>
+<li>\(V\) is orthogonal so \(det(V)=det(V^*)=1\)</li>
+<li> For square matrices \(A,B\), determinant of product is the product of determinant \(det(AB)=det(A)det(B) \)</li>
+<li> The cofactor expansion formular for deteminant: \(det(A)= \sum_{i=1}^n (-1)^{i+n} a_{in} det(A_{in}) \)
+	Here, \(a_{ji}\) is the entry on the \(j^{th}\) row and \(i^{th}\) column of \(A\). \(A_{ji}\) is the matrix that you get by deleting the \(j^{th}\) row and \(i^{th}\) column of \(A\)</li>
+<li> the eigenvalue of a matrix \(A\) is unchanged if we multiply An invertible matrix \(V\) as follow \(VAV^{-1}\).</li>
+</ol>
+
+Ok now, by fact \(4\), \(\lambda_i(D)=\lambda_i(A)\)<br>
+By fact \(1,2\), \(det(B \quad v_n) = det(V^*(B \quad v_n)) = det(B \quad e_n) \)<br>
+Here, \(e_n\) denote the column vector with all \(0\) and a \(1\) in the \(n^{th}\) entry.<br>
+By definition of orthogonal matrix and fact \(3\), if We let \(B'\) be the matrix where we remove the last row of \(B\),
+\(det(V^*(B \quad v_n))=det(B')\).
+<br>
+
+
+For our example:
+<!-- We look at: \(B \to V^*B\), \(v_n \to V^*v_n=e_n\) <br> -->
+\[
+V^*B =
+\begin{bmatrix}
+4.00618 - 0.57042 i & 5.36946 - 1.14084 i \\
+4.27206 + 0.417878 i & 4.93648 + 0.835756 i \\
+-0.447214 & -0.894427
+\end{bmatrix}
+<!-- \begin{bmatrix}
+(\frac{1}{2} + \frac{i}{2}) (4 + \sqrt{11}) & (\frac{1}{2} + \frac{i}{2}) (5 + \sqrt{11}) \\
+2 & 1 \\
+9 & 12
+\end{bmatrix}, -->
+<!-- e_1=
+\begin{bmatrix}
+1\\
+0\\
+0
+\end{bmatrix}, -->
+<!-- e_1=
+\begin{bmatrix}
+0\\
+1\\
+0
+\end{bmatrix}, -->
+e_3=
+\begin{bmatrix}
+0\\
+0\\
+1
+\end{bmatrix}
+\]
+We write \(V^*B=\binom{B'}{X}\) where \(B'\) is \((n-1) \times (n-1)\).
+<!-- \[ B'=
+\begin{bmatrix}
+1 & 2 \\
+3 & 4
+\end{bmatrix} ,
+X =
+\begin{bmatrix}
+5 & 6
+\end{bmatrix}
+\] -->
+\[ B'=
+\begin{bmatrix}
+4.00618 - 0.57042 i & 5.36946 - 1.14084 i \\
+4.27206 + 0.417878 i & 4.93648 + 0.835756 i
+\end{bmatrix} \]
+and \[det(B') = -3.16223 + 3.16228 i \]
+Well, not the left side of the equation that we want to prove is just :
+\[
+\prod_{i=1}^{n-1} \lambda_i(A)|det(B \quad v_n)|^2= \prod_{i=1}^{n-1} \lambda_i(D)|det(B')|^2
+\]
+The right side of the equation that we want to prove is:
+\[
+det(B^* A B)= det(B^*VDV^*B)=det((V^*B)^*D_{n,n}(V^*B))=\prod_{i=1}^{n-1} \lambda_i(D)|det(B')|^2\]
+So left side equals right side and we are done.
+<br>
+For our example, the left side is:
+\[\prod_{i=1}^{2} \lambda_i(A)|det(B \quad v_n)|^2 = (-2 \sqrt{5})^2 \cdot (6+\sqrt{11}) \cdot (6-\sqrt{11}) =500\]
+
+Let's look at \(B^*AB \):
+\[\begin{bmatrix}
+202 & 264 - 10 i \\
+ 264 + 10 i & 348
+\end{bmatrix}
+\]
+
+If we use the formula that we derived, we get:
+\[ 4.4721^2*(6+\sqrt{11})(6-\sqrt{11}) =500 \]
+
+we have the right side of euqation is \(det(B^*AB ) = 500\)
+
+</div>
+
+So the main result of the paper is:
+
+<div class="lemma" id = "lem2">
+	(lemma 2)
+\[|v_{i,j}|^2 \prod_{k=1, k \neq i}^n ( \lambda_i(A) - \lambda_k(A)) = \prod_{k=1}^{n-1}(\lambda_i(A) - \lambda_k(M_j))\]
+</div>
+<div class="proof">
+Notice that if \( Av_n = \lambda_n v_n \) then
+<ul>
+	<li>\((A- \lambda_n I) v_n = 0 \)</li>
+	<li>\( (A - \lambda_n I) v_i = (\lambda_i - \lambda_n) v_i \)</li>
+</ul>
+So we conclude that the eigenvactors \(v_i\) of \(A\) with eigenvalue \(\lambda_i\)  are eigenvectors of \(A - \lambda_n(A) I\) with eigenvalue \(\lambda_i-\lambda_n\)
+<br>
+So we consider the matrix \(A- \lambda_n(A) I\), so if we think of \(A\) in the lemma as \(A- \lambda_n(A) I\), the equation in the lemma with \(j=n\) would be written as:
+\[|v_{n,1}|^2 (-1)^{n-1}\prod_{k=1}^{n-1} \lambda_k(A)= \prod_{k=1}^{n-1} \lambda_k(M_1)(-1)^{n-1}\]
+We divide both side of equation by \((-1)^{n-1}\) to get:
+\[|v_{n,1}|^2 \prod_{k=1}^{n-1} \lambda_k(A)= \prod_{k=1}^{n-1} \lambda_k(M_1)\]
+Here, the right hand side is the deteminant of \(M_1\).
+We now apply <a href="eigenfeigen.html#lem1">lemma 1</a>  by using \(B = \binom{0}{I_{n-1}}\) to get :
+\[ \prod_{i=1}^{n-1} \lambda_i(A)|det(B \quad v_n)|^2 = det(B^*AB)\]
+For example, using the matrix  <a href="eigenfeigen.html#ex1">\(A\)</a> example in the first lemma, we have:
+\[
+B^*AB=
+\begin{bmatrix}
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+7 & 1+i & 2+2i \\
+1-i & 1 & 2 \\
+2-2i & 2 & 4
+\end{bmatrix}
+\begin{bmatrix}
+0 & 0  \\
+1 & 0 \\
+0 & 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 & 2\\
+3 & 4
+\end{bmatrix}
+\]
+So \(det(B^*AB)=det(M_1) \) and we notice that \(det(B \quad v_n) = v_{n,1}\) by doing cofactor expansion along the last column.
+So this proves the equality of equation above.
+</div>
+Alternatively, we can give a proof using adjugate matrices.
+<div class = "proof">
+We have the equation:
+\[det(A) A^{-1} =adj(A)\]
+Let's consider another example to illustrate:
+<br>
+<h3 id ="ex2">Example 2</h3>
+\[
+\begin{bmatrix}
+1 & 1 + i & 3\\
+1 - i & 5 & 7 \\
+3 & 7 & 3
+\end{bmatrix}
+\]
+and its properties are:
+<div class ="table1">
+	<style type="text/css">
+	.tg  {border-collapse:collapse;border-spacing:0;}
+	.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+	</style>
+	<table class="tg">
+	<thead>
+	  <tr>
+	    <th class="tg-iifz">Determinant</th>
+	    <th class="tg-iifz">\(9\)</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr>
+	    <td class="tg-iifz">Trace</td>
+	    <td class="tg-iifz">\(-43\)</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">Characteristic equation</td>
+	    <td class="tg-iifz">\(-λ^3 + 9 λ^2 + 37 λ - 43\)</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">Eigenvalues</td>
+	    <td class="tg-iifz">\( \lambda_1 \approx 11.8221, \lambda_2 \approx -3.78344, \lambda_3 \approx 0.961365 \)</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">Eigenvectors</td>
+	    <td class="tg-iifz">\( v_1 \approx (0.382384 + 0.0974537 i, 1.09642 - 0.0417659 i, 1) , v_2 \approx (-0.483576 + 0.174934 i, -0.761815 - 0.0749719 i, 1),v_3 \approx (2.7744 - 3.79616 i, -1.48026 + 1.62693 i, 1 )\)</td>
+	  </tr>
+	</tbody>
+	</table>
+</div>
+
+Take \(\lambda=5\), then our example becomes:
+\[5 I_3 - A =
+\begin{bmatrix}
+4 & 1+i & 3 \\
+1-i & 0 & 7 \\
+3 & 7 & -2
+\end{bmatrix},
+
+adj( 5 I_3 - A) =
+\begin{bmatrix}
+-49 & 23-2i & 7-7i \\
+23 + 2i & -17 & -25+3i \\
+7+7i & -25-31 & -2
+\end{bmatrix}
+\]
+
+Notice that if \(v_i\) is an eigenvector of matrix \(A\) with eigenvalue \(\lambda_i\), then \(\frac{1}{\lambda_i}\) is an eigenvalue of \(A^{-1}\).
+\[ v_i = A^{-1}Av_i = A^{-1} \lambda_i v_i = \lambda_i A^{-1}v_i \Rightarrow A^{-1}v_i = \frac{1}{\lambda_i}v_i \]
+
+
+Let \(\lambda\) be not an eigenvalue of \(A\), then
+\[adj( \lambda I_n -A) = det( \lambda I_n -A)(\lambda I_n -A)^{-1} =\]
+
+for our example, we have:
+\[
+\begin{bmatrix}
+-49 & 23-2i & 7-7i \\
+23 + 2i & -17 & -25+3i \\
+7+7i & -25-31 & -2
+\end{bmatrix} =
+(55050-3150i) (\frac{18}{337825} + \frac{43i}{2026950})
+\begin{bmatrix}
+-393 + 187 i & -65 + 151 i & -135 + 45 i\\
+-60 - 30 i & 0 & -315 + 105 i \\
+-350 + 119 i & -756 + 301 i & 90 - 30 i
+\end{bmatrix}
+\]
+
+and so
+\[ adj(\lambda I_n - A)v_j = det( \lambda I_n - A)( \lambda - \lambda_j(A))^{-1}v_j = \prod_{k=1; k \neq j}^n (\lambda - \lambda_k(A))v_j\]
+In our example, say \(j=1\), we get:
+\[(5+3.78344) \cdot (5-0.961365)
+\begin{bmatrix}
+0.382+0.097i \\
+1.096 - 0.042i\\
+1
+\end{bmatrix}\]
+
+This shows that \(v_i\) are eigenvalues of \(adj(\lambda I_n - A)\) so by spectral decomposition we get:
+
+\[adj( \lambda I_n - A) = \sum_{j=1}^n \prod_{k=1; k \neq j}^n (\lambda - \lambda_k(A))v_jv_j^* \]
+Now we take limit as \( \lambda \to \lambda_i(A) \) then we get:
+\[ adj( \lambda_i(A)I_n - A) = \prod_{k=1; k \neq i}^n ( \lambda_i(A) - \lambda_k(A))v_iv_i^* \]
+The diagonal elements of both side gives the desired equality. To see this, consider the \(i,i\) entry of left side of the above equation.
+
+\[adj( \lambda_i(A)I_n - A)_{jj} = det(X_j)= det(\lambda_i(A)I_{n-1}-Y_j )= \prod_{k=1}^{n-1} (\lambda_i(A) - \lambda_k(Y_j))\]
+Here \(X_j\) denote the \(j,j\) minor of \(adj( \lambda_i(A)I_n - A)\) and \(Y_j\) is the \(jj\) minor of \(A\) and wee see that the result if the right hand side of the equation that we want to prove.
+We used the fact that the determinant of a matrix is the product of its eigenvalues to expand the last equality above.
+<br>
+Now, we look at the \(jj\) entry of the right side of the above equality:
+\[ (\prod_{k=1; k \neq i}^n ( \lambda_i(A) - \lambda_k(A))v_iv_i^*)_{jj} =  \prod_{k=1; k \neq i}^n ( \lambda_i(A) - \lambda_k(A)) |v_{ij}|^2 \]
+And this is the left hand side of the equation that we wanted to prove.  And that concludes the proof.
+
+</div>
+
+<div class ="theorem" id = "cor3">
+	(corollary 3) If an entry \(j\) of eigenvector \(v_i\) of a hemitian matrix \(A\) is \(0\), \(v_{i,j} = 0\), then one of the eigenvalues of the minor \(M_j\) must match \(\lambda_i(A)\).
+</div>
+<div class ="proof">
+We use the equation in lemma 2, we have:
+\[|v_{i,j}|^2 \prod_{k=1, k \neq i}^n ( \lambda_i(A) - \lambda_k(A)) = \prod_{k=1}^{n-1}(\lambda_i(A) - \lambda_k(M_j))\]
+But if \(v_{i,j} =0 \) well then the righthand side \(\prod_{k=1}^{n-1}(\lambda_i(A) - \lambda_k(M_j)) \) is \(0\) and so for some \( k \in [n-1]\), \(\lambda_i(A) - \lambda_k(M_j)=0\) and so \( \lambda_i(A) = \lambda_k(M_j)\)
+</div>
+
+
+
+</body>
+
+
+
+
+</html>

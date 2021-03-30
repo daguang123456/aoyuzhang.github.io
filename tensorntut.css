@@ -1,0 +1,16 @@
+.tensornpic{
+   text-align: center;
+}
+/*
+.tensorTutorialPics{
+	width:350px;
+	height:350px;
+}*/
+
+.hide{
+  display : none;
+}
+
+.myDIV:hover + .hide{
+  display: block;
+}

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+			<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+			#projectNetwork {
+        width: 700px;
+        height: 700px;
+        border: 1px solid lightgray;
+        margin: 0 auto;
+        background-color: coral;
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>课程安排(Course scheduling)</h2>
+    我们必须安排从0到n-1标记总共n门课程。
+    某些课程可能具有先决条件，例如，如果 Prerequisite[i] = ai，bi，这意味着我们必须在课程ai之前修毕bi。
+    给定课程总数numCourses和先决条件对列表，请返回完成所有课程应采取的课程顺序。课程以数字表示。
+
+    如果有许多有效答案，请返回其中任何一个。如果不可能完成所有课程，则返回一个空数组。
+    <br><br>
+    course schedulingThere are a total of \(n\) courses you have to take labelled from \(0\) to \(n - 1\).
+    Some courses may have prerequisites, for example, if prerequisites[i] = [ai, bi] this means we must take the course bi before the course ai.
+    Given the total number of courses numCourses and a list of the prerequisite pairs, return the ordering of courses we should take to finish all courses.
+    If there are many valid answers, return any of them. If it is impossible to finish all courses, return an empty array.Courses are represented by numbers.
+    <hr>
+    例:
+    <div class ="table1">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+      </style>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">输入：</th>
+          <th class="tg-fv28">课程数 = 2, 先决条件 = 1,0</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">输出:</td>
+          <td class="tg-fv28">[0,1]</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">说明:</td>
+          <td class="tg-fv28">一共有2门课程。要选择课程1，我们应该已经完成​​课程0。因此正确的课程顺序是[0,1]。</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    Example:
+    <div>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">Input:</th>
+          <th class="tg-fv28">numCourses = 4, prerequisites = 1,0;2,0;3,1;3,2</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">Output:</td>
+          <td class="tg-fv28">[0,2,1,3]</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">Explanation:</td>
+          <td class="tg-fv28">There are a total of 4 courses to take. <br>To take course 3 you should have finished both courses 1 and 2. <br>
+						Both courses 1 and 2 should be taken after you finished course 0.
+						So one correct course order is [0,1,2,3]. <br>Another correct ordering is [0,2,1,3].</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+
+    <label for="tagNumberOfCourses">课程数是多少:(What is number of courses)</label><br>
+    <input type="number" id = "tagNumberOfCourses" class="numbersonly" value="4"><br>
+    <label for="tagPrerequisites">课程先决条件是什么:(What are the prerequisite),输入示例:1,2;2,3</label><br>
+    <input type="text" id = "tagPrerequisites" class="numbersonly" value="1,0;2,0;3,1;3,2"><br>
+    <input type="Button" onclick="computeResult()" value="找到可行的的课程安排(Find a good ordering of the courses)" /> <br>
+		<div class ="table1">
+			<style type="text/css">
+			.tg  {border-collapse:collapse;border-spacing:0;}
+			.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+				overflow:hidden;padding:10px 5px;word-break:normal;}
+			.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+				font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+			.tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+			</style>
+			<table class="tg">
+			<thead>
+				<tr>
+					<th class="tg-fv28"><label for="tagProject">课程先决条件图(Course prerequisites graph)</label></th>
+				</tr>
+				<tr>
+					<th class="tg-fv28"><div id="projectNetwork"></div></th>
+				</tr>
+			</thead>
+			</table>
+		</div>
+
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+解(Solution):<br>
+		表示课程先决条件的图的拓扑排序(topological sort of the graph that represent the course prerequisites)
+
+    <script>
+			class ANetwork {
+				constructor(divName) {
+					this.divName = divName;
+					this.namesValueDict = {};
+					this.nodeIdSet = new Set();
+					this.nodeNamesSet = new Set();
+					this.namesIdDict = {};
+					this.idNamesDict = {};
+					// create an array with nodes
+					this.nodeSet = new Set();
+					this.nodes = new vis.DataSet([]);
+					// create an array with edges
+					this.edgesSet = new Set();
+					this.edges = new vis.DataSet([]);
+					// create a network
+					this.container = document.getElementById(divName);
+					this.data = {
+						nodes: this.nodes,
+						edges: this.edges,
+					};
+					this.options = {};
+					this.network = new vis.Network(this.container, this.data, this.options);
+				}
+				displayAgain(){
+					this.container = document.getElementById(this.divName);
+					this.data = {
+						nodes: this.nodes,
+						edges: this.edges,
+					};
+					this.options = {};
+					this.network = new vis.Network(this.container, this.data, this.options);
+				}
+				addNode(theLabel, profit){ // this method assume the label to be added dosen't exist in the network yet
+					var tempId = Math.floor(Math.random() * 500);
+					while(this.nodeIdSet.has(tempId)){
+						tempId = Math.floor(Math.random() * 500);
+					}
+					if(!(this.nodeNamesSet.has(theLabel))){
+						var nodeDisplayLabel = theLabel +":"+ profit;
+						var tempNode = { id: tempId, label: nodeDisplayLabel };
+						this.nodes.add(tempNode);
+						this.network.stabilize();
+						this.nodeIdSet.add(tempId);
+						this.nodeSet.add(tempNode);
+						this.namesIdDict[theLabel] = tempId;
+						this.idNamesDict[tempId] = theLabel;
+						this.namesValueDict[theLabel] = profit;
+						this.nodeNamesSet.add(theLabel);
+					}
+				}
+				removeNode(nodeId){
+					// this.nodes.remove({ id: nodeId });
+					// this.nodeIdSet.delete(nodeId);
+					// this.nodeNamesSet
+					// this.namesIdDict = {};
+					// this.idNamesDict = {};
+
+				}
+				removeEdge(edgeId){
+					this.edges.remove({id: edgeId})
+				}
+				addEdge(sLabel, dLabel){
+					var tempEdge = { from: this.namesIdDict[sLabel], to: this.namesIdDict[dLabel], arrows: "to", label: "To be done before"};
+					// console.log(getEdgeBetweenProjectNodes(projectNamesIdDict[sLabel],projectNamesIdDict[dLabel]));
+					this.edges.add(tempEdge);
+					this.edgesSet.add(tempEdge)
+				}
+				addLabelledEdge(sLabel, dLabel, capacity, flow, color){ // ann nodes needs to be preset before adding the edge
+					var tempEdge = { from: this.namesIdDict[sLabel], to: this.namesIdDict[dLabel], arrows: "to", label: ""+flow+"/"+capacity, color: color};
+					// console.log(getEdgeBetweenProjectNodes(projectNamesIdDict[sLabel],projectNamesIdDict[dLabel]));
+					this.edges.add(tempEdge);
+					this.edgesSet.add(tempEdge);
+
+				}
+				addResidueEdge(sLabel, dLabel, theLabel, color){ // ann nodes needs to be preset before adding the edge
+					//console.log(theLabel);
+					var tempEdge = { from: this.namesIdDict[sLabel], to: this.namesIdDict[dLabel], arrows: "to", label: theLabel+"", color: color};
+					// console.log(getEdgeBetweenProjectNodes(projectNamesIdDict[sLabel],projectNamesIdDict[dLabel]));
+					this.edges.add(tempEdge);
+					this.edgesSet.add(tempEdge);
+				}
+				getEdgeBetweenNodes(node1_id,node2_id) {
+					return this.edges.get().filter(function (edge) {
+						return (edge.from === node1_id && edge.to === node2_id );
+					});
+				}
+				getEdgesOfNode(nodeId) {
+					return this.edges.get().filter(function (edge) {
+						return edge.from === nodeId || edge.to === nodeId;
+					});
+				}
+				getNodeByName(theName){
+					return this.nodes.get(this.namesIdDict[theName]);
+				}
+				reset(){
+					this.namesValueDict = {};
+					this.nodeIdSet = new Set();
+					this.nodeNamesSet = new Set();
+					this.namesIdDict = {};
+					this.idNamesDict = {};
+					// create an array with nodes
+					this.nodeSet = new Set();
+					this.nodes = new vis.DataSet([]);
+					// create an array with edges
+					this.edgesSet = new Set();
+					this.edges = new vis.DataSet([]);
+					// create a network
+					this.data = {
+						nodes: this.nodes,
+						edges: this.edges,
+					};
+					this.options = {};
+					//this.network = new vis.Network(this.container, this.data, this.options);
+					if (this.network != null) {
+						this.network.destroy();
+						this.network = new vis.Network(this.container, this.data, this.options);
+					}
+				}
+			}
+
+      var rangeN = 0;
+      var result ;
+			var resultStr ="";
+			var projectNetwork = new ANetwork("projectNetwork");
+      /**
+        *
+       */
+			function topoSort(){
+
+			}
+      function computeResult(){
+				result=[];
+				resultStr ="";
+				projectNetwork.reset();
+        rangeN  = parseFloat(document.getElementById("tagNumberOfCourses").value);
+        if(isNaN(rangeN)){ //If number of food entered is not a number, display an an explainatory error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的课程数量不是数字(error: the number of courses entered is not a number)"; // Put the error message inside the msg element in HTML.
+          return false;
+        }
+        if(rangeN <= 0 ){ //If the number of type of food or the number of type of nutrients entered is a negetive number, display an error message.
+          document.getElementById("tagMessage").innerHTML= "错误：课程数量必须为正(error: the number of course entered needs to be positive)";
+          return false;
+        }
+        if(!(Number.isInteger(rangeN)) ){
+          document.getElementById("tagMessage").innerHTML= "错误：课程数量必须是整数(error: The number of course entered needs to be an Integer)";
+          return false;
+        }
+				var pizzaSizeString =  document.getElementById("tagPrerequisites").value;
+				if ( pizzaSizeString.match('[^,; 0-9]') ){
+					document.getElementById("tagMessage").innerHTML= "错误：课程先决条件格式无效(error: invalid form of course prerequisites)"; // Put the error message inside the msg element in HTML.
+					return false;
+				}
+				var pizzaSizeList = pizzaSizeString.split(";");
+				console.log(pizzaSizeList);
+				for(var i  = 0 ; i < pizzaSizeList.length; i++){
+					pizzaSizeList[i] = pizzaSizeList[i].split(",");
+				}
+				for(var i  = 0 ; i < pizzaSizeList.length; i++){
+					pizzaSizeList[i][0] = parseFloat(pizzaSizeList[i][0]);
+					projectNetwork.addNode(pizzaSizeList[i][0],"");
+					pizzaSizeList[i][1] = parseFloat(pizzaSizeList[i][1]);
+					projectNetwork.addNode(pizzaSizeList[i][1],"");
+					projectNetwork.addEdge(pizzaSizeList[i][0],pizzaSizeList[i][1]);
+				}
+				console.log(pizzaSizeList);
+				if(projectNetwork.nodeSet.length > rangeN ){ //If the number of type of food or the number of type of nutrients entered is a negetive number, display an error message.
+					document.getElementById("tagMessage").innerHTML= "存在的课程数量大于课程总数(The number of courses that are present is larger than the total number of courses)";
+					return false;
+				}
+        result = recursiveCompute();
+				console.log(result);
+
+				while(result.length != 0){
+					resultStr = resultStr+result.pop() +" ";
+				}
+				console.log(resultStr);
+        displayResult();
+        return 1;
+      }
+			function topologicalUtil(node,visited, stackk){
+				console.log(visited);
+				visited.add(node);
+				var neighbhors = projectNetwork.getEdgesOfNode(projectNetwork.namesIdDict[node]);
+				console.log(neighbhors);
+				for(var i = 0 ; i < neighbhors.length ; i++){
+					if(neighbhors[i].from === projectNetwork.namesIdDict[node] && !(visited.has(projectNetwork.idNamesDict[neighbhors[i].to]))){ // edge orientation: v to its neightbhors
+						topologicalUtil(projectNetwork.idNamesDict[neighbhors[i].to],visited,stackk);
+					}
+				}
+				stackk.push(node);
+			}
+      function recursiveCompute(){
+				var visited = new Set();
+				var stack = [];
+				for (let item of projectNetwork.nodeNamesSet){
+					if(!(visited.has(item))){
+						topologicalUtil(item,visited, stack)
+					}
+				}
+				return stack;
+      }
+      function displayResult(){
+        clearTable("tagOutput")
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("结果如下(The result is as follow)"));
+        resultBody.appendChild(createDescriptionRow("一个可行的课程安排是(A good ordering of the courses is)",resultStr));
+        resultTbl.append(resultBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+			//https://alexwebdevelop.com/how-to-learn-php/
+    </script>
+
+	</body>
+</html>

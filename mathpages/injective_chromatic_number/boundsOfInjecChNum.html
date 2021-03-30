@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+#mynetwork1 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+}
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+<div class="lemma">
+  For a  cycle of length \(n\), we have:
+  \[\begin{cases}
+   \chi_i(C_n)=2, n \equiv 0(\mod 4)\\
+   \chi_i(C_n)=3, else.
+  \end{cases}
+  \]
+</div>
+<div class="proof">
+  This is because the common neighbhor graph of a cycle of length \(n\) is:
+  two cycles of length \(\frac{n}{2}\) if \(n\) is even or a cycle of length \(n\)
+  if n is odd. We know that the injective chromatic number of a graph is
+  the chromatic number of its common neighbhor graph, And since the common neighbhor graph
+  consists of cycle of even length if and only if the graph is a cycle of lenght, a multiple of \(4\).
+  And the common neighbhor graph of a cycle of odd length is a cycle of odd length.
+  We have that claim using the fact:
+  \[ \begin{cases}
+   \chi(C_n)=2, n \equiv 0 (\mod 2)\\
+   \chi(C_n)=3, n \equiv 1 *\mod 2)
+  \end{cases}
+  \]
+</div>
+
+</body>

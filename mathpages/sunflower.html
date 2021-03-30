@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="../styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+	<!-- <script src="https://cdn.zingchart.com/zingchart.min.js"></script> -->
+	<script src="https://cdn.anychart.com/releases/8.7.1/js/anychart-core.min.js"></script>
+	<script src="https://cdn.anychart.com/releases/8.7.1/js/anychart-venn.min.js"></script>
+  <style>
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+.table1{
+	width:300px;
+	height:160px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+.table2{
+	width:300px;
+	height:160px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+.table3{
+	width:300px;
+	height:350px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+.table4{
+	width:300px;
+	height:150px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+.table5{
+	width:300px;
+	height:150px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+#mynetwork1 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork2 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#container {
+    width: 500px;
+    height: 300px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+
+ <h2><a href="../pdffiles/sunflower.pdf">Improved bounds for the sunflower lemma</a></h2>
+by Ryan Alweiss, Shachar Lovett, Kewen Wu, Jiapeng Zhang
+
+<br>
+Thank <a href="https://docs.anychart.com/Basic_Charts/Venn_Diagram">AnyChart</a> for create diagrams
+<br>
+
+<div class="definition">
+Given a finite set \(S\) with \(n\) elements, then a \(\textbf{set system}\) \(\mathcal{F}\) is a collection of subsets of \(S\).
+We call \(\mathcal{F}\) a \(w\)-\(\textbf{set system}\) if every set in \(\mathcal{F}\) contains at most \(w\) elements.
+We say \(\mathcal{F}\) is \(w\)-\(\textbf{uniform}\) if every set in \(\mathcal{F}\) has \(w\) elements.
+</div>
+
+<div class="definition">
+A collection of subsets \(S_1,S_2,...,S_r\) of a set \(S\) is called a \(r\)-\(\textbf{sunflower}\) if the intersection of any two subsets is equals to the
+intersection of every subsets. The intersection \(\cap_{i\in[r]}S_i \) is called the \(\textbf{kernel}\) and each \(S_i-K\) is called the \(\textbf{petals}\).
+Note that the size of petals are not necessarly the same.
+</div>
+For example, here is a \(2\) sunflower:
+<div id="container"></div>
+<script>
+anychart.onDocumentReady(function () {
+
+    //create data
+    var data = [
+{
+    x: "A",
+    name: "Set A(Petal A)",
+    custom_field: "Set:{1,2,3,4,5} \n Petal:{1,2,3}",
+    value: 5
+},
+{
+    x: "B",
+    name: "Set B(Petal B)",
+    custom_field: "Set{4,5,6,7,8} \n Petal:{6,7,8}",
+    value: 5
+},
+{
+    x: ["A", "B"],
+    name: "Kernel A,B",
+    custom_field: "{4,5}",
+    value: 2
+}
+    ];
+
+    // create a chart and set the data
+    chart = anychart.venn(data);
+
+    // configure labels of circles
+    chart.labels().format("{%name}\n\n{%custom_field}\n{%value}");
+
+    // configure labels of intersections
+    chart.intersections().labels().format("{%name}\n\n{%value}");
+
+    // configure tooltips of circles
+    chart.tooltip().format(
+"Set Info: {%custom_field}\nCardinality: {%value}"
+    );
+
+    // configure tooltips of intersections
+    chart.intersections().tooltip().format(
+"Intersection Info: {%custom_field}\nCardinality: {%value}"
+    );
+
+    // set the chart title
+    chart.title("2-sunflower");
+
+    // set the container id
+    chart.container('container');
+
+    // initiate drawing the chart
+    chart.draw();
+});
+</script>
+
+
+Given a set \(S\), We denote the power set of that set by \(2^S\).<br>
+
+<div class="definition">
+A logical formula is in \(\textbf{disjunctive normal form}\) (DNF) if it is a disjunction of one or more conjunctions of one or more literals.
+Literals are boolean variables with their negations. Disjunction means "logical or" of some terms and conjunction means "logical and" of some terms. The \(\textbf{size}\) of a DNF is the number of
+terms and the \(\textbf{width}\) of a DNF is the maximal number of literals in a term. A DNF whose terms contains no negative literals is called \(\textbf{monotone}\).
+</div>
+For example, considet the following DNF:
+\[(x \wedge y) \vee (x \wedge \bar{z} \wedge y)\]
+it has size \(2\) and width \(3\) with literals \(x,y, z, \bar{z}\). A term is \((x \wedge y)\). \(\bar{z}\) means negation of \(z\).
+This is not a monotone DNF as the literal \(\bar{z}\) is present in the second term.
+<br> Here is a table representing the truth value of the DNF:
+
+<div class="table3">
+	<style type="text/css">
+	.tg  {border-collapse:collapse;border-spacing:0;}
+	.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+	</style>
+	<table class="tg">
+	<thead>
+	  <tr>
+	    <th class="tg-iifz">x</th>
+	    <th class="tg-iifz">y</th>
+	    <th class="tg-iifz">z</th>
+	    <th class="tg-iifz">\(\bar{z}\)<br></th>
+	    <th class="tg-iifz">\(x \wedge y\)</th>
+	    <th class="tg-iifz">\(x \wedge \bar{z} \wedge y\)</th>
+	    <th class="tg-iifz">\((x \wedge y) \vee (x \wedge \bar{z} \wedge y)\)<br></th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr>
+	    <td class="tg-iifz">0<br></td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">1</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">1</td>
+	  </tr>
+	</tbody>
+	</table>
+</div>
+<!-- <div class="definition">
+	Given a finite set \(S\), a \(\textbf{set system}\) is any subset of the power set of \(S\). Just a recall, the power set of a set \(S\) is just
+	the set of all possible subset of \(S\).
+</div> -->
+It is possible to represent a set system using a monotone DNF.
+<br>Let's see our \(2\)-sunflower example above. We have finite set \(\{1,2,3,4,5,6,7,8\}\).
+we have the two subsets in the sunflower: \(\{1,2,3,4,5\},\{4,5,6,7,8\}\). Each of the subset can be thought of as functions from \(S \to \{0,1\}\).
+For example, \(\{1,2,3,4,5\}\) would be represented by the function:
+
+<div class="table1">
+	<style type="text/css">
+	.tg  {border-collapse:collapse;border-spacing:0;}
+	.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+	</style>
+	<table class="tg">
+	<thead>
+	  <tr>
+	    <th class="tg-iifz">x</th>
+	    <th class="tg-iifz">1</th>
+	    <th class="tg-iifz">2</th>
+	    <th class="tg-iifz">3</th>
+	    <th class="tg-iifz">4</th>
+	    <th class="tg-iifz">5</th>
+	    <th class="tg-iifz">6</th>
+	    <th class="tg-iifz">7</th>
+	    <th class="tg-iifz">8</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr>
+	    <td class="tg-iifz">f(x)</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">1</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">0</td>
+	  </tr>
+	</tbody>
+	</table>
+</div>
+A set system \(\mathcal{F}\) of a set \(S\) can then be represented as a function \(f_{\mathcal{F}}: 2^S \to \{0,1\}\) which output \(1\)
+for any \(X \in \mathcal{F}\) and \(0\) otherwise. If for each element \(i\) in \(S\), we assign a boolean variable \(x_i\),
+then we can represent \(f_{\mathcal{F}}\) as the DNF \(\vee_{X \in \mathcal{F}}(\wedge_{i \in X}x_i)\).
+<br> for our sunflower above, its DNF representation is : \( (x_1 \wedge x_2 \wedge x_3 \wedge x_4 \wedge x_5) \vee (x_4 \wedge x_5 \wedge x_6 \wedge x_7 \wedge x_8 )\).
+<br> We can see it is a good representation as each term \(T\) of the DNF produces one if we assign all the variables \(x_i, \forall i \in X\) to \(1\) where \(X \in \mathcal{F}\).
+
+<div class ="definition">
+Let \(\mathcal{F}\) be a set system, a \(\textbf{proper lower bound set system }\) of \(\mathcal{F}\) is just a set system \( \mathcal{F}' \subset \mathcal{F}\)
+</div>
+
+<div class ="definition">
+Let \(\mathcal{F}\) be a set system, a \(\textbf{proper upper bound set system }\) for \(\mathcal{F}\) is a set system \(\mathcal{F}'\) such that
+\[ S \in \mathcal{F} \Rightarrow \exists S' \in \mathcal{F}' \text{ s.t } S \subset S'\].
+</div>
+
+The cool thing abour upper bound of a set system comes now?
+<div class="lemma">
+Given \( \mathcal{F}, \mathcal{F}' \) set systems over the same set, such that their DNF representation satisfy:
+\[f_{\mathcal{F}'} \geq f_{\mathcal{F}} \]
+then \(\mathcal{F}'\) is an upper bound of \(\mathcal{F}\).
+</div>
+
+<div class="definition">
+Given a finite set \(S\) and \(p \in [0,1]\), we denote by \(U(S,p)\) the distribution over subset \(X\) of \(S\) where each element
+is included in \(X\) independently with probability \(p\).
+</div>
+So let's see an example, suppose we have \(S=\{1,2,3\}\) and \(p=\frac{1}{3}\) then the distribution \(U(S,p)\) is:
+<div class="table2">
+	<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-iifz">subsets X</th>
+    <th class="tg-iifz">\(\emptyset\)</th>
+    <th class="tg-iifz">\(\{1\}\)</th>
+    <th class="tg-iifz">\(\{2\}\)</th>
+    <th class="tg-iifz">\(\{3\}\)</th>
+    <th class="tg-iifz">\(\{1,2\}\)</th>
+    <th class="tg-iifz">\(\{1,3\}\)</th>
+    <th class="tg-iifz">\(\{2,3\}\)</th>
+    <th class="tg-iifz">\(\{1,2,3\}\)</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-iifz">Pr(X)</td>
+    <td class="tg-iifz">\( (\frac{1}{2})^3\)<br></td>
+    <td class="tg-iifz">\((\frac{1}{2})^3\)<br></td>
+    <td class="tg-iifz">\((\frac{1}{2})^3\)<br></td>
+    <td class="tg-iifz">\((\frac{1}{2})^3\)<br></td>
+    <td class="tg-iifz">\((\frac{1}{2})^3\)</td>
+    <td class="tg-iifz">\((\frac{1}{2})^3\)</td>
+    <td class="tg-iifz">\((\frac{1}{2})^3\)</td>
+    <td class="tg-iifz">\((\frac{1}{2})^3\)</td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+<div class="definition">
+Let \(0 <  \alpha, \beta < 1 \), a set system \(\mathcal{F} \subset 2^S\) is \((\alpha, \beta)\)-\(\textbf{satisfying}\) if:
+\[Pr_{R \sim U(X,\alpha)}(\exists S \in \mathcal{F}, S \subset R) > 1 -\beta \]
+</div>
+ For example, suppose we have set system \(\mathcal{F}=\{\{2\},\{3\}\} \subset X:=2^{[3]}\),
+ then the subsets in \(2^{[3]}\) that contains elements in \(\mathcal{F}\) are:
+ \(Y=\{\{2\},\{3\},\{2,3\},\{1,2\},\{1,3\},\{1,2,3\}\}\).
+So \(\mathcal{F}\) is \((\frac{1}{2},\frac{1}{2})\) satisfying.
+ This is because, \(Pr_{R \sim U(X,0.5)}(\exists S \in \mathcal{F}, S \subset R)=1-Pr(R \notin Y
+ )=1-(0.5^3+0.5^3)=1-0.25>1-0.5\)
+
+
+<div class="lemma">
+if \(\mathcal{F}\) is a \((\frac{1}{r},\frac{1}{r})\)-satisfying set system of \(X\) that dosen't contains the empty set, then \(\mathcal{F}\) contains \(r\)
+pairwise disjoint sets.
+</div>
+<div class="proof">
+Consider our previous example of \(\mathcal{F}:= \{\{1\},\{2\}\} \subset 2^{[3]}\) as illustration.<br>
+Consider a random \(r\)-coloring of elements in \(X\), in our example, \(r=2, X=[3]\):
+<div class="table2">
+  <style type="text/css">
+  .tg  {border-collapse:collapse;border-spacing:0;}
+  .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+    overflow:hidden;padding:10px 5px;word-break:normal;}
+  .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+    font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+  .tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+  </style>
+  <table class="tg">
+  <thead>
+    <tr>
+      <th class="tg-iifz">Elements in \([3]\)</th>
+      <th class="tg-iifz">\(1\)</th>
+      <th class="tg-iifz">\(2\)</th>
+      <th class="tg-iifz">\(3\)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tg-iifz">colors:\(\{1,2\}\)</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">2</td>
+      <td class="tg-iifz">2</td>
+
+    </tr>
+  </tbody>
+  </table>
+</div>
+We denote \(Y_i\) the set of elements in \(X\) with color \(i\). In our example we have \(Y_1,Y_2\):
+<div class="table4">
+  <style type="text/css">
+  .tg  {border-collapse:collapse;border-spacing:0;}
+  .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+    overflow:hidden;padding:10px 5px;word-break:normal;}
+  .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+    font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+  .tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+  </style>
+  <table class="tg">
+  <thead>
+    <tr>
+      <th class="tg-iifz">\(Y_1\)</th>
+      <th class="tg-iifz">\(\{1\}\)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tg-iifz">\(Y_2\)</td>
+      <td class="tg-iifz">\(\{2,3\}\)</td>
+    </tr>
+  </tbody>
+  </table>
+</div>
+<!-- <div class="table4">
+  <style type="text/css">
+  .tg  {border-collapse:collapse;border-spacing:0;}
+  .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+    overflow:hidden;padding:10px 5px;word-break:normal;}
+  .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+    font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+  .tg .tg-isgj{background-color:#38fff8;border-color:#fe0000;text-align:center;vertical-align:top}
+  .tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+  </style>
+  <table class="tg">
+  <thead>
+    <tr>
+      <th class="tg-isgj" colspan="4">\(Y_2\)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tg-iifz">Subset of \([3]\)</td>
+      <td class="tg-iifz">\(\{1\}\)</td>
+      <td class="tg-iifz">\(\{2\}\)<br></td>
+      <td class="tg-iifz">\(\{2,3\}\)</td>
+    </tr>
+    <tr>
+      <td class="tg-iifz">colors:\(\{1,2\}\)</td>
+      <td class="tg-iifz">2</td>
+      <td class="tg-iifz">2</td>
+      <td class="tg-iifz">2</td>
+    </tr>
+  </tbody>
+  </table>
+</div> -->
+
+<!-- <div class="table5">
+  <style type="text/css">
+  .tg  {border-collapse:collapse;border-spacing:0;}
+  .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+    overflow:hidden;padding:10px 5px;word-break:normal;}
+  .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+    font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+  .tg .tg-isgj{background-color:#38fff8;border-color:#fe0000;text-align:center;vertical-align:top}
+  .tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+  </style>
+  <table class="tg">
+  <thead>
+    <tr>
+      <th class="tg-isgj" colspan="6">\(Y_1\)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tg-iifz">Subset of \([3]\)</td>
+      <td class="tg-iifz">\(\emptyset\)</td>
+      <td class="tg-iifz">\(\{3\}\)<br></td>
+      <td class="tg-iifz">\(\{1,2\}\)</td>
+      <td class="tg-iifz">\(\{1,2\}\)</td>
+      <td class="tg-iifz">\(\{1,2,3\}\)</td>
+    </tr>
+    <tr>
+      <td class="tg-iifz">colors:\(\{1,2\}\)</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">1</td>
+      <td class="tg-iifz">1</td>
+    </tr>
+  </tbody>
+  </table> -->
+</div>
+We denote by \(\mathcal{E}_i\) the event that \(\mathcal{F}\) contains a \(i\)-monochromatic set.
+In our example, all sets in \(\mathcal{F}=\{\{1\},\{2\}\}\) are monochromatic.
+<br>
+Now as \(\mathcal{F}\) is \((\frac{1}{r},\frac{1}{r})\)-satisfying, we have:
+\[ Pr(\mathcal{E}_i) > 1- \frac{1}{r}\]
+In our example, \( Pr(\mathcal{E}_i) > 1- \frac{1}{2}, i \in [2]\)
+<br>
+Finally, since \( Pr(\mathcal{E}_i)>0 \forall i \in [r]\), we have \(Pr(\mathcal{E}_1 \cap...\cap \mathcal{E}_r)>0 (why?)\).
+ Thereofre, there is a coloring of \(X\) using \(r\) colors such that
+ \(\mathcal{F}\) contains \(r\) sets which are \(i\)-monochromatic and those sets are disjoint by definition.
+</div>
+
+<div class="definition">
+Given a set system \(\mathcal{F}\) of \(S\) and a set \(T \subset S\), the \(\textbf{link}\) of \(\mathcal{F}\)  at \(T\) is
+\[ \mathcal{F}_T = \{ S-T | S \in \mathcal{F}, T \subset S\}\]
+</div>
+
+<div class="definition">
+Given \(0 < \alpha < \beta < 1\), \(\mathcal{F}\) a set system, and \(K = \cap_{S \in \mathcal{F} S}\).
+\(\mathcal{F}\) is called \((\alpha, \beta)\)-\(\textbf{robust sunflower}\) if :
+\[\begin{cases}
+K \notin \mathcal{F} \\
+\mathcal{F}_K \text{ is } (\alpha,\beta)- \text{ satisfying}.
+\end{cases}\] We call \(K\) the kernel.
+</div>
+An example of a \((\frac{1}{2},\frac{1}{2})\)-robust sunflower with the underlying set \([3]\) is just \(\mathcal{F}=\{\{1,2\},\{1,3\}\}\).
+This is because \(\mathcal{F}_{\cap_{S \in \mathcal{F}}S} =\{ \{2\},\{3\}\} \).
+<div class="lemma">
+Any \((\frac{1}{r}, \frac{1}{r})\)-robust sunflower contains an r-sunflower.
+</div>
+<div class="proof">
+From previous lemma, we get \(S_1,...,S_r\) disjoint subsets in \(\mathcal{F}_K\). So then \(S_i \cup K\) form an r-sunflower.
+</div>
+
+<div class="definition">
+A \(w\)-set system \(\mathcal{F}\) is \(\kappa\)-spread if :
+<ul>
+  <li> \(|\mathcal{F}| \geq \kappa^{w}\)</li>
+  <li> \( |\mathcal{F}_T| \leq \kappa^{-|T|}|\mathcal{F}|, \forall T \neq \emptyset \)
+
+</ul>
+</div>
+
+<div class="definition">
+Given a set system \(\mathcal{F}\) and a function \(\sigma : \mathcal{F} \to \mathcal{Q}_{ \geq 0} \),
+the pair \((\mathcal{F}, \sigma) \) is called a \(\textbf{weighted set system}\). For a subset \(X \in \mathcal{F}\),
+we denote \(\sigma(X):= \sum_{S \in X} \sigma(S)\) the sum of weight of sets in \(X\).
+</div>
+
+<div class="definition">
+A \(\textbf{weight profile}\) is a vector \(s=(s_0;s_1,...,s_w)\) where \(s_0 \geq s_2 \geq ...\geq s_k \geq 0\).
+</div>
+
+<div class="definition">
+Given a weight profile \(s=(s_0;,s_1,...,s_w)\), a weighted set system \(\mathcal{F}, \sigma\) is \(s\)-\(\textbf{spread}\) if
+<ol>
+  <li> \(\sigma(\mathcal{F}) \geq s_0\)</li>
+  <li> \(\sigma(\mathcal{F}_T) \leq s_{|T|} \text{for any non-empty } T\)</li>
+</ol>
+</div>
+
+<div class="Definition">
+A set system \(\mathcal{F}\) is \(s\)-spread if there exists a weight function
+\(\sigma : \mathcal{F} \to \mathbb{Q}_{\geq 0} \) such that \((\mathcal{F},\sigma)\) is \(s\)-spread.
+</div>
+
+<div class="definition">
+TO generalize definition ..., we say a a system is \(\kappa\)-spread if it is \(1;\kappa^{-1},...,\kappa^{-w}\)-spread.
+</div>
+
+<div class="Definition">
+Given \(0 \leq \alpha. \beta < 1\), A weight profile \(s\) is \((\alpha , \beta)\)-satisfying if any \(s\)-spread set system is \(\alpha, \beta)-satisfying.
+</div>
+
+<div class="lemma">
+Let \(0 < \alpha, \beta < 1\) and \(w>2\). Let \(\kappa = \kappa(w) >1\) be nonstrictly increasing function of \(w\) such that the weight profile \((1; \kappa^{-1},...,\kappa^{-w})\) is \((\alpha, \beta)\)-satisfying.
+Then any \(w\)-uniform set system \(F\) of size \(|\mathcal{F}| > \kappa^w\) must contain an \((\alpha , \beta)\)-robust sunflower.
+</div>
+<div class="proof">
+
+</div>
+
+</body>
+
+</html>

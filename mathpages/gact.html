@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+.table1{
+	width: 500px;
+  height: 600px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+.table2{
+	width: 300px;
+  height: 200px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+#mynetwork1 {
+  width: 1000px;
+  height: 800px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork7 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork2 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork3 {
+  width: 650px;
+  height: 550px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork4 {
+  width: 1050px;
+  height: 650px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+<h1><a href= "pdffiles/pccgraphs.pdf ">Group algebras and Coding Theory</a></h1>
+Marines Guerreiro
+<br>
+We sometimes use \(G\) for a graph and sometimes \(G\) for a group. Hopefully we made it clear what \(G\) is in the context.
+<div class="definition">
+Let \(\Gamma\) be a graph and \(e \in \mathbb{Z}^+ \). A subset \(C \subset V(\Gamma) \) is called \(\textbf{perfect e-code}\)
+in \(\Gamma\) if every vertex of \(\Gamma\) is at distance no more than \(e\) to exactly one vertex in \(C\). A perfect \(1\)-code
+is usually called \(\textbf{a perfect code}\) or sometimes, \(\textbf{efficient dominating set}\). If every vertex \(v \in \Gamma \) is adjacent to
+exactly one vertex in \(C\), then \(C\) is called a \(\textbf{total perfect code}\) or an \(\textbf{efficient open dominating set}\).
+<div>
+Here is the Butterfly graph:
+<div id="mynetwork7"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "A" },
+    { id: 2, label: "B" },
+    { id: 3, label: "C" },
+    { id: 4, label: "D" },
+		{ id: 5, label: "E" },
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 5 },
+    { from: 5, to: 4 },
+		{ from: 4, to: 2 },
+		{ from: 1, to: 4 },
+		{ from: 3, to: 4 },
+		{ from: 2, to: 3 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork7");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+A perfect code of the above butterfly graph could be the subset of the vertex set of the graph consist of the vertices \(\{C,E\}\).
+
+<div class="definition">
+The \(\textbf{Hamming distance}\) between two strings of equal length is the number of positions at which the corresponding symbols are different.
+</div>
+For example, consider two strings of length \(8\) with symbols taking from the set \( \{ 0,1,2\}\), say \(12111220, 21111222\),
+<br>their hamming distance is \(3\) because
+they differ in the first, second and the last symbol.
+
+<div class="definition">
+Let \(S\) be a set of \(q\) elements and \(d \in \mathbb{Z}^+\) a positive integer, the \(\textbf{Hamming graph}\) \(H(d,q)\) is defined as:
+\[\begin{gather*}
+V(H(d,q)) = S^d=S\times S \times...\times S = \{(s_1,s_2...s_d)|s_i \in S\}\\
+E(H(d,q)) = \{((s_1s_2...s_n),(x_1x_2...x_n)) |dist((s_1s_2...s_n),(x_1x_2...x_n))=1 \}
+\end{gather*}
+\]Here \(dist\) is the Hamming distance.
+</div>
+Here is \(H(2,3)\):
+
+<div id="mynetwork2"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 00, label: "00" },
+    { id: 01, label: "01" },
+    { id: 02, label: "02" },
+    { id: 10, label: "10" },
+		{ id: 11, label: "11" },
+		{ id: 12, label: "12" },
+		{ id: 20, label: "20" },
+		{ id: 21, label: "21" },
+		{ id: 22, label: "22" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 00, to: 01 },
+    { from: 00, to: 02 },
+		{ from: 00, to: 10 },
+		{ from: 00, to: 20 },
+		{ from: 01, to: 02 },
+		{ from: 01, to: 11 },
+		{ from: 01, to: 21 },
+		{ from: 10, to: 11 },
+		{ from: 10, to: 12 },
+		{ from: 10, to: 20 },
+		{ from: 02, to: 12 },
+		{ from: 21, to: 22 },
+		{ from: 12, to: 22 },
+		{ from: 20, to: 22 },
+		{ from: 11, to: 12 },
+		{ from: 11, to: 21 },
+		{ from: 02, to: 22 },
+		{ from: 21, to: 20 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork2");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+<div class="lemma">
+  (lemma 1)
+  \(H(d,q)\) is the Cartesian product of \(d\) complete graph on \(q\) vertices \(K_q\).
+</div>
+<div class="proof">
+The vertices of the Cartesian product of the complete graph with itself \(K_q \times K_q \times ... \times K_q\) \(d\) times is of the form
+\[ \{(a_1a_2...a_d)| a_i \in V(K_q) \}\]
+Two vertices in \(V(K_q \times ...\times K_q) \) are adjacent if they differ in one coordinate. We can show this fact by induction on \(d\).
+</div>
+
+<div class="definition">
+Given \(q \geq 2\), the \(\textbf{Lee distance}\) between two strings \(x_1x_2...x_n\) and \(y_1y_2...y_n\) of length \(n\) is defined as:
+\[\sum_{i=1}^n \min(|x_i-y_i|, q-|x_i-y_i|)\].
+</div>
+
+<div class="lemma">
+The Lee distance between two letters over the \(q\)-ary alphabet, which is the set of numbers \(\{0,1,...,q-1\}\), is
+<br>
+the length of the shortest path between the nodes representing the the two letters
+<br>
+in the Cayley graph of the additive group \(Z_q\).
+</div>
+
+<div class="lemma">
+  let \(L(n,q)\) be the Cartesian product of \(n\) copies of the cycle of length \(q \geq 3\),
+  then the Lee distance between words of length \(n\) over \(q\)-ary alphabet is exactly the graph distances
+  in \(L(n,q)\).
+</div>
+<div class="proof">
+
+Let's see an example, we first take the Cartesian product of a cycle of length \(3\) ,\(C_3\) with itself \(3\) times, which gives \(L(3,3)\).
+<div id="mynetwork1"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 000, label: "000" },
+    { id: 001, label: "001" },
+    { id: 002, label: "002" },
+    { id: 010, label: "010" },
+    { id: 011, label: "011" },
+    { id: 012, label: "012" },
+    { id: 020, label: "020" },
+    { id: 021, label: "021" },
+    { id: 022, label: "022" },
+
+		{ id: 100, label: "100" },
+    { id: 101, label: "101" },
+    { id: 102, label: "102" },
+    { id: 110, label: "110" },
+    { id: 111, label: "111" },
+    { id: 112, label: "112" },
+    { id: 120, label: "120" },
+    { id: 121, label: "121" },
+    { id: 122, label: "122" },
+
+		{ id: 200, label: "200" },
+    { id: 201, label: "201" },
+    { id: 202, label: "202" },
+    { id: 210, label: "210" },
+    { id: 211, label: "211" },
+    { id: 212, label: "212" },
+    { id: 220, label: "220" },
+    { id: 221, label: "221" },
+    { id: 222, label: "222" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 111, to: 112 },
+		{ from: 111, to: 110 },
+		{ from: 111, to: 101 },
+		{ from: 111, to: 121 },
+		{ from: 111, to: 011 },
+		{ from: 111, to: 211 },
+		{ from: 000, to: 001 },
+		{ from: 000, to: 002 },
+		{ from: 000, to: 010 },
+		{ from: 000, to: 020 },
+		{ from: 000, to: 100 },
+		{ from: 000, to: 200 },
+		{ from: 222, to: 022 },
+		{ from: 222, to: 122 },
+		{ from: 222, to: 202 },
+		{ from: 222, to: 212 },
+		{ from: 222, to: 220 },
+		{ from: 222, to: 221 },
+		{ from: 002, to: 001 },
+		{ from: 002, to: 012 },
+		{ from: 002, to: 022 },
+		{ from: 002, to: 102 },
+		{ from: 002, to: 202 },
+		{ from: 012, to: 022 },
+		{ from: 012, to: 010 },
+		{ from: 012, to: 011 },
+		{ from: 012, to: 112 },
+		{ from: 012, to: 212 },
+		{ from: 200, to: 100 },
+		{ from: 200, to: 210 },
+		{ from: 200, to: 220 },
+		{ from: 200, to: 201 },
+		{ from: 200, to: 202 },
+		{ from: 221, to: 220 },
+		{ from: 221, to: 021 },
+		{ from: 221, to: 121 },
+		{ from: 221, to: 201 },
+		{ from: 221, to: 211 },
+		{ from: 021, to: 121 },
+		{ from: 021, to: 011 },
+		{ from: 021, to: 001 },
+		{ from: 021, to: 020 },
+		{ from: 021, to: 022 },
+		{ from: 120, to: 121 },
+		{ from: 120, to: 122 },
+		{ from: 120, to: 220 ,color: "red"},
+		{ from: 120, to: 020 , color :"red"},
+		{ from: 120, to: 100 },
+		{ from: 120, to: 110 },
+		{ from: 210, to: 220 },
+		{ from: 210, to: 010 },
+		{ from: 210, to: 110 },
+		{ from: 210, to: 211 },
+		{ from: 210, to: 212 },
+		{ from: 102, to: 202 },
+		{ from: 102, to: 112 },
+		{ from: 102, to: 122 },
+		{ from: 102, to: 100 },
+		{ from: 102, to: 101 },
+		{ from: 101, to: 121 },
+		{ from: 101, to: 100 },
+		{ from: 101, to: 121 },
+		{ from: 101, to: 001 },
+		{ from: 101, to: 201 },
+		{ from: 011, to: 010 },
+		{ from: 011, to: 001 },
+		{ from: 011, to: 211 },
+		{ from: 212, to: 211 },
+		{ from: 212, to: 112 },
+		{ from: 212, to: 202 },
+		{ from: 110, to: 010 },
+		{ from: 110, to: 112 },
+		{ from: 110, to: 100 },
+		{ from: 122, to: 121 },
+		{ from: 122, to: 112 },
+		{ from: 122, to: 022 },
+		{ from: 020, to: 220 ,color: "red"},
+		{ from: 020, to: 010 },
+		{ from: 020, to: 022 },
+		{ from: 201, to: 202 },
+		{ from: 201, to: 001 },
+		{ from: 201, to: 211 }
+
+
+
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork1");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+Ok now that we have some small visualization, we can notices that if we fix all coordinates but one, we get a cycle as we see the red cycle above.
+So the nodes with string of length \(n\) with all but one fixed coordiante are connected by a cycle of length \(n\).
+We can think of the process of making string \(x_1x_2...x_n\) morph into \(y_1y_2...y_n\) by transforming each coordinate one at a time.
+When we transforming \(x_1\) to \(y_1\), we are esentially travelling the shortest path in the cycle with nodes \(\{ (x_1x_2...x_n)| x_1 \in [n]  \}\)
+That is one of the term in the summation of the Lee distance. After that, we try to fix the remaining coordinates.
+As we transform each coordinate in \(x_1x_2...x_n\) into \(y_1y_2...y_n\), we are travelling the sortest path from node
+\(x_1x_2...x_n\) to node \(y_1y_2...y_n\) in the graph \(L(n,q)\). That is the equivalence between graph distance and Lee distance.
+</div>
+
+<!-- <div class="definition">
+A \(\textbf{distance transitive}\) graph \(G\) is a graph where if any two vertices \(u,v\) is at a distance \(i\),
+and any two othe vertices \(x,y\) also at distance \(i\) then there is an automorphism(a bijective homomorphism from \(G\) to itself)
+that maps \(u\) to \(x\) and \(v\) to \(y\).
+</div> -->
+
+<div class="definition">
+Recall that the definition of a \(\textbf{group}\) \(G\) is simply a set of elements equipped with a binary operation \(*\) where the binary operation
+satisfies certain property. associativity, have identity element, each element have inverse. A subset \(H \subset G\) is called a \(\textbf{subgroup}\),
+if the \(H\) under the same binary operation \(*\) is a group.
+</div>
+And example of group is the elements in clock arithmetic. If we do addition in a clock with \(12\) numbers,\(\{0,1,2,...,11\}\).
+If we add \(7+8\), we get \(15\) in the integers, but we get \(3\) in the clock arithmetic with \(12\) elements.
+This is because after we reach \(12\) the next number is \(1\) and not \(13\). We denote the group of clock arithmetic with \(n\) elements \(\mathbb{Z}_n\).
+Here is the table showing the addition of elements in \( \mathbb{Z}_{12} \):
+
+<div 	class= "table1">
+	<style type="text/css">
+	.tg  {border-collapse:collapse;border-spacing:0;}
+	.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg .tg-7r0h{background-color:#38fff8;border-color:#cb0000;text-align:left;vertical-align:top}
+	</style>
+	<table class="tg">
+	<thead>
+	  <tr>
+	    <th class="tg-7r0h">+<br></th>
+	    <th class="tg-7r0h">0</th>
+	    <th class="tg-7r0h">1<br></th>
+	    <th class="tg-7r0h">2</th>
+	    <th class="tg-7r0h">3</th>
+	    <th class="tg-7r0h">4</th>
+	    <th class="tg-7r0h">5</th>
+	    <th class="tg-7r0h">6</th>
+	    <th class="tg-7r0h">7</th>
+	    <th class="tg-7r0h">8</th>
+	    <th class="tg-7r0h">9</th>
+	    <th class="tg-7r0h">10</th>
+	    <th class="tg-7r0h">11</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr>
+	    <td class="tg-7r0h">0</td>
+	    <td class="tg-7r0h">0</td>
+	    <td class="tg-7r0h">1</td>
+	    <td class="tg-7r0h">2</td>
+	    <td class="tg-7r0h">3</td>
+	    <td class="tg-7r0h">4</td>
+	    <td class="tg-7r0h">5</td>
+	    <td class="tg-7r0h">6</td>
+	    <td class="tg-7r0h">7</td>
+	    <td class="tg-7r0h">8</td>
+	    <td class="tg-7r0h">9</td>
+	    <td class="tg-7r0h">10</td>
+	    <td class="tg-7r0h">11</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-7r0h">1</td>
+	    <td class="tg-7r0h">1</td>
+	    <td class="tg-7r0h">2<br></td>
+	    <td class="tg-7r0h">3<br></td>
+	    <td class="tg-7r0h">4<br></td>
+	    <td class="tg-7r0h">5<br></td>
+	    <td class="tg-7r0h">6</td>
+	    <td class="tg-7r0h">7</td>
+	    <td class="tg-7r0h">8<br></td>
+	    <td class="tg-7r0h">9</td>
+	    <td class="tg-7r0h">10</td>
+	    <td class="tg-7r0h">11</td>
+	    <td class="tg-7r0h">0</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-7r0h">2</td>
+	    <td class="tg-7r0h">2</td>
+	    <td class="tg-7r0h">3<br></td>
+	    <td class="tg-7r0h">4<br></td>
+	    <td class="tg-7r0h">5<br></td>
+	    <td class="tg-7r0h">6</td>
+	    <td class="tg-7r0h">7</td>
+	    <td class="tg-7r0h">8</td>
+	    <td class="tg-7r0h">9</td>
+	    <td class="tg-7r0h">10</td>
+	    <td class="tg-7r0h">11</td>
+	    <td class="tg-7r0h">0<br></td>
+	    <td class="tg-7r0h">1</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-7r0h">3</td>
+	    <td class="tg-7r0h">3</td>
+	    <td class="tg-7r0h">4<br></td>
+	    <td class="tg-7r0h">5<br></td>
+	    <td class="tg-7r0h">6</td>
+	    <td class="tg-7r0h">7</td>
+	    <td class="tg-7r0h">8</td>
+	    <td class="tg-7r0h">9</td>
+	    <td class="tg-7r0h">10</td>
+	    <td class="tg-7r0h">11</td>
+	    <td class="tg-7r0h">0</td>
+	    <td class="tg-7r0h">1</td>
+	    <td class="tg-7r0h">2</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-7r0h">4</td>
+	    <td class="tg-7r0h">4</td>
+	    <td class="tg-7r0h">5<br></td>
+	    <td class="tg-7r0h">6</td>
+	    <td class="tg-7r0h">7</td>
+	    <td class="tg-7r0h">8</td>
+	    <td class="tg-7r0h">9</td>
+	    <td class="tg-7r0h">10</td>
+	    <td class="tg-7r0h">11</td>
+	    <td class="tg-7r0h">0<br></td>
+	    <td class="tg-7r0h">1</td>
+	    <td class="tg-7r0h">2</td>
+	    <td class="tg-7r0h">3</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-7r0h">5</td>
+	    <td class="tg-7r0h">5</td>
+	    <td class="tg-7r0h">6</td>
+	    <td class="tg-7r0h">7</td>
+	    <td class="tg-7r0h">8</td>
+	    <td class="tg-7r0h">9</td>
+	    <td class="tg-7r0h">10</td>
+	    <td class="tg-7r0h">11</td>
+	    <td class="tg-7r0h">0</td>
+	    <td class="tg-7r0h">1</td>
+	    <td class="tg-7r0h">2</td>
+	    <td class="tg-7r0h">3</td>
+	    <td class="tg-7r0h">4</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-7r0h">6</td>
+	    <td class="tg-7r0h">6</td>
+	    <td class="tg-7r0h">7</td>
+	    <td class="tg-7r0h">8</td>
+	    <td class="tg-7r0h">9</td>
+	    <td class="tg-7r0h">10</td>
+	    <td class="tg-7r0h">11</td>
+	    <td class="tg-7r0h">0</td>
+	    <td class="tg-7r0h">1</td>
+	    <td class="tg-7r0h">2</td>
+	    <td class="tg-7r0h">3</td>
+	    <td class="tg-7r0h">4</td>
+	    <td class="tg-7r0h">5</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-7r0h">7</td>
+	    <td class="tg-7r0h">7</td>
+	    <td class="tg-7r0h">8</td>
+	    <td class="tg-7r0h">9</td>
+	    <td class="tg-7r0h">10</td>
+	    <td class="tg-7r0h">11</td>
+	    <td class="tg-7r0h">0</td>
+	    <td class="tg-7r0h">1</td>
+	    <td class="tg-7r0h">2</td>
+	    <td class="tg-7r0h">3</td>
+	    <td class="tg-7r0h">4</td>
+	    <td class="tg-7r0h">5</td>
+	    <td class="tg-7r0h">6</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-7r0h">8</td>
+	    <td class="tg-7r0h">8</td>
+	    <td class="tg-7r0h">9</td>
+	    <td class="tg-7r0h">10</td>
+	    <td class="tg-7r0h">11</td>
+	    <td class="tg-7r0h">0</td>
+	    <td class="tg-7r0h">1</td>
+	    <td class="tg-7r0h">2</td>
+	    <td class="tg-7r0h">3</td>
+	    <td class="tg-7r0h">4</td>
+	    <td class="tg-7r0h">5</td>
+	    <td class="tg-7r0h">6</td>
+	    <td class="tg-7r0h">7</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-7r0h">9</td>
+	    <td class="tg-7r0h">9</td>
+	    <td class="tg-7r0h">10</td>
+	    <td class="tg-7r0h">11</td>
+	    <td class="tg-7r0h">0</td>
+	    <td class="tg-7r0h">1</td>
+	    <td class="tg-7r0h">2</td>
+	    <td class="tg-7r0h">3</td>
+	    <td class="tg-7r0h">4</td>
+	    <td class="tg-7r0h">5</td>
+	    <td class="tg-7r0h">6</td>
+	    <td class="tg-7r0h">7</td>
+	    <td class="tg-7r0h">8</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-7r0h">10</td>
+	    <td class="tg-7r0h">10</td>
+	    <td class="tg-7r0h">11</td>
+	    <td class="tg-7r0h">0</td>
+	    <td class="tg-7r0h">1</td>
+	    <td class="tg-7r0h">2</td>
+	    <td class="tg-7r0h">3</td>
+	    <td class="tg-7r0h">4</td>
+	    <td class="tg-7r0h">5</td>
+	    <td class="tg-7r0h">6</td>
+	    <td class="tg-7r0h">7</td>
+	    <td class="tg-7r0h">8</td>
+	    <td class="tg-7r0h">9</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-7r0h">11</td>
+	    <td class="tg-7r0h">11</td>
+	    <td class="tg-7r0h">0</td>
+	    <td class="tg-7r0h">1</td>
+	    <td class="tg-7r0h">2</td>
+	    <td class="tg-7r0h">3</td>
+	    <td class="tg-7r0h">4</td>
+	    <td class="tg-7r0h">5</td>
+	    <td class="tg-7r0h">6</td>
+	    <td class="tg-7r0h">7</td>
+	    <td class="tg-7r0h">8</td>
+	    <td class="tg-7r0h">9</td>
+	    <td class="tg-7r0h">10</td>
+	  </tr>
+	</tbody>
+	</table>
+</div>
+An example of subgroup of \(\mathbb{Z}_{12}\) could be consisting of the elements
+\[H= \{0,4,8\} \subset \mathbb{Z}_{12}\]
+Here is multiplication table of \(H\):
+
+<div class="table2">
+
+
+	<style type="text/css">
+	.tg  {border-collapse:collapse;border-spacing:0;}
+	.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg .tg-7r0h{background-color:#38fff8;border-color:#cb0000;text-align:left;vertical-align:top}
+	.tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+	</style>
+	<table class="tg">
+	<thead>
+	  <tr>
+	    <th class="tg-7r0h">+<br></th>
+	    <th class="tg-iifz">0</th>
+	    <th class="tg-iifz">4</th>
+	    <th class="tg-iifz">8</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr>
+	    <td class="tg-7r0h">0</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">4</td>
+	    <td class="tg-iifz">8</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-7r0h">4</td>
+	    <td class="tg-iifz">4</td>
+	    <td class="tg-iifz">8</td>
+	    <td class="tg-iifz">0</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-7r0h">8</td>
+	    <td class="tg-iifz">8</td>
+	    <td class="tg-iifz">0</td>
+	    <td class="tg-iifz">4</td>
+	  </tr>
+	</tbody>
+	</table>
+</div>
+<div class="definition">
+Given a group \(G\), a subgroup \(H\) of \(G\) and an element \(a \in G\), a \(\textbf{left coset}\) \(aH\) of \(H\) is a set of the form \( aH=\{ah |h \in H\}\).
+<br> The right coset of \(H\), \(Ha\) is definied as \( Ha=\{ha |h \in H\}\). Notice that it is not necessary that two elements \(a,b \in G\) satisfies \(ab=ba\) as
+group product might not be necessarly commutative.
+</div>
+For example, all left cosets of \(H=\{0,4,8\}\) of \(\mathbb{Z}_{12}\) are as follow:
+\[\begin{gather*}
+0H = \{0, 4, 8\} \\
+1H = \{1, 5, 9\} \\
+2H = \{2, 6, 10\} \\
+3H = \{3, 7, 11\}
+\end{gather*} \]
+
+<div class="definition">
+Given a group \(G\), a \(\textbf{generating set}\) \(S \subset G \) of \(G\) is a subset of \(G\) such that every elements in \(G\) can be written as
+product of elements in \(S\).
+</div>
+For example, the group \(\mathbb{Z}_{12}\) can be generated by the singleton set \(\{1\}\) because
+\[\begin{gather*}
+0 = 1+1+1+1+1+1+1+1+1+1+1+1 \\
+1 = 1\\
+2 = 1+1\\
+3 = 1+1+1\\
+4 = 1+1+1+1\\
+...\\
+\text{ You get the idea}
+\end{gather*} \]
+<div class="definition">
+The \(\textbf{Cayley graph}\) of a group \(G\) with respect to a generating set \(S\) is a directed graph where its vertices are elements in the group, and there is
+a directed edge between between two vertex \(a,b\) if there is an element \(c \in S\) such that \(b=ac\). Note that we could have multiple Cayley graphs for a group.
+We denote the Cayley graph of a group \(G\) with respect to a generating set \(S\) \(Cay(G,S)\).
+</div>
+Here is \(Cay(\mathbb{Z}_{12}, \{1\}) \):
+
+<div id="mynetwork3"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+		{ id: 0, label: "0" },
+    { id: 1, label: "1" },
+    { id: 2, label: "2" },
+    { id: 3, label: "3" },
+    { id: 4, label: "4" },
+		{ id: 5, label: "5" },
+		{ id: 6, label: "6" },
+		{ id: 7, label: "7" },
+		{ id: 8, label: "8" },
+		{ id: 9, label: "9" },
+		{ id: 10, label: "10" },
+		{ id: 11, label: "11" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 0, to: 1, arrows: "to" ,label: "1"},
+    { from: 1, to: 2, arrows: "to",label: "1"},
+		{ from: 2, to: 3, arrows: "to",label: "1" },
+		{ from: 3, to: 4, arrows: "to" ,label: "1"},
+		{ from: 4, to: 5, arrows: "to" ,label: "1"},
+		{ from: 5, to: 6, arrows: "to" ,label: "1"},
+		{ from: 6, to: 7, arrows: "to" ,label: "1"},
+		{ from: 7, to: 8, arrows: "to" ,label: "1"},
+		{ from: 8, to: 9, arrows: "to" ,label: "1"},
+		{ from: 9, to: 10, arrows: "to" ,label: "1"},
+		{ from: 10, to: 11, arrows: "to" ,label: "1"},
+		{ from: 11, to: 0, arrows: "to" ,label: "1"}
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork3");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+
+<div class="lemma">
+Both the Hamming graph \(H(n,q)\) and \(L(n,q)\) are Cayley graphs of the additive group \(\mathbb{Z}_q^n = \mathbb{Z}_q \times \mathbb{Z}_q \times...\times \mathbb{Z}_q\).
+Here elements in \(\mathbb{Z}_q \times \mathbb{Z}_q \times...\times \mathbb{Z}_q \) are \( \{(x_1x_2...x_n)|x_i \in \mathbb{Z}_q \} \).
+we add two elements coordinatewise: \((x_1x_2...x_n) + (y_1y_2...y_n)=(x_1+y_1 x_2+y_2...x_n+y_n)\). Here the addition \(x_1+y_i\) is the addition in \(\mathbb{Z}_q\).
+</div>
+<div class="proof">
+The correspondence between vertices in the cayley graph and vertices in the Hamming graph or \(L(n,q)\) is clear.
+For Hamming graph, we know that two nodes \((x_1x_2...x_n)\) and \((y_1y_2...y_n)\) are connected by an edge
+if they differ by one coordinate. We can take the set of generators to be elements in
+\(\mathbb{Z}_q^n\) with all coordinates \(0\) except one. To show that \(L(n,q)\) is the cayley graph of \(\mathbb{Z}_q^n\),
+we let the generator of the Cayley graph to be \(e_i, i \in [n]\). where \(e_i=(0,0,0,...,1,0,...0)\) is the
+element with a \(1\) at position \(i\) and \(0\) elsewhere.
+</div>
+For a small visualization of the equivalence between \(H(2,3)\) and \(Cay(\mathbb{Z}_3^2,\{(1,0),(2,0),(0,1),(0,2)\})\),
+here is \(Cay(\mathbb{Z}_3^2,\{(1,0),(2,0),(0,1),(0,2)\})\) and \(Cay(\mathbb{Z}_3^2,\{(1,0),(0,1)\})\):
+
+<div id="mynetwork4"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 00, label: "(0,0)" },
+    { id: 01, label: "(0,1)" },
+    { id: 02, label: "(0,2)" },
+    { id: 10, label: "(1,0)" },
+		{ id: 11, label: "(1,1)" },
+		{ id: 12, label: "(1,2)" },
+		{ id: 20, label: "(2,0)" },
+		{ id: 21, label: "(2,1)" },
+		{ id: 22, label: "(2,2)" },
+
+		{ id: 900, label: "(0,0)" },
+		{ id: 901, label: "(0,1)" },
+		{ id: 902, label: "(0,2)" },
+		{ id: 910, label: "(1,0)" },
+		{ id: 911, label: "(1,1)" },
+		{ id: 912, label: "(1,2)" },
+		{ id: 920, label: "(2,0)" },
+		{ id: 921, label: "(2,1)" },
+		{ id: 922, label: "(2,2)" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 00, to: 01, arrows: "to" ,label: "(0,1)"},
+		{ from: 01, to: 00, arrows: "to" ,label: "(0,2)"},
+
+    { from: 00, to: 02, arrows: "to" ,label: "(0,2)" },
+		{ from: 02, to: 00, arrows: "to" ,label: "(0,1)" },
+
+		{ from: 00, to: 10, arrows: "to" ,label: "(1,0)" },
+		{ from: 10, to: 00, arrows: "to" ,label: "(2,0)" },
+
+		{ from: 00, to: 20, arrows: "to" ,label: "(2,0)" },
+		{ from: 20, to: 00, arrows: "to" ,label: "(1,0)" },
+
+		{ from: 01, to: 02, arrows: "to" ,label: "(0,1)" },
+		{ from: 02, to: 01, arrows: "to" ,label: "(0,2)" },
+
+		{ from: 01, to: 11, arrows: "to" ,label: "(1,0)" },
+		{ from: 11, to: 01, arrows: "to" ,label: "(2,0)" },
+
+		{ from: 01, to: 21, arrows: "to" ,label: "(2,0)" },
+		{ from: 21, to: 01, arrows: "to" ,label: "(1,0)" },
+
+		{ from: 10, to: 11, arrows: "to" ,label: "(0,1)" },
+		{ from: 11, to: 10, arrows: "to" ,label: "(0,2)" },
+
+		{ from: 10, to: 12, arrows: "to" ,label: "(0,1)"},
+		{ from: 12, to: 10, arrows: "to" ,label: "(0,2)"},
+
+		{ from: 10, to: 20, arrows: "to" ,label: "(1,0)" },
+		{ from: 20, to: 10, arrows: "to" ,label: "(2,0)" },
+
+		{ from: 02, to: 12, arrows: "to" ,label: "(1,0)" },
+		{ from: 12, to: 02, arrows: "to" ,label: "(2,0)" },
+
+		{ from: 21, to: 22, arrows: "to" ,label: "(0,1)" },
+		{ from: 22, to: 21, arrows: "to" ,label: "(0,2)" },
+
+		{ from: 12, to: 22, arrows: "to" ,label: "(1,0)" },
+		{ from: 22, to: 12, arrows: "to" ,label: "(2,0)" },
+
+		{ from: 20, to: 22, arrows: "to" ,label: "(0,2)" },
+		{ from: 22, to: 20, arrows: "to" ,label: "(0,1)" },
+
+		{ from: 11, to: 12, arrows: "to" ,label: "(0,1)" },
+		{ from: 12, to: 11, arrows: "to" ,label: "(0,2)" },
+
+		{ from: 11, to: 21, arrows: "to" ,label: "(1,0)" },
+		{ from: 21, to: 11, arrows: "to" ,label: "(2,0)" },
+
+		{ from: 02, to: 22, arrows: "to" ,label: "(2,0)" },
+		{ from: 22, to: 02, arrows: "to" ,label: "(1,0)" },
+
+		{ from: 21, to: 20, arrows: "to" ,label: "(0,1)" },
+		{ from: 20, to: 21, arrows: "to" ,label: "(0,1)" },
+
+		{ from: 900, to: 901, arrows: "to" ,label: "(0,1)"},
+		{ from: 902, to: 900, arrows: "to" ,label: "(0,1)" },
+		{ from: 900, to: 910, arrows: "to" ,label: "(1,0)" },
+		{ from: 920, to: 900, arrows: "to" ,label: "(1,0)" },
+		{ from: 901, to: 902, arrows: "to" ,label: "(0,1)" },
+		{ from: 901, to: 911, arrows: "to" ,label: "(1,0)" },
+		{ from: 921, to: 901, arrows: "to" ,label: "(1,0)" },
+		{ from: 910, to: 911, arrows: "to" ,label: "(0,1)" },
+		{ from: 910, to: 912, arrows: "to" ,label: "(0,1)"},
+		{ from: 910, to: 920, arrows: "to" ,label: "(1,0)" },
+		{ from: 902, to: 912, arrows: "to" ,label: "(1,0)" },
+		{ from: 921, to: 922, arrows: "to" ,label: "(0,1)" },
+		{ from: 912, to: 922, arrows: "to" ,label: "(1,0)" },
+		{ from: 922, to: 920, arrows: "to" ,label: "(0,1)" },
+		{ from: 911, to: 912, arrows: "to" ,label: "(0,1)" },
+		{ from: 911, to: 921, arrows: "to" ,label: "(1,0)" },
+		{ from: 922, to: 902, arrows: "to" ,label: "(1,0)" },
+		{ from: 921, to: 920, arrows: "to" ,label: "(0,1)" },
+		{ from: 920, to: 921, arrows: "to" ,label: "(0,1)" }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork4");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+Here, for \(Cay(\mathbb{Z}_3^2,\{(1,0),(2,0),(0,1),(0,2)\})\), there are two directed edge between nodes, if there are two directed edges between nodes, then we think of them as one underected edge.
+<!-- <div class="lemma">
+	Hamming graphs are distance-transitive.
+</div> -->
+<!-- <div class="proof">
+  Given a Hamming graph,\(H(d,q)\), two connected vertices \((a_1 a_2...a_i...a_d) (b_1 b_2...b_i...b_d)\) differ by one position say position \(i\).
+	Given two other connected vertices \((c_1...c_j...c_d), (d_1...d_j...d_d) \) that differ only in \(j\) position,
+</div> -->
+<div class="definition">
+A \(\textbf{factorization} \) of a group \(G\) is an ordered pair of subsets \((A,B)\) of \(G\) such that :
+\[ \forall c \in G, (\exists ! a \in A, \exists ! b \in B), c=ab,  \]
+A factorization \((A,B)\) of group \(G\) where \(0 \in A \cap B \) is called a \(\textbf{tiling}\).
+</div>
+For example,
+<br>\((A,B)\) where \( A=\{0,1\}, B=\{1,3,5,7,9,11\}\) is a factorization of \(\mathbb{Z}_{12}\)
+<br>\(A,B)\) where \(A=\{0, 2\}, B=\{1, 2, 5, 6, 9, 10\}\) is a factorization of \(\mathbb{Z}_{12}\)
+<br>\((A,B)\) where \( A=\{0,1,2,3,4\}, B=\{0,5,6,7\}\) is a tilling of \(\mathbb{Z}_{12}\)
+
+<div class="lemma">
+	Given a group \(G\), \(A \subset G, B \subset G\) , \(A\) is inverse-closed, then \((A,B)\) is a tiling of \(G\) if and only if
+	\(B\) is a perfect code of the Cayley graph \( Cay(G,A -\{0\}) \) with \(0 \in B\). Here closed under taking inverse means if \(a \in A \Rightarrow a^{-1} \in A\).
+</div>
+
+
+<div class="definition">
+	Given a group \( \Gamma \), a subset \(C \subset \Gamma \) is called \(\textbf{perfect code}\) of \( \Gamma \) if there is a Cayley graph \(Cay( \Gamma ,S)\) of \(\Gamma \)
+	where \(C\) is a perfect code in the Cayley graph. If \(C\) is a subgroup of \( \Gamma \), then it is called \(\textbf{subgroup perfect code}\) of \( \Gamma \).
+	If \(C\) is a subgroup of \(\Gamma\) and it is a total perfect code in some Cayley graph of \(\Gamma\), then it is called a \(\textbf{subgroup total perfect code }\) of \(\Gamma\).
+</div>
+
+The goal of the paper was to understand conditions for which a subgroup of a group is a perfect codes. it is proved that any subgroup with odd number of elements
+or that the number of cosets of the subgroup is odd, then the subgroup is a perfect code of the group.
+
+<div class="definition">
+Let \(H\) be a subgroup of group \( \Gamma\) then a subset \(S \subset \Gamma \) is called \(\textbf{left/right transversal}\) of \(H\) if \( |S \cap aH|=1, \forall a \in \Gamma\) \( |S \cap Ha|=1, \forall a \in \Gamma\).
+</div>
+<div class="definition">
+Given group \(\Gamma\), and subgroup \(H \subset \Gamma\), a subset \(C \subset \Gamma \) is called a \(\textbf{Cayley transversal}\) of \(H\) in \( \Gamma\) if
+\(C\) is a right transversal of \(H\) and is closed under taking inverse.
+</div>
+For example, a left transversal of the subgroup \(\{0,4,8\}\) in the group \(\mathbb{Z}_{12}\) is \(\{4,5,6,7\} \).
+<div class="lemma">
+ An inverse-closed subset \(C\) of a group \(\Gamma\) is a right transveral of a subgroup \(H\) if and only if it is a left transversal of a subgroup \(H\).
+</div>
+<div class="proof">
+ Suppose that \(C\) is inverse-closed and a right transversal of a group \(\Gamma \), then we know that \(| Ha \cap C|=1 ,\forall a \in \Gamma\).
+ Say \(Ha \cap C \ni h_1a =c_i\) then \(a^{-1}H \ni a^{-1}h_1^{-1} = c_i^{-1}\). This shows that \( |a^{-1}H \cap C| \geq 1\). If there was \( a^{-1}h_2 =c_j \neq c_i\) then
+ \( Ha \ni h_2^{-1}a \neq h_1a\) and would give a contradiction. Hence \( |a^{-1}H \cap C| =1\). Now, since \(\forall a \in C, a^{-1} \in C\) so when proving
+ \(|aH \cap C|=1\) we could use the fact that \(H a^{-1} \cap C|=1\).
+ <br>
+ For the other direction that \(C\) inverse-closed and is left transversal of \(H\) implies \(C\) is right transversal of \(H\) can be proved analogously.
+</div>
+
+<div class="lemma">
+Let \( G \) a group and \(H\) a subgroup of \(G\), then \(H\) is a perfect code of \(G\) if and only if it has a Cayley transversal in \(G\)
+</div>
+<div class="proof">
+If \(H\) is a perfect code of \(G\), then there is a generating set \(S \subset G\) such that \(Cay(G,S)\) admits \(C\) as perfect code.
+So \(C\) is an idenpendent set in \(Cay(G,S)\) and evey vertex in \(V(Cay(G,S))-H\) is at distance one from some element in \(H\).
+So pick any element \(k \in V(Cay(G,S))-H\), we can find \(s \in S, h \in H\) such that \(sh=a\). So this leads us to pick \(C =V(Cay(G,S))-H\) to be
+the a Cayley transversal.
+<br>
+To show the other direction, say \(C\) is a Cayley transversal of \(H\), then we know that \( |Ha \cap C|=1 \) and \(C\) is inverse-closed.
+
+
+</div>
+</body>

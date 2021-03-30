@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+
+  <style>
+		.theorem {
+		    display: block;
+		    margin: 12px 0;
+		    font-style: italic;
+		}
+		.theorem:before {
+		    content: "Theorem.";
+		    font-weight: bold;
+		    font-style: normal;
+		}
+		.lemma {
+		    display: block;
+		    margin: 12px 0;
+		    font-style: italic;
+		}
+		.lemma:before {
+		    content: "Lemma.";
+		    font-weight: bold;
+		    font-style: normal;
+		}
+		.proof {
+		    display: block;
+		    margin: 12px 0;
+		    font-style: normal;
+		}
+		.proof:before {
+		    content: "Proof.";
+		    font-style: italic;
+		}
+		.proof:after {
+		    content: "\25FC";
+		    float:right;
+		}
+		.definition {
+		    display: block;
+		    margin: 12px 0;
+		    font-style: normal;
+		}
+		.definition:before {
+		    content: "Definition.";
+		    font-weight: bold;
+		    font-style: normal;
+		}
+		#mynetwork1 {
+		  width: 600px;
+		  height: 400px;
+		  /*border: 1px solid lightgray;*/
+		  margin: 0 auto;
+		}
+		#mynetwork2 {
+		  width: 600px;
+		  height: 400px;
+		  /*border: 1px solid lightgray;*/
+		  margin: 0 auto;
+		}
+  </style>
+	  <script type="text/javascript" src="https://unpkg.com/vis-graph3d@latest/dist/vis-graph3d.min.js"></script>
+</head>
+
+<body>
+
+
+
+
+\( \textbf{Group Action on Tetrahedron and Dodecahedron}\)
+<br>
+<br>
+The math theorem css has been provided by <a href="http://drz.ac/2013/01/17/latex-theorem-like-environments-for-the-web/">DRZ.ac</a>
+<br>
+The graph drawing tools has been provided by <a href="https://visjs.github.io/vis-network/examples/">Vis Network</a>
+<br>
+<br>
+Inspired by: <a href="http://matterhorn.dce.harvard.edu/engage/ui/index.html#/1999/01/82345">abstract algebra lectures</a>.
+<br>
+<br>
+
+\(\textbf{Preliminaries}\):
+There is a very revolutionary concept developped by French mathemtician Évariste Galois, who died at age of \(20\) by a fatal injury on a dual fight over a woman.
+His ideas were forgotten for many years after his death because they were too advanced for people at the time to understand.
+But today,  they are used frequently to describe, mathematically, the symmetries of an object.
+It is his concept of a group.
+<br>
+<br>
+Some notation used are:
+\[\begin{gather*}
+\forall : \text{ means for all}\\
+\exists : \text{ means there exist}\\
+[m] = \{1,2,3,...,n \}
+\end{gather*} \]
+
+<div class="definition">
+	A group \(G=(S,+) \) is a set \(S\) together with a binary operation definied on \(S\) with certain properties:
+	\[ \begin{gather*}
+	\forall a,b \in S, a+b \in S \\
+	 \exists e \in S, e+a=a+e \forall a\in S \text{, We call \(0\) the identity element of the group}\\
+	 \forall a \in S, \exists b \in S, a+b=b+a=0 \text{, element \(b\) is called the inverse of element \(a\)}\\
+	 \forall a,b,c \in S,(a+b)+c=a+(b+c) \text{, this is called associativity property}
+	 \end{gather*} \]
+</div>
+For example, the set of \(n \times n\) invertible matrices with the binary operation, matrix multiplication, is a group.
+We denote this group by \(Gl_n(\mathbb{R}) \). It stands for general linear group of order \(n\) over \(\mathbb{R}\).
+The identity element is the \(n \times n \) identity matrix.
+<div class="definition">
+	A permutation group on \(n\) letters is denoted by \(S_n=(A,+) \) Where
+	\[\begin{gather*}
+	A=\{\phi:[n] \to [n]| \phi \text{ Bijective} \}\\
+	+ := \circ \text{ is the function composition operation}
+	\end{gather*} \]
+</div>
+We use the cyclic notation to denote the elements in \(S_n\).
+ For example, \(n=6\) and \((1 2 3)(4 6)\) is the permutation that does:
+ \[\begin{gather*}
+  1 \to 2\\
+	2 \to 3\\
+	3 \to 1\\
+	4 \to 6\\
+	5 \to 5\\
+	6 \to 4
+ \end{gather*}\]
+ Namely, choose a permutation \(\mu \in S_n\), If you start with an element \(i\) in \([n]\), then this path:
+ \[i \to \mu(i) \to \mu(\mu(i)) \to...\]
+ eventually leads you back to \(i\) forming a cycle.
+
+<div class="definition">
+	An \(\textbf{action}\) of a group \(G\) on a set \(S\), denoted by \(G \curvearrowright S\), is a mapping: \[ \phi: G \times S \to S \] such that:
+	\[\begin{gather*}
+    \phi(0,s) = s, \forall s \in S\\
+		\phi(a,\phi(b,s))=\phi(ab,s), \forall a,b, \in G, s \in S
+	\end{gather*}
+	\]
+</div>
+Notice that if you fix the group element \(a\) then the group action can be thought of as a bijective mapping from \(S \to S\).
+Therefore, each element in the group can be thought of as a permutation of the elements in the set \(S\).
+
+<div class="definition">
+  Let group \(G\) act on set \(S\), \(G \curvearrowright S\). defined as \( \phi: G \times S \to S \). The orbit of an element \(s \in S\) is definined as:
+	\[orb(s)=\{d \in S| \exists g \in G, \phi((g,s))= d \} \]
+	and the stabilizer of an element is definined as :
+	\[stab(s)=\{g \in G| \phi((g,s))=s \}   \]
+	An ordbit is a subset of \(S\) and a stabilizer if a subgroup of \(G\).
+	An action is called \(\textbf{transitive}\) if:
+	\[ \forall s \in S, |orb(s)|=|S| \]
+</div>
+
+<div class= "theorem">
+	Given \( G \curvearrowright S\) and \(s \in S\), then:
+	\[ |orb(s)|=\frac{|G|}{|stab(s)|} \]
+	This is called the orbit-stabilizer formula.
+</div>
+
+
+We look at the videos 18,19 from  the lectures where the symmetrie preserving group of the tetrahedron and Dodecahedron was explained.
+We first draw a tetrahedron inside of a \(2 \times 2\) box centered at \((0,0,0)\):
+
+<div id="mygraph"></div>
+<script type="text/javascript">
+	var data = null;
+	var graph = null;
+
+	function onclick(point) {
+	  console.log(point);
+	}
+
+	// // Called when the Visualization API is loaded.
+	// function drawVisualization() {
+	//   // create the data table.
+	//   data = new vis.DataSet();
+	//
+	// 	var sin=Math.sin;
+	// 	var cos = Math.cos;
+	// 	var pi = Math.PI;
+	//
+	// 	var tmax= 2.0* pi; //2pi
+	// 	var tstep= tmax/75; //2pi/75
+	// 	for(var t=0; t< tmax ;t+= tstep){
+	// 		//toFixed  is to fix the number of digits after decimal points
+	// 		//parseFloat is to change first number in a string into float
+	// 		var tgroup = parseFloat(t.toFixed(2));
+  //     var value = t;  //
+	// 		data.add({x:0, y:0, z:0, filter: tgroup, style:value });
+	//
+	// 		for(var dot =0; dot< dotCount; dot++){
+	// 			var tdot =
+	// 		}
+	// 	}
+
+function drawVisualization()
+{
+	  data= new vis.DataSet();
+	  // create some shortcuts to math functions
+	  var sqrt = Math.sqrt;
+	  var pow = Math.pow;
+	  var random = Math.random;
+
+	  // create the animation data
+	  // var imax = 100;
+	  // for (var i = 0; i < imax; i++) {
+	  //   var x = pow(random(), 2);
+	  //   var y = pow(random(), 2);
+	  //   var z = pow(random(), 2);
+	  // var style =
+	  //   i % 2 == 0 ? sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2)) : "#00ffff";
+		//
+	  //   data.add({ x: x, y: y, z: z, style: style });
+	  // }
+		var numDataPoints= 30;
+		var sbp=1/numDataPoints; // spaces between points
+    // the corners
+		data.add({ x: 1, y: 1, z: 1});
+		data.add({ x: -1, y: 1, z: -1});
+		data.add({ x: 1, y: -1, z: -1});
+		data.add({ x: -1, y: -1, z: 1 });
+		data.add({ x: 0, y: 0, z: 0 });
+		//draw the axis that passes through (1,1,1) and (0,0,0)
+		// for (var i=0;i<numDataPoints;i++)
+		// {//(-2,0,-2)
+		// 		var x = 1+i*(-1)*sbp*2;
+		// 		var y = 1+i*(-1)*sbp*2;
+		// 		var z = 1+i*(-1)*sbp*2;
+		// 		data.add({ x: x, y: y, z: z});
+		// }
+
+		//draw the axis that is perpendicular to z axis
+		for (var i=0;i<numDataPoints;i++)
+		{//(-2,0,-2)
+				var x = 0+i*(0)*sbp*2;
+				var y = 0+i*(0)*sbp*2;
+				var z = -1+i*(1)*sbp*2;
+				data.add({ x: x, y: y, z: z});
+		}
+
+
+		for (var i=0;i<numDataPoints;i++)
+		{//(-2,0,-2)
+				var x = 1+i*(-2)*sbp;
+				var y = -1;
+				var z = -1+i*(2)*sbp;
+				data.add({ x: x, y: y, z: z});
+		}
+		for (var i=0;i<numDataPoints;i++)
+		{//(-2,0,-2)
+				var x = -1+i*(2)*sbp;
+				var y = 1+i*(-2)*sbp;
+				var z = -1;
+				data.add({ x: x, y: y, z: z});
+		}
+		for (var i=0;i<numDataPoints;i++)
+		{//(-2,0,-2)
+				var x = -1;
+				var y = 1+i*(-2)*sbp;
+				var z = -1+i*(2)*sbp;
+				data.add({ x: x, y: y, z: z});
+		}
+
+
+		for (var i=0;i<numDataPoints;i++)
+		{//(-2,0,-2)
+			  var x = 1+i*(-2)*sbp;
+			  var y = 1;
+			  var z = 1+i*(-2)*sbp;
+				data.add({ x: x, y: y, z: z});
+		}
+		for (var i=0;i<numDataPoints;i++)
+		{//(-2,0,-2)
+				var x = 1;
+				var y = 1+i*(-2)*sbp;
+				var z = 1+i*(-2)*sbp;
+				data.add({ x: x, y: y, z: z});
+		}
+		for (var i=0;i<numDataPoints;i++)
+		{//(-2,0,-2)
+				var x = 1+i*(-2)*sbp;
+				var y = 1+i*(-2)*sbp;
+				var z = 1;
+				data.add({ x: x, y: y, z: z});
+		}
+
+
+	  // specify options
+	  var options = {
+	    width: "600px",
+	    height: "600px",
+	   // style: "dot-color",
+	    showPerspective: true,
+	    showGrid: false,
+	    keepAspectRatio: true,
+	    verticalRatio: 1.0,
+	    legendLabel: "distance",
+	    cameraPosition: {
+	      horizontal: -0.35,
+	      vertical: 0.22,
+	      distance: 1.8,
+	    },
+	  };
+	  // create our graph
+	  var container = document.getElementById("mygraph");
+	  graph = new vis.Graph3d(container, data, options);
+	  graph.on("click", onclick);
+	}
+	window.addEventListener("load", () => {
+	  drawVisualization();
+	});
+</script>
+
+We want to know the possible transformations that we can perform on the tetrahedron that makes it lie on itself after the transformation.
+Those transformations are to be thought of as matrices in \(O_3(\mathbb{R}) \subset GL_3(\mathbb{R})\), the orthogonal group of the general linear group.
+This is because the transfomation preserving symmetrie are distance preserving transfomation as well.
+The lecture showed that this group, \(G\), is in fact isomorphic to \(S_4\), the permutation group on \(4\) letters.
+And his idea was to use the orbit-stabilizer formula of group action.
+<br>
+Let's give some label to the vertices of the tetrahedron:
+\[A:(1,1,1), B(1,-1,0), C(1,-1,0), D(-1,-1,1) \]
+<br>
+In the picture, there is an axis that passes through a vertex and the center of the tetrahedron.
+If we rotate the tetrahedron by \(120^o\) with respect to that axis, then the tranformed tetrahedron would lie on itself.
+Hence the rotation by \(120^o\) along the axis is an element in the group of symmetrie preserving of the tetrahedron.
+<br>
+We let \(V=\{A,B,C,D\} \), and consider an action of \(G\) on \(V\). The stabilizer of the vertex \(A\)
+
+
+
+
+
+Here is a dodecahedron:
+
+
+
+It has \(12\) faces, \(20\) vertices and \(30\) edges. We wish to find out the group \(G\) with elements in \(SO_3\) that preserve the symmetries of dodecahedron. We do the trick of considering the action of the group on the faces of the dodecahedron and use orbit-stabilizer formula to infer the size of the group<br>
+So consider an axis that passes through two opposite faces, say \((KGITL)\) and \((PQEBG)\), We can rotate the dodecahedron by an angle of \(\frac{n\pi}{5}, n=\{1,2,3,4,5\}\) degree about that axis and preserve the symmetries of the dodecahedron. We can also take any face to anyother face by an appropriate rotation of the dedecahedron along some axis. Namely, the rotation fixes the two faces \((KGITL)\) and \((PQEBG)\), So by the orbit-stabilizer formula, \(|G|=5*12=60\).
+<br>
+We can show that the group is also permuting 5 cubes inside of the dodecahedron and knows then that the group is \(A_5\). Let's draw one single cube inside of the dodecahedron:
+
+
+ If we look at a face of the dodecahedron,
+
+
+</body>
+</html>

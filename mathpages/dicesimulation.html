@@ -1,0 +1,53 @@
+<!DOCTYPE>
+<html>
+<head>
+
+</head>
+
+<body>
+
+<script>
+
+/*
+JavaScript dice (by JavaScript Kit, http://javascriptkit.com)
+Over 200+ free scripts here!
+*/
+
+//preload the six images first
+var face0=new Image()
+face0.src="../images/dice1.jpg"
+var face1=new Image()
+face1.src="../images/dice2.jpg"
+var face2=new Image()
+face2.src="../images/dice3.jpg"
+var face3=new Image()
+face3.src="../images/dice4.jpg"
+var face4=new Image()
+face4.src="../images/dice5.jpg"
+var face5=new Image()
+face5.src="../images/dice6.jpg"
+</script>
+
+
+<img src="../images/dice1.gif" name="mydice">
+<form>
+<input type="button" value="Throw dice" onClick="throwdice()">
+</form>
+
+<script>
+function throwdice(){
+//create a random integer between 0 and 5
+var randomdice=Math.round(Math.random()*5)
+document.images["mydice"].src=eval("face"+randomdice+".src")
+}
+</script>
+
+<p align="center"><font face="arial" size="-2">This free script provided by</font><br>
+<font face="arial, helvetica" size="-2"><a href="http://javascriptkit.com">JavaScript
+Kit</a></font></p>
+
+</body>
+
+
+
+</html>

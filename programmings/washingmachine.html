@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>超级洗衣机(Super Washing Machines)</h2>
+    我们在一条线上有n台超级洗衣机。最初，每台洗衣机都有一些衣服，或者是空的。
+    对于每一步，我们都可以选择任意m（1≤m≤n）台洗衣机，然后将每台洗衣机的一件衣服同时传送到其相邻的一台洗衣机中。
+    给定一个整数数组，该数组代表行中从左到右的每台洗衣机的衣服数量，我们应该找到最小移动数，以使所有洗衣机具有相同的衣服数量。如果无法执行此操作，则返回-1。
+    <br><br>
+    You have n super washing machines on a line. Initially, each washing machine has some dresses or is empty.
+    For each move, you could choose any m \(1 \leq m \leq n\)washing machines, and pass one dress of each washing machine to one of its adjacent washing machines at the same time .
+    Given an integer array representing the number of dresses in each washing machine from left to right on the line, you should find the minimum number of moves to make all the washing machines have the same number of dresses. If it is not possible to do it, return -1.
+    <hr>
+    例:
+    <div class ="table1">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+      </style>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">输入：</th>
+          <th class="tg-fv28">1,0,5</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">输出:</td>
+          <td class="tg-fv28">3</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">说明:</td>
+          <td class="tg-fv28">第一步:1 0 <-- 5 => 1 1 4<br>
+                              第二步:1 <-- 1 <-- 4 => 2 1 3<br>   
+                              第三步:2 1 <-- 3 => 2 2 2  </td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    Example:
+    <div>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">Input:</th>
+          <th class="tg-fv28">0,3,0</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">Output:</td>
+          <td class="tg-fv28">2</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">Explanation:</td>
+          <td class="tg-fv28">1st move: 0 <-- 3 0 => 1 2 0<br>   
+                              2nd move: 1 2 --> 0 => 1 1 1</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <hr>
+    <label for="tag=tagPDNA">输入每台机器的布数(Enter number of cloths in each washing machines starting from the left one</label><br>
+    <input type="text" id = "tagPDNA" class="numbersonly" value="0,3,0"><br>
+    <input type="Button" onclick="computeResult()" value="找到最小的掉换衣服次数(Find minimum number of swap round)" /> <br>
+
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+    暗示(Hint):
+    <br>
+
+
+    <script>
+			var pString;
+			var resultt = 0;
+
+      function transform(str){
+        var result = [];
+        for(var i = 0; i< str.length; i++){
+          result.push(parseFloat(str[i]));
+        }
+        return result;
+      }
+
+      function computeResult(){
+        resultt = 0;
+        pString = document.getElementById("tagPDNA").value;
+        if ( pString.match('[^, 0-9]') ){
+          document.getElementById("tagMessage").innerHTML= "错误：格式无效(error: invalid input form)"; // Put the error message inside the msg element in HTML.
+          return false;
+        }
+        var inputList = pString.split(",");
+        inputList = transform(inputList);
+        console.log(inputList);
+        var loadDiffFromAvg = [];
+        var loadBalance = [];
+
+        var sum= inputList.reduce((a, b) => a + b, 0);
+        console.log(sum);
+        var avg =  sum/ inputList.length;
+        console.log(avg);
+        if(!Number.isInteger(avg)){
+          resultt = -1;
+          displayResult();
+          return -1;
+        }
+
+        for(var i =0; i< inputList.length; i++){
+          loadDiffFromAvg.push(Math.abs(avg - inputList[i]));
+          if(i === 0){
+            loadBalance.push(inputList[i]-avg);
+          }
+          else{
+            loadBalance.push(inputList[i]-avg+loadBalance[i-1]);
+          }
+        }
+        console.log(loadBalance);
+        console.log("load diff from avg list is"+loadDiffFromAvg);
+        var maxxx = 0;
+        for(var i =0; i<loadBalance.length; i++){
+          if(maxxx<= Math.abs(loadBalance[i])){
+            maxxx = Math.abs(loadBalance[i]);
+          }
+        }
+        console.log(maxxx);
+        var maxx2 = 0;
+        for(var i = 0 ; i< loadDiffFromAvg.length; i++){
+          if(maxx2 <= loadDiffFromAvg[i]){
+            console.log("load diff from avg"+loadDiffFromAvg[i]);
+            maxx2 = loadDiffFromAvg[i];
+          }
+        }
+        console.log(maxx2);
+        resultt =  Math.max(maxxx, maxx2);
+        console.log(resultt);
+        
+
+        displayResult();
+        
+      }
+      function transformStringListToIntegerList(aStringList){
+        var theCorrepondingIntegerList = [];
+        for(var index = 0 ; index < aStringList.length ; index++){ 
+          theCorrepondingIntegerList.push(parseFloat(aStringList[index])); 
+        }
+        return theCorrepondingIntegerList;
+      }
+
+      function displayResult(){
+
+        clearTable("tagOutput");
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("结果如下(The result is as follow)"));
+        resultBody.appendChild(createDescriptionRow("交换轮的最小数量为(Minimum number of swap round is",resultt));
+        resultTbl .append(resultBody);
+
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>

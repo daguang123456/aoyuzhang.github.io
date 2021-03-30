@@ -1,0 +1,116 @@
+<!DOCTYPE>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script src="https://cdn.rawgit.com/BrainJS/brain.js/45ce6ffc/browser.js"></script>
+
+</head>
+
+<body>
+made with scrimba: https://scrimba.com/
+<br>
+training data from: http://www.magickeys.com/books/
+<br>
+try the following sentence: "once upon a time"
+<br>
+<input id = "str" type = "strings" placeholder="Input String" oninput="retResult(this.value)"
+  onchange="retResult(this.value)">
+  <br>
+  <p> <span id = "rslt"></span></p>
+
+<script>
+const trainingData = [
+  'Jane saw Doug.',
+  "Once upon a time there was an old woman who loved baking gingerbread.",
+  " She would bake gingerbread cookies, cakes, houses and gingerbread people,",
+  " the goodies are all decorated with chocolate and peppermint, caramel candies and colored frosting.",
+"She lived with her husband on a farm at the edge of town.",
+"The sweet spicy smell of gingerbread brought children skipping and running to see what would be offered that day.",
+"Unfortunately the children gobbled up the treats so fast",
+"Therefore, the old woman had a hard time keeping her supply of flour and spices to continue making the batches of gingerbread.",
+"Sometimes she suspected little hands of having reached through her kitchen window.",
+// "That is because gingerbread pieces and cookies would disappear.",
+"One time a whole gingerbread house vanished mysteriously.",
+//" She told her husband, 'Those naughty children are at it again.'",
+"' They don't understand all they have to do is knock on the door', she continues",
+// " 'and I'll give them my gingerbread treats.'",
+// " One day she made a special batch of gingerbread men because they were extra big.",
+// " Unfortunately for the last gingerbread man she ran out of batter and he was half the size of the others.",
+// "She decorated the gingerbread men with care, each having socks, shirt and pants of different colors.",
+// " When it came to the little gingerbread man she felt sorry for him and gave him more color than the others.",
+// '"It does not matter he is small," she thought,',
+"He'll still be tasty.",
+//  "Not long ago and not far away there was a beautiful, big teddy bear.",
+" the beer sat on a shelf in a drug store waiting for someone to buy him and give him a home.",
+"His name was Wolstencroft. And he was no ordinary bear. ",
+"His fur was a lovely shade of light grey, and he had honey colored ears, nose and feet.",
+" His eyes were warm and kind and he had a wonderfully wise look on his face.",
+// "  Wolstencroft looked very smart in a brown plaid waistcoat with a gold satin bow tie at his neck.",
+// "  Attached to the tie was a tag with his name written in bold, black letters: Wolstencroft. "
+'Follow the littlest knight as he battles to save the kingdom from the terrible dragon and win the hand of the princess.',
+"The loomploy population was divided into the able and the unable. ",
+"The able could care for themselves in the darkness of the land."
+];
+
+// const trainingData=[
+//   'Once upon a time there was an old woman who loved baking gingerbread. She would bake gingerbread cookies, cakes, houses and gingerbread people, all decorated with chocolate and peppermint, caramel candies and colored frosting. She lived with her husband on a farm at the edge of town. The sweet spicy smell of gingerbread brought children skipping and running to see what would be offered that day. Unfortunately the children gobbled up the treats so fast that the old woman had a hard time keeping her supply of flour and spices to continue making the batches of gingerbread. Sometimes she suspected little hands of having reached through her kitchen window because gingerbread pieces and cookies would disappear.',
+//   ' One time a whole gingerbread house vanished mysteriously. She told her husband, "Those naughty children are at it again. They do not understand all they have to do is knock on the door and I will give them my gingerbread treats." One day she made a special batch of gingerbread men because they were extra big. Unfortunately for the last gingerbread man she ran out of batter and he was half the size of the others. She decorated the gingerbread men with care, each having socks, shirt and pants of different colors. When it came to the little gingerbread man she felt sorry for him and gave him more color than the others. "It does not matter he is small," she thought, "He will still be tasty."'
+// ]
+// const trainingData = [
+//   'Jane saw Doug.',
+//   'Doug saw Jane.',
+//   'Spot saw Doug and Jane looking at each other.',
+//   'It was love at first sight, and Spot had a frontrow seat. It was a very special moment for all.'
+// ];
+
+const net = new brain.recurrent.LSTM();
+net.train(trainingData, {
+    iterations: 2100,
+    errorThresh: 0.011,
+    log: (stats) => console.log(stats)
+});
+
+//console.log(net.run("Jane"));
+
+function retResult(str){
+  bla = net.run(str);
+  document.getElementById("rslt").innerHTML = bla;
+}
+
+// const net = new brain.recurrent.LSTM();
+// net.train(trainingData, {
+//   iterations: 1500,
+//   errorThresh: 0.011,
+//   log: (stats) => console.log(stats)
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+// const net = new brain.NeuralNetwork({hiddenLayers: [3] });
+// const trainingData = [
+//   { input: [0,0], output: [0] },
+//   { input: [0,1], output: [1] },
+//   { input: [1,0], output: [1] },
+//   { input: [1,1], output: [0] }
+// ];
+//
+// net.train(trainingData, {
+//     log: (error) => console.log(error),
+//     logPeriod: 100
+// });
+//
+// console.log(net.run([0,0]));
+
+</script>
+
+</body>
+</html>

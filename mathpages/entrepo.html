@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+		</style>
+<!-- 		<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+		<script type="text/javascript" src="https://unpkg.com/vis-graph3d@latest/dist/vis-graph3d.min.js"></script> -->
+
+	</head>
+
+	<body>
+		<h2> Optimizing gains from buying/selling items</h2>
+		We want to buy things, store them, and sell them to make money. For example, we buy items during the first month periods when tehy are cheaper and sell them in the next month perids when they are in demand hence can sell for more. For each period, the cost of the item we buy or sell is the same. Also, for maintenance purposes, we have to pay for the items we store for each period. The goal then is to maximize the gain by making smart decisions about how many items to buy or sell or keep in each period(bugs to be fixed).
+
+		<hr>
+		<div>
+		<label for="nperiod">For How Many Periods Do We Do Trades:</label><br>
+		<input type="number" id = "nperiod" class="numbersonly" name="nnperiod"  value="3"><br>
+		<input type="Button" onclick="generateForms()" value="Create Form" /> <br>
+
+		<div>
+			<table id="inputForm">
+			</table>
+		</div><br>
+
+		<div>
+			<table id="mathModel">
+			</table>
+		</div>
+		<br>
+		<div id = "algorithmDiv">
+			<table id="solvingTable">
+			</table>
+		</div>
+
+		<!-- <input type="Button" onclick="addEdges()" value="Optimize it" /> <br> -->
+		<br>
+		<p> Message: <span id = "msg"></span></p><br>
+
+		<script>
+
+			var nPeriod = 0, storageSpace = 0, periodPrices = [] , initStorage = 0, storageCost=0;
+			var optStep = 0;
+			var totalOptStep = 0;
+			var computationSteps = [], pivotsSteps =[];
+			var optimizingTable =[];
+			var pivotsTable=[];
+
+			function generateForms(){
+				if(isInputOk()){
+					clearTable("inputForm");
+					clearTable("mathModel");
+					clearTable("solvingTable");
+					makeFormTable();
+					return 1;
+				}
+				else{
+					clearTable("inputForm");
+					clearTable("mathModel"); // clear the table
+					clearTable("solvingTable");
+					return -1;
+				}
+			}
+			function makeFormTable(){
+				var formTable = document.getElementById("inputForm");
+				var formBody = document.createElement("tbody");
+				formBody.appendChild(createTitleRow("Input Form"));
+				formBody.appendChild(createInputRow("How Many Item We Can Store:","storage"));
+				formBody.appendChild(createInputRow("How Many Items Do We Have Initially:","initStorage"));
+				for(var i = 0 ; i < nPeriod ; i++){
+					formBody.appendChild(createInputRow("How Much An Item Cost In Period"+i+":","cost"+i));
+				}
+				formBody.appendChild(createInputRow("How Much Is The Cost Of Storing One Item For Each Period:","storeCost"));
+				formBody.appendChild(createSubmitRow("Generate Model", generateModel));
+				formTable.append(formBody);
+			}
+
+			function generateModel(){
+				//reset all
+				clearTable("mathModel"); // clear the table
+				clearTable("solvingTable");
+				periodPrices = [];
+				storageSpace = 0;
+				initStorage = 0;
+				storageCost=0;
+				pivotsTable=[];
+
+				// get the period prices
+				for(var i = 0 ; i < nPeriod ; i++){
+					var cost = parseFloat(document.getElementById("cost"+i).value);
+					if(isNaN(cost) || cost < 0 ){
+						document.getElementById("msg").innerHTML= "error: cost at period"+i+" needs to be a no negative number";
+						return -1;
+					}
+					else{
+						periodPrices.push(cost);
+					}
+				}
+				// Get storage space, item storing cost, initial storage
+				storageSpace = parseFloat(document.getElementById("storage").value);
+				initStorage = parseFloat(document.getElementById("initStorage").value);
+				storageCost = parseFloat(document.getElementById("storeCost").value);
+				if(isNaN(storageSpace)){
+					document.getElementById("msg").innerHTML= "error: storage space entered is not a number.";
+					return -1;
+				}
+				if(isNaN(initStorage)){
+					document.getElementById("msg").innerHTML= "error: initial storage space entered is not a number.";
+					return -1;
+				}
+				if(isNaN(storageCost)){
+					document.getElementById("msg").innerHTML= "error: the cost of storage entered is not a number.";
+					return -1;
+				}
+				if(initStorage > storageSpace){
+					document.getElementById("msg").innerHTML= "error: initial number of items exceed max storage space.";
+					return -1;
+				}
+				//We now create the mathematical model:
+				var mathModelTable = document.getElementById("mathModel");
+				var mathModelTableBody = document.createElement("tbody");
+				mathModelTableBody.appendChild(createTitleRow("variable x[i0] represent number of items sold on period i, variable x[i1] represent number of items stored at the end of period i, variable x[i2] represent number of items bought at the end of period i." ));
+				mathModelTableBody.appendChild(createTitleRow("Here is the math model for these settings:"));
+				var optFuncString = ""; // create the opt function string
+				for(var i = 0 ; i < nPeriod  ; i++){
+					optFuncString = optFuncString +""+ periodPrices[i]+"x["+i+"0]-"+storageCost+"x["+i+"1]-" +periodPrices[i]+"x["+i+"2]" ;
+					if(i != nPeriod -1){
+						optFuncString = optFuncString +"+";
+					}
+				}
+				mathModelTableBody.appendChild(createDescriptionRow("Maximize",optFuncString));
+				//Now we add the constraints imposed by conservation law
+				for(var i = 0 ; i < nPeriod  ; i++){
+					var constraintString = "";
+					if(i === 0){
+						constraintString = constraintString +"x["+i+"0]+x["+i+"1]" +" - "+"x["+i+"2] ="+initStorage;
+					}
+					else{
+						constraintString = constraintString +"x["+i+"0]+x["+i+"1] - x["+i+"2]-x["+(i-1)+"1] =0";
+					}
+					mathModelTableBody.appendChild(createDescriptionRow("Constraint "+i,constraintString));
+				}
+				//Now we add constrain of storage space limit
+				for(var i = 0; i < nPeriod ; i++){
+					mathModelTableBody.appendChild(createDescriptionRow("Constraint "+(i+nPeriod),"x"+"["+i+"1] <= "+storageSpace));
+				}
+				// Now we add the constraint of no-negativity
+				var noneg = "";
+				for(var i = 0; i < nPeriod ; i++){
+					noneg = noneg + "x["+i+"0],x["+i+"1]"+",x["+i+"2]";
+					if(i != nPeriod -1){
+						noneg = noneg + ",";
+					}
+				}
+				noneg = noneg + " >= 0"
+				mathModelTableBody.appendChild(createDescriptionRow("Constrain No Negativity:",noneg));
+				mathModelTableBody.appendChild(createSubmitRow("Optimize Using Simplex", optimizeIt));
+				mathModelTable.append(mathModelTableBody);
+			}
+
+			function makeLabelRow(){
+				var optimizationEquRow = document.createElement("tr");
+				optimizationEquRow.appendChild(makecell("v.d"));
+				for(var i = 0 ; i < nPeriod ; i++){
+					optimizationEquRow.appendChild(makecell("x["+i+"0]"));
+					optimizationEquRow.appendChild(makecell("x["+i+"1]"));
+					optimizationEquRow.appendChild(makecell("x["+i+"2]"));
+				}
+				for(var i = 0; i < 2*nPeriod ; i++){
+					optimizationEquRow.appendChild(makecell("z["+i+"]"));
+				}
+				optimizationEquRow.appendChild(makecell("-z"));
+				optimizationEquRow.appendChild(makecell("td"));
+				return optimizationEquRow
+			}
+
+			function optimizeIt(){
+				//reset
+				clearTable("solvingTable");
+				pivotsTable=arrOfnegOne(2*nPeriod);
+				console.log(pivotsTable);
+				optStep = 0;
+				totalOptStep = 0;
+				computationSteps = [];
+				pivotsSteps = [];
+				optimizingTable =[];
+				//table name row:
+				var solveTable = document.getElementById("solvingTable");
+				var solveTableBody = document.createElement("tbody");
+				solveTableBody.appendChild(createTitleRow("Step"+ optStep));
+				solveTableBody.appendChild(makeLabelRow());
+
+				//Now we add the constraints of conservation
+				for(var i = 0; i < nPeriod ; i++){
+					if(i===0){ // first constrait
+						var tempRow = []; // use to build solvertable
+						tempRow.push(1); tempRow.push(1); tempRow.push(-1);
+						for(var j = 0 ;  j < (nPeriod-1)*3 ; j++){
+							tempRow.push(0);
+						}
+						tempRow.push(1);
+						for(var j = 1 ;  j < nPeriod*2+1 ; j++){
+								tempRow.push(0);
+						}
+						tempRow.push(initStorage);
+						solveTableBody.appendChild(createSimplexRow(3*nPeriod, tempRow));
+						pivotsTable[i]=3*nPeriod+i;
+						optimizingTable.push(tempRow);
+					}
+					else{
+						var tempRow = []; // use to build solvertable
+						for(var j = 0 ;  j < nPeriod*3+2*nPeriod+2 ; j++){
+							if(j===3*(i-1)+1 || j===3*i+2){
+								tempRow.push(-1);
+							}
+							else if(j===3*i || j===3*i+1 || j===3*nPeriod+i){
+								tempRow.push(1);
+							}
+							else{
+								tempRow.push(0);
+							}
+						}
+						solveTableBody.appendChild(createSimplexRow(3*nPeriod+i, tempRow));
+						pivotsTable[i]= 3*nPeriod+i; // append pivot row
+						optimizingTable.push(tempRow);
+					}
+				}
+				console.log(optimizingTable);
+				// constraint of max storage
+				for(var i = 0; i < nPeriod ; i++){
+					var tempRow = []; // use to build solvertable
+					for(var j = 0 ;  j < nPeriod*3+2*nPeriod+2 ; j++){
+						if(j === 3*i+1 || j === nPeriod*3+i+nPeriod){
+							tempRow.push(1);
+						}
+						else if(j === nPeriod*3+2*nPeriod+1){
+							tempRow.push(storageSpace);
+						}
+						else{
+							tempRow.push(0);
+						}
+					}
+					solveTableBody.appendChild(createSimplexRow(4*nPeriod+i, tempRow));
+					pivotsTable[nPeriod+i] = 4*nPeriod+i; // append pivot row
+					optimizingTable.push(tempRow);
+				}
+				console.log(pivotsTable);
+
+				var tempRow = []; // use to build solvertable
+				for(var i = 0 ; i < nPeriod  ; i++){
+					tempRow.push(-periodPrices[i]); tempRow.push(storageCost); tempRow.push(periodPrices[i]);
+				}
+				for(var i = 0 ; i < 2*nPeriod  ; i++){
+					tempRow.push(0);
+				}
+				tempRow.push(1); tempRow.push(0);
+				optimizingTable.push(tempRow);
+				solveTableBody.appendChild(createSimplexRow(tempRow.length-2, tempRow));
+				computationSteps.push(optimizingTable);
+				pivotsSteps.push(pivotsTable);
+
+				var submitRow = document.createElement("tr");
+				var ginputElem = document.createElement("input");
+				ginputElem.type = "Button";
+				//ginputElem.onclick = function() {renderSimplexTable(optimizingTable , 2)};
+				ginputElem.onclick = function() {renderSimplexTable(2)};
+				ginputElem.value = "Next Step";
+				submitRow.appendChild(ginputElem);
+				solveTableBody.appendChild(submitRow);
+				solveTable.append(solveTableBody);
+			}
+			function deep2dCopy(arr){
+				var nrow = arr.length;
+				var ncolumns = arr[0].length;
+				var temp = [];
+				for(var i = 0 ; i< nrow; i++){
+					temparr = []
+					for(var j = 0 ; j< ncolumns ; j++){
+						temparr.push(arr[i][j]);
+					}
+					temp.push(temparr);
+				}
+				return temp;
+			}
+
+			function deepcopy1d(arr){
+				var rsl = [];
+				for(var i =0 ; i< arr.length; i++){
+					rsl.push(arr[i]);
+				}
+				return rsl;
+			}
+
+			function mikegod(i){
+				var computationTable = deep2dCopy(computationSteps[i]);
+				var	pt = deepcopy1d(pivotsSteps[i]);
+				var numRow = computationTable.length;
+				var numcolum = computationTable[0].length;
+				var objectiveRow = computationTable[numRow - 1];
+				// console.log("objective row is"+objectiveRow);
+				var minIndex = 0;
+				var min = Number.MAX_SAFE_INTEGER;
+				for(var i  =0 ; i < objectiveRow.length ; i++){
+					if(min > objectiveRow[i]){
+						min = objectiveRow[i];
+						minIndex = i;
+					}
+				}
+				if(min>=0){ //Solved
+					return [11,computationTable , pt];
+				}
+				else{
+					var numberOfaijlesequlzero = 0;
+					var minEnter = Number.MAX_SAFE_INTEGER;
+					var minEnterIndex =-1;
+					for(var i = 0 ; i < computationTable.length-1 ; i++){
+						if(computationTable[i][minIndex] <= 0 ){
+							numberOfaijlesequlzero++;
+							continue;
+						}
+						var division = computationTable[i][numcolum-1] / computationTable[i][minIndex];
+						//console.log(division);
+						if(minEnter >  division && division >= 0){
+							minEnterIndex = i;
+							minEnter = division;
+						}
+					}
+					if(numberOfaijlesequlzero === computationTable.length-1){// unbounded solution
+						return [111,computationTable , []];
+					}
+					if( minEnterIndex === -1 ){
+						return [1111,computationTable , []]; // no ssolution
+					}
+					//update enter variable row:
+					var pivot = computationTable[minEnterIndex][minIndex];
+					for(var i = 0 ; i < numcolum ; i++){
+						computationTable[minEnterIndex][i] = computationTable[minEnterIndex][i]/pivot;
+					}
+					//update the rest of rows
+					for(var i =0 ; i < numRow ; i++){
+						if(i != minEnterIndex){
+							var miketheGreate = computationTable[i][minIndex];
+							for(var j =0 ; j < numcolum ; j++){
+								computationTable[i][j] = computationTable[i][j] - computationTable[minEnterIndex][j]* miketheGreate ;
+							}
+						}
+					}
+					pt[minEnterIndex] = minIndex;
+					return [1,computationTable, pt]
+				}
+			}
+
+			function renderSimplexTable(pon){
+				clearTable("solvingTable");
+				var solveTable = document.getElementById("solvingTable");
+				var solveTableBody = document.createElement("tbody");
+
+				function display(tbl,piv,stp){
+					solveTableBody.appendChild(createTitleRow("Step"+ stp));
+					solveTableBody.appendChild(makeLabelRow());
+					//Now we add the left column label of the row
+					for(var i = 0; i < 2*nPeriod ; i++){
+						solveTableBody.appendChild(createSimplexRow(piv[i], tbl[i]));
+					}
+					solveTableBody.appendChild(createSimplexRow(tbl[0].length-2, tbl[tbl.length-1]));
+					var submitRow = document.createElement("tr");
+					var ginputElemp = document.createElement("input");
+					ginputElemp.type = "Button";
+					ginputElemp.onclick = function() {renderSimplexTable(1)};
+					ginputElemp.value = "Previous Step";
+					submitRow.appendChild(ginputElemp);
+
+					var ginputElem = document.createElement("input");
+					ginputElem.type = "Button";
+					ginputElem.onclick = function() {renderSimplexTable(2)};
+					ginputElem.value = "Next Step";
+					submitRow.appendChild(ginputElem);
+					solveTableBody.appendChild(submitRow);
+					solveTable.append(solveTableBody);
+				}
+				function inlist(lstt,item){
+					for(var i = 0; i < lstt.length; i++){
+						if(item === lstt[i]){
+							return i
+						}
+					}
+					return -1;
+				}
+				function displayResult(tbl, piv){
+					//table name row:
+					var solveTable = document.getElementById("solvingTable");
+					var solveTableBody = document.createElement("tbody");
+					solveTableBody.appendChild(createTitleRow("Optimal Solution Reached by Simplex"));
+
+					for( var i = 0 ; i <  nPeriod ; i++){
+						var strr = "Number Of Items To Sell On Period"+i+" is:";
+						if(inlist(piv,3*i) != -1){
+							solveTableBody.appendChild(createDescriptionRow(strr,tbl[inlist(piv,3*i)][tbl[0].length-1].toFixed(2)+""));
+						}
+						else{
+							solveTableBody.appendChild(createDescriptionRow(strr,0+""));
+						}
+						var strr = "Number Of Items To Store On Period"+i+" is:"
+						if(inlist(piv,3*i+1) != -1){
+							solveTableBody.appendChild(createDescriptionRow(strr,tbl[inlist(piv,3*i+1)][tbl[0].length-1].toFixed(2)+""));
+						}
+						else{
+							solveTableBody.appendChild(createDescriptionRow(strr,0+""));
+						}
+						var strr = "Number Of Items To Buy On Period"+i+" is:"
+						if(inlist(piv,3*i+2) != -1){
+							solveTableBody.appendChild(createDescriptionRow(strr,tbl[inlist(piv,3*i+2)][tbl[0].length-1].toFixed(2)+""));
+						}
+						else{
+							solveTableBody.appendChild(createDescriptionRow(strr,0+""));
+						}
+					}
+					solveTableBody.appendChild(createDescriptionRow("Optimal gain is:",""+(tbl[tbl.length-1][tbl[0].length-1]).toFixed(2)));
+
+					var prevButtonRow = document.createElement("tr");
+					var inp = document.createElement("input");
+					inp.type = "Button";
+					inp.onclick = function() {renderSimplexTable(1)};
+					inp.value = "Previous Step";
+					prevButtonRow.appendChild(inp);
+					solveTableBody.appendChild(prevButtonRow);
+					solveTable.append(solveTableBody);
+				}
+				if(pon === 2){ // calling from next button
+					// first check if it is computed already
+					if(optStep < totalOptStep){
+						optStep++;
+						display(computationSteps[optStep],pivotsSteps[optStep],optStep);
+					}
+					else{// if it is not computed yet, compute it
+						var nextt = mikegod(optStep);
+						var rsltt = nextt[0];
+						if(rsltt === 1){ // next step
+							computationSteps.push(nextt[1]);
+							pivotsSteps.push(nextt[2]);
+							optStep++;
+							totalOptStep++;
+							display(nextt[1],nextt[2],optStep);
+						}
+						else if(rsltt === 11){
+							displayResult(computationSteps[optStep], pivotsSteps[optStep]);
+						}
+						else if(rsltt === 111){
+							document.getElementById("msg").innerHTML= "Unbounded solution";
+						}
+						else{
+							document.getElementById("msg").innerHTML= "No Solution";
+						}
+					}
+				}
+				else{ // calling from previous button
+					if(optStep===1){
+						optimizeIt();
+					}
+					else{
+						optStep--;
+						display(computationSteps[optStep],pivotsSteps[optStep],optStep);
+					}
+				}
+			}
+
+			function isInputOk(){
+				nPeriod = parseFloat(document.getElementById("nperiod").value); // Get the number of food from
+				if(isNaN(nPeriod)){
+					document.getElementById("msg").innerHTML= "error: number of period entered is not a number.";
+					return false;
+				}
+				else if(nPeriod <= 0){
+					document.getElementById("msg").innerHTML= "error: number of periods needs to be positive.";
+					return false;
+				}
+				else if(!(Number.isInteger(nPeriod))){
+					document.getElementById("msg").innerHTML= "error: number of periods entered needs to be an Integer.";
+					return false;
+				}
+				else{
+					return true;
+				}
+			}
+
+			function createSimplexRow(pivot, valList){
+				var aRow = document.createElement("tr");
+				function addEntries(arow) {
+					for(var i = 0; i < valList.length ; i++){
+						var c = makecell(""+valList[i].toFixed(2));
+						if( i === pivot){
+							c.style.backgroundColor = "green";
+						}
+						arow.appendChild(c)
+					}
+				}
+				if(pivot < 3 * nPeriod){
+					aRow.appendChild(makecell("x["+Math.floor(pivot/3)+""+pivot%3+"]"));
+					addEntries(aRow);
+				}
+				else if(pivot >= 3 * nPeriod && pivot < valList.length-2){
+					aRow.appendChild(makecell("z["+(pivot-3*nPeriod)+"]"));
+					addEntries(aRow);
+				}
+				else{
+					aRow.appendChild(makecell("-z"));
+					for(var i = 0; i < valList.length ; i++){
+						var c = makecell(""+valList[i].toFixed(2));
+						if( i === pivot){
+							c.style.backgroundColor = "green";
+						}
+						if( i === valList.length - 1){
+							c.style.backgroundColor = "yellow";
+						}
+						aRow.appendChild(c)
+					}
+				}
+				return aRow;
+			}
+
+			function createDescriptionRow(label,description){
+				var constraintRow = document.createElement("tr");
+				constraintRow.appendChild(makecell(label));
+				constraintRow.appendChild(makecell(description));
+				return constraintRow;
+			}
+			function createTitleRow(str){
+				var titleRow = document.createElement("tr");
+				var titleCellTextNode = document.createTextNode(str);
+				titleRow.appendChild(titleCellTextNode);
+				return titleRow;
+			}
+			function createInputRow(strr,idd){
+				var oRow = document.createElement("tr");
+				oRow.appendChild(makecell(strr));
+				oRow.appendChild(createInputCell(idd));
+				return oRow;
+			}
+			function createSubmitRow(name, funName){
+        var submitRow = document.createElement("tr");
+				var ginputElem = document.createElement("input");
+				ginputElem.type = "Button";
+				ginputElem.onclick = function() {funName()};
+				ginputElem.value = name;
+				submitRow.appendChild(ginputElem);
+				return submitRow;
+      }
+			function createInputCell(inputcellid){
+    		var ginputCell = document.createElement("td");
+    		var ginputElem = document.createElement("input");
+    		ginputElem.id = inputcellid;
+    		ginputCell.appendChild(ginputElem);
+    		return ginputCell;
+    	}
+			function clearTable(idstr){
+				var makovTable = document.getElementById(idstr);
+				while(makovTable.rows.length > 0) {
+					makovTable.deleteRow(0);
+				}
+			}
+			function makecell(str){
+				var nameCell = document.createElement("td");
+				var nameCellTextNode = document.createTextNode(str);
+				nameCell.appendChild(nameCellTextNode);
+				return nameCell;
+			}
+			function arrOfnegOne(n){
+				var rsl = [];
+				for(var i = 0; i< n ;i++){
+					rsl.push(-1);
+				}
+				return rsl;
+			}
+		</script>
+	</body>
+</html>
+
+
+
+
+<!-- //function renderSimplexTable(tbl,pon){ // p o n is to specify previous or next 1 is previous 2 is next
+	// if(pon === 1){ // call from previous step button
+	// 	optStep= optStep -2;
+	// }
+	// if(optStep === -1){ // going to the 0th step
+	// 	optimizeIt();
+	// }
+	// else{
+	// 	//reset
+	// 	clearTable("solvingTable");
+	// 	var nextt = mikegod(tbl);
+	// 	if(nextt[0] === 11){ // if optimization complete
+	// 		optStep++;
+	// 		//table name row:
+	// 		var solveTable = document.getElementById("solvingTable");
+	// 		var solveTableBody = document.createElement("tbody");
+	// 		solveTableBody.appendChild(createTitleRow("Optimal Solution Reached by Simplex"));
+	// 		//get the solutions:
+	// 		var solTable = nextt[1];
+	// 		console.log("in 11");
+	//
+	// 		for( var i = 0 ; i <  nPeriod ; i++){
+	// 			var aRow = document.createElement("tr");
+	// 			aRow.appendChild(makecell("Number Of Items To Sell On Period"+i+" is:"));
+	// 			console.log((solTable[solTable.length-1][3*i+0]).toFixed(2));
+	// 			if((solTable[solTable.length-1][3*i+0]) === 0){
+	// 				var indexPivot = -1;
+	// 				for(var k = 0 ; k < solTable.length ;k++){
+	// 					if(solTable[k][3*i+0] === 1){
+	// 						indexPivot = k;
+	// 					}
+	// 				}
+	// 				console.log("pivot is"+indexPivot);
+	// 				if(indexPivot === -1){
+	// 					aRow.appendChild(makecell(0));
+	// 					solveTableBody.appendChild(aRow);
+	// 				}
+	// 				else{
+	// 					aRow.appendChild(makecell((solTable[indexPivot][solTable[0].length-1]).toFixed(2)));
+	// 					solveTableBody.appendChild(aRow);
+	// 				}
+	// 			}
+	// 			else{
+	// 				aRow.appendChild(makecell(0));
+	// 				solveTableBody.appendChild(aRow);
+	// 			}
+	// 			var aRow1 = document.createElement("tr");
+	// 			aRow1.appendChild(makecell("Number Of Items To Store On Period"+i+" is:"));
+	// 			if((solTable[solTable.length-1][3*i+1])=== 0){
+	// 				var indexPivot = -1;
+	// 				for(var k = 0 ; k < solTable.length ;k++){
+	// 					if(solTable[k][3*i+1] === 1){
+	// 						indexPivot = k;
+	// 					}
+	// 				}
+	// 				if(indexPivot == -1){
+	// 					aRow1.appendChild(makecell(0));
+	// 					solveTableBody.appendChild(aRow1);
+	// 				}
+	// 				else{
+	// 					aRow1.appendChild(makecell((solTable[indexPivot][solTable[0].length-1]).toFixed(2)));
+	// 					solveTableBody.appendChild(aRow1);
+	// 				}
+	// 			}
+	// 			else{
+	// 				aRow1.appendChild(makecell(0));
+	// 				solveTableBody.appendChild(aRow1);
+	// 			}
+	//
+	// 			var aRow2 = document.createElement("tr");
+	// 			aRow2.appendChild(makecell("Number Of Items To Buy On Period"+i+" is:"));
+	// 			if((solTable[solTable.length-1][3*i+2])=== 0){
+	// 				var indexPivot = -1;
+	// 				for(var k = 0 ; k < solTable.length ;k++){
+	// 					if(solTable[k][3*i+2] === 1){
+	// 						indexPivot = k;
+	// 					}
+	// 				}
+	// 				if(indexPivot == -1){
+	// 					aRow2.appendChild(makecell(0));
+	// 					solveTableBody.appendChild(aRow2);
+	// 				}
+	// 				else{
+	// 					aRow2.appendChild(makecell((solTable[indexPivot][solTable[0].length-1]).toFixed(2)));
+	// 					solveTableBody.appendChild(aRow2);
+	// 				}
+	// 			}
+	// 			else{
+	// 				aRow2.appendChild(makecell(0));
+	// 				solveTableBody.appendChild(aRow2);
+	// 			}
+	// 		}
+	// 		var aRow = document.createElement("tr");
+	// 		aRow.appendChild(makecell("Optimal gain is:"));
+	// 		aRow.appendChild(makecell(""+(solTable[solTable.length-1][solTable[0].length-1]).toFixed(2)));
+	// 		solveTableBody.appendChild(aRow);
+	//
+	// 		var prevButtonRow = document.createElement("tr");
+	// 		var inp = document.createElement("input");
+	// 		inp.type = "Button";
+	// 		inp.onclick = function() {renderSimplexTable(computationSteps[optStep-2], 1)};
+	// 		inp.value = "Previous Step";
+	// 		prevButtonRow.appendChild(inp);
+	// 		solveTableBody.appendChild(prevButtonRow);
+	// 		solveTable.append(solveTableBody);
+	// 	}
+	// 	else{
+	// 		var nextTable = nextt[1];
+	// 		if(optStep < totalOptStep){
+	// 			optStep++;
+	// 		}
+	// 		else{
+	// 			optStep++;
+	// 			totalOptStep++;
+	// 			computationSteps.push(nextTable);
+	// 			console.log(computationSteps.length);
+	// 			pivotsSteps.push(pivotsTable);
+	// 		}
+	// 		//table name row:
+	// 		var solveTable = document.getElementById("solvingTable");
+	// 		var solveTableBody = document.createElement("tbody");
+	// 		solveTableBody.appendChild(createTitleRow("Step"+ optStep));
+	// 		solveTableBody.appendChild(makeLabelRow());
+	//
+	// 		//Now we add the left column label of the row
+	// 		for(var i = 0; i < 2*nPeriod ; i++){
+	// 			solveTableBody.appendChild(createSimplexRow(pivotsTable[i], nextTable[i]));
+	// 		}
+	// 		solveTableBody.appendChild(createSimplexRow(nextTable[0].length-2, nextTable[nextTable.length-1]));
+	// 		var submitRow = document.createElement("tr");
+	// 		var ginputElemp = document.createElement("input");
+	// 		ginputElemp.type = "Button";
+	// 		ginputElemp.onclick = function() {renderSimplexTable(computationSteps[optStep-2], 1)};
+	// 		ginputElemp.value = "Previous Step";
+	// 		submitRow.appendChild(ginputElemp);
+	//
+	// 		var ginputElem = document.createElement("input");
+	// 		ginputElem.type = "Button";
+	// 		ginputElem.onclick = function() {renderSimplexTable(nextTable , 2 )};
+	// 		ginputElem.value = "Next Step";
+	// 		submitRow.appendChild(ginputElem);
+	// 		solveTableBody.appendChild(submitRow);
+	// 		solveTable.append(solveTableBody);
+	// 	}
+	// }
+//} -->
+
+
+
+
+
+							<!-- //
+							// var aRow = document.createElement("tr");
+							// if(i === nextt[3]){// check if row is the enter variable row calculated from the current step, if it is add appropriate left column label
+							// 	if(nextt[2]<3*nPeriod){
+							// 		aRow.appendChild(makecell("x["+Math.floor(nextt[2]/3)+""+nextt[2]%3+"]"));
+							// 	}
+							// 	else{
+							// 		aRow.appendChild(makecell("z["+(nextt[2]-3*nPeriod)+"]"));
+							// 	}
+							// }
+							// else{ // otherwise look for pivot element manually, maybe it works... more probable that it is wrong way to implement it
+							// 	var indexOfPivot = -1;
+							// 	for(var j = 0 ; j < 3*nPeriod ; j++){
+							// 		if(nextTable[i][j] === 1 && nextTable[nextTable.length-1][j] === 0){
+							// 			indexOfPivot = j;
+							// 		}
+							// 	}
+							// 	if(indexOfPivot != -1){
+							// 		aRow.appendChild(makecell("x["+Math.floor(indexOfPivot/3)+""+indexOfPivot%3+"]"));
+							// 	}
+							// 	else{
+							// 		for(var j = 0; j < 2*nPeriod ; j++){
+							// 			if(nextTable[i][j+nPeriod*3] === 1 && nextTable[nextTable.length-1][j+nPeriod*3] === 0){
+							// 				indexOfPivot = j;
+							// 			}
+							// 		}
+							// 		aRow.appendChild(makecell("z["+indexOfPivot+"]"));
+							// 	}
+							// }
+							// // now we add the numerical entry of the row
+							// for(var j = 0 ; j < nextTable[0].length ; j++){
+							// 	var c = makecell(""+nextTable[i][j].toFixed(2));
+							// 	if( j === nextt[2] && i === nextt[3]){
+							// 		c.style.backgroundColor = "green";
+							// 	}
+							// 	aRow.appendChild(c);
+							// 	// aRow.appendChild(makecell(""+nextTable[i][j].toFixed(2)));
+							// }
+							//solveTableBody.appendChild(aRow); -->
+
+
+
+
+							<!-- // function mikegod(tbll){
+							// 	console.log(computationSteps);
+							// 	console.log(pivotsSteps)
+							// 	var computationTable = deep2dCopy(tbll);
+							// 	var	pt = arrOfnegOne(2*nPeriod);
+							// 	var numRow = computationTable.length;
+							// 	var numcolum = computationTable[0].length;
+							// 	var objectiveRow = computationTable[numRow - 1];
+							// 	// console.log("objective row is"+objectiveRow);
+							// 	var minIndex = 0;
+							// 	var min = Number.MAX_SAFE_INTEGER;
+							// 	for(var i  =0 ; i < objectiveRow.length ; i++){
+							// 		if(min > objectiveRow[i]){
+							// 			min = objectiveRow[i];
+							// 			minIndex = i;
+							// 		}
+							// 	}
+							// 	if(min>=0){
+							// 		//console.log("solved");
+							// 		return [11,computationTable , -1, -1];
+							// 	}
+							// 	else{
+							// 		var numberOfaijlesequlzero = 0;
+							// 		var minEnter = Number.MAX_SAFE_INTEGER;
+							// 		var minEnterIndex =-1;
+							// 		for(var i = 0 ; i < computationTable.length-1 ; i++){
+							// 			if(computationTable[i][minIndex] <= 0 ){
+							// 				numberOfaijlesequlzero++;
+							// 				continue;
+							// 			}
+							// 			var division = computationTable[i][numcolum-1] / computationTable[i][minIndex];
+							// 			//console.log(division);
+							// 			if(minEnter >  division && division >= 0){
+							// 				minEnterIndex = i;
+							// 				minEnter = division;
+							// 			}
+							// 		}
+							// 		if(numberOfaijlesequlzero === computationTable.length-1){
+							// 			console.log("unbounded solutions");
+							// 			return [111,computationTable , -1, -1];
+							// 		}
+							// 		if( minEnterIndex === -1 ){
+							// 			console.log("bad");
+							// 			return [1111,computationTable , -1, -1]; // no ssolution
+							// 		}
+							// 		//update enter variable row:
+							// 		var pivot = computationTable[minEnterIndex][minIndex];
+							// 		for(var i = 0 ; i < numcolum ; i++){
+							// 			computationTable[minEnterIndex][i] = computationTable[minEnterIndex][i]/pivot;
+							// 		}
+							// 		//update the rest of rows
+							// 		for(var i =0 ; i < numRow ; i++){
+							// 			if(i != minEnterIndex){
+							// 				var miketheGreate = computationTable[i][minIndex];
+							// 				for(var j =0 ; j < numcolum ; j++){
+							// 					computationTable[i][j] = computationTable[i][j] - computationTable[minEnterIndex][j]* miketheGreate ;
+							// 				}
+							// 			}
+							// 		}
+							// 		pivotsTable[minEnterIndex]=minIndex;
+							// 		console.log(pivotsTable);
+							// 		return [1,computationTable, minIndex, minEnterIndex]
+							// 	}
+							// } -->

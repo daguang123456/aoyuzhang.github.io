@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="../styles.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ 	<meta charset="utf-8">
+  	<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  	<script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  	</script>
+	<script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+  	<style>
+		table, td {
+			border: 1px solid black;
+			background-color: coral;
+		}
+
+		#mynetwork {
+		  width: 700px;
+		  height: 700px;
+		  border: 1px solid lightgray;
+		  margin: 0 auto;
+		  background-color: coral;
+		}
+	</style>
+	<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+
+
+<body>
+
+	<h3> 馬可夫決策過程(Simulating Markov Decision Process) </h3><br>
+  <!-- <p>
+  You can change any settings you want while the network is initialized using
+  the vis Dataset, setOptions and setData. Finally you can destroy the network
+  and completely reinitialize it.
+</p> -->
+
+<!-- <h4>DataSet (change the data while it&apos;s loaded and initialzed):</h4> -->
+<!-- <input type="button" onclick="addNode()" value="add node dynamically" />
+<br />
+<input
+  type="button"
+  onclick="changeNode1()"
+  value="change node 1's color dynamically"
+/> -->
+<br />
+<!-- <input
+  type="button"
+  onclick="removeRandomNode()"
+  value="remove a random Node"
+/> -->
+<br />
+<!-- <input type="button" onclick="resetAllNodes()" value="reload all nodes" /> -->
+<br />
+<!-- <input
+  type="button"
+  onclick="resetAllNodesStabilize()"
+  value="reload all nodes and stabilize"
+/> -->
+<br />
+
+<!-- <h4>setOptions (change the global options):</h4> -->
+<!-- <input
+  type="button"
+  onclick="changeOptions()"
+  value="change the global options"
+/><br /> -->
+
+<!-- <h4>setData (reinitialize the data):</h4> -->
+<!-- <input
+  type="button"
+  onclick="setTheData()"
+  value="setData. This stabilizes again if stabilization is true."
+/><br /> -->
+
+<!-- <h4>Cleanly destroy the network and restart it:</h4> -->
+<!-- <input
+  type="button"
+  onclick="resetAll()"
+  value="Destroy the network and restart it."
+/> -->
+<br />
+
+<hr>
+
+<label for="inputTagStateLabel">创造状态（Creating A State Node:）</label><br>
+<input type="text" id = "inputTagStateLabel"><br>
+<input type="button" onclick="addStateNode()" value="加状态（Add State）" />
+<br>
+<label for="inputTagActionLabel">创造动作（Creating An Action Node:）</label><br>
+<input type="text" id = "inputTagActionLabel"><br>
+<input type="button" onclick="addActionNode()" value="Add State" />
+<br><br>
+Adding Action To State transition Edge:<br>
+<label for="inputTagSourceActionName">Source Action Name:</label><br>
+<input type="text" id = "inputTagSourceActionName" class="numbersonly" name="nss"  value="A"><br>
+<label for="inputTagDestinationStateName">Destination State Name:</label><br>
+<input type="text" id = "inputTagDestinationStateName" class="numbersonly" name="nds"  value="B"><br>
+<label for="inputTagProb">Probability of Transition:</label><br>
+<input type="number" id = "inputTagProb" class="numbersonly" name="nprob"  value="0.3"><br>
+<input type="Button" onclick="addEdges()" value="Add transition" /> <br/>
+<br>
+
+
+
+
+
+<div id="mynetwork"></div>
+
+	<script type="text/javascript">
+  var nodeIds, shadowState, nodesArray, nodes, edgesArray, edges, network;
+  var stateNames = new Set();
+  var actionsNames = new Set();
+  var stateNamesToIdDict = {};
+  var actionsNamesToIdDict = {};
+  var nodesIds = new Set();
+  var pureActionName = new Set();
+  const RANDOMDIGIT = 1000;
+
+  function startNetwork() {
+    // this list is kept to remove a random node.. we do not add node 1 here because it's used for changes
+    //nodeIds = []//[2, 3, 4, 5];
+    shadowState = false;
+
+    // create an array with nodes
+    nodesArray = [
+      // { id: 1, label: "Node 1" },
+      // { id: 2, label: "Node 2" },
+      // { id: 3, label: "Node 3" },
+      // { id: 4, label: "Node 4" },
+      // { id: 5, label: "Node 5" },
+    ];
+    nodes = new vis.DataSet(nodesArray);
+
+    // create an array with edges
+    edgesArray = [
+      // { from: 1, to: 3 },
+      // { from: 1, to: 2 },
+      // { from: 2, to: 4 },
+      // { from: 2, to: 5 },
+    ];
+    edges = new vis.DataSet(edgesArray);
+
+    // create a network
+    var container = document.getElementById("mynetwork");
+    var data = {
+      nodes: nodes,
+      edges: edges,
+    };
+    var options = {};
+    network = new vis.Network(container, data, options);
+  }
+
+  function addStateNode() {
+    var stateLabel = document.getElementById("inputTagStateLabel").value;
+    if(stateNames.has(stateLabel)){
+      console.log("state exists already");
+    }
+    else{
+      var newId = 0;
+      while(nodesIds.has(newId) ){
+        newId = Math.floor(Math.random() * RANDOMDIGIT);
+      }
+      nodesIds.add(newId);
+      stateNames.add(stateLabel);
+      stateNamesToIdDict[stateLabel] = newId;
+      nodes.add({ id: newId, label: stateLabel, shape: "box"});
+    }
+  }
+
+  function addActionNode() {
+    var actionLabel = document.getElementById("inputTagActionLabel").value;
+    if(pureActionNode.has(actionLabel)){
+      console.log("action exists already.");
+    }
+    else{
+      pureActionNode.add(actionLabel);
+      for (let item of stateNames){
+        var combinedActionLabel = item+","+actionLabel;
+        console.log(combinedActionLabel);
+        var newId = Math.floor(Math.random() * RANDOMDIGIT);
+        while(nodesIds.has(newId) ){
+          newId = Math.floor(Math.random() * RANDOMDIGIT);
+        }
+        nodesIds.add(newId);
+        actionsNames.add(combinedActionLabel);
+        actionsNamesToIdDict[combinedActionLabel] = newId;
+        nodes.add({ id: newId, label: combinedActionLabel, shape: "ellipse"});
+      }
+    }
+  }
+
+  // function add
+
+  function changeNode1() {
+    var newColor = "#" + Math.floor(Math.random() * 255 * 255 * 255).toString(16);
+    nodes.update([{ id: 1, color: { background: newColor } }]);
+  }
+
+  function removeRandomNode() {
+    var randomNodeId = nodeIds[Math.floor(Math.random() * nodeIds.length)];
+    nodes.remove({ id: randomNodeId });
+
+    var index = nodeIds.indexOf(randomNodeId);
+    nodeIds.splice(index, 1);
+  }
+
+  function changeOptions() {
+    shadowState = !shadowState;
+    network.setOptions({
+      nodes: { shadow: shadowState },
+      edges: { shadow: shadowState },
+    });
+  }
+
+  function resetAllNodes() {
+    nodes.clear();
+    edges.clear();
+    nodes.add(nodesArray);
+    edges.add(edgesArray);
+  }
+
+  function resetAllNodesStabilize() {
+    resetAllNodes();
+    network.stabilize();
+  }
+
+  function setTheData() {
+    nodes = new vis.DataSet(nodesArray);
+    edges = new vis.DataSet(edgesArray);
+    network.setData({ nodes: nodes, edges: edges });
+  }
+
+  function resetAll() {
+    if (network !== null) {
+      network.destroy();
+      network = null;
+    }
+    startNetwork();
+  }
+
+  startNetwork();
+
+
+	</script>
+
+
+
+
+
+</html>
+
+
+
+<!-- 		var headerRow = document.createElement("tr");
+
+		var emptycell = document.createElement("td");
+		var rslStr = "\\( \\begin{bmatrix} ";
+		console.log(emptycellText);
+		for(var i = 0; i< makovmList.length ; i++){
+			if(i != makovmList.length - 1){
+				for(var j = 0; j < makovmList.length ; j++){
+					console.log("j inoteq matlen-1 ="+j);
+					if(j != makovmList.length -1){
+						rslStr = rslStr + (""+makovmList[i][j]+" & ");
+					}
+					else{
+						rslStr = rslStr + (""+makovmList[i][j]+" \\\\ ");
+					}
+				}
+			}
+			else{
+				for(var j = 0; j < makovmList.length ; j++){
+					console.log("j ="+j);
+
+					if(j != makovmList.length -1){
+						rslStr = rslStr + (""+makovmList[i][j]+" & ");
+					}
+					else{
+						console.log("beore: "+rslStr)
+						rslStr = rslStr + (""+makovmList[i][j]+" ");
+						console.log("after: "+rslStr);
+					}
+				}
+			}
+			console.log(rslStr);
+		}
+		rslStr = rslStr + "\\end{bmatrix} \\)";
+		console.log(rslStr);
+		var emptycellText = document.createTextNode("\\( \\begin{bmatrix} 1 \\\\ 1 \\end{bmatrix} \\) ");
+
+		emptycell.appendChild(emptycellText);
+		headerRow.appendChild(emptycell);
+		tblBody.appendChild(headerRow);
+		makovTable.append(tblBody); -->

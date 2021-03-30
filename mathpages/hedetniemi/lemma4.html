@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="../styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+
+  <div class ="lemma">
+  	(lemma 4)
+   Given graph \(|V(G)|=n\), a suited proper \(c\)-coloring \(\Psi\) of \(\mathcal{E}_c(G)\).
+   There exist a vertex \(v \in V(G)\) such that more than \(c-\sqrt[n]{n^3c^{n-1}}\) color classes \(b\)
+   are \(v\)-robust.
+  </div>
+  <div class="proof">
+  We define \(I(u,b) := \{ \phi \in \Psi^{-1}(b)| \phi(u)=b \} \). Namely, it is the set
+  	of \(b\)-colored maps under \(\Psi\) that also maps the vertex \(u \in V(G)\) to color \(b\).
+  	<br>
+  	\(\textbf{Claim:}\):
+  	If the size of \(I(u,b)\) is larger than \(n^2c^{n-2}\), then \(b\) is \(u\)-robust.
+  	<br>
+  	take \(\phi \in \Psi^{-1}(b)\), if all maps \(\psi_{ub} \in I(u,b) \) contains a vertex \(v \neq u\) such that:
+  	\(\psi_{ub}(v) \in Im(\phi) \), then there are at most \(n^2\) choice for \(v, \psi_{ub}(v)\), and \(c^{n-2}\) choices for
+  	the colors of the remaining vertices \(V(G)-\{u,v\}\) for a total of at most \(n^2c^{n-2}\) possible maps.
+  	Hence the above assumption on the property of \(\psi_{uv}\) must be false as it contradict the size of \(I(u,b)\).
+  	Hence there is a map \( \psi_{ub} \in I(u,b) \) where the only vertex mapped to \(b\) is \(u\) as (\(\psi_{ub}(v) \notin Im(\phi), \forall v \neq u \)).
+  	But since both \(\psi_{uv}, \phi\) receives the same color \(b\), they must not be adjacent in \(\mathcal{E}_c(G)\). Now, all edges \((x,y)\) in the graph \(G\),
+  	where both \(x,y \) are not equals to \(u\), \(\phi(x) \neq \psi_{uv}(y)\) as \(\psi_{uv}(x) \notin Im(\phi)\).
+    And so the only way we can make \( \phi ,\psi_{uv} \) be equal on endvertices of an edge is an
+  	edge incident to \(u\), say edge \(u,w\). Since \(\phi(u)=\psi_{uv}(u)=b, \psi_{uv}(w) \notin Im(\phi)\), we need that \(\phi(w)=b\) and
+  	then we have \(\phi(w)=\psi_{uv}(u)=b \) hence making \(\psi_{uv}, \phi\) adjacent.
+  <br>
+   Now, suppose we have a vertex \(v \in V(G)\) such that for at least \(c- \sqrt[n]{n^3c^{n-1}}\) colors \(b\), for which \(I(u,b)\) is large, hence \(b\) is \(v\)-robust, then we are done.
+   Otherwise, for each vertex \(v \in V(G)\), \(v\) has \( \leq \) \(c- \sqrt[n]{n^3c^{n-1}}\) colors \(b\) for which \(I(u,b)\) is large.
+   So let's count the number of maps from \(V(G) to [c]\) for which a vertex \(v\) dosen't receive a color \(b\) for which \(I(u,b)\) is large.
+   Then, since each vertex has \( \leq \) \(c- \sqrt[n]{n^3c^{n-1}}\) colors \(b\) for which \(I(u,b)\) is large, then \(v\) has more than \(c - (c- \sqrt[n]{n^3c^{n-1}})=\sqrt[n]{n^3c^{n-1}}\)
+   colors \(b\) for which \(I(u,b)\) is not large.  Since there are \(n\) vertices in the graph, so the total number of wanted maps is at least \((\sqrt[n]{n^3c^{n-1}})^n= n^3c^{n-1}\).
+  These maps doesn't belongs to any classes \(I(u,b)\) for which \(I(u,b)\) is a large class. but the number elements in the no large classes \(I(u,b)\) is
+  at most \(n \cdot c \cdot n^2c^{n-2}= n^3c^{n-1} =n^3c^{n-1} \). So the no larges classes cannot contain all constructed maps, a contradiction. Hence , the claim  must have been true.
+  </div>
+</html>

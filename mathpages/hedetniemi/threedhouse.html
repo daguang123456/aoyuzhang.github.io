@@ -1,0 +1,383 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    article.scene{
+      transform: translate(0,50px);
+      perspective: 2000px;
+    }
+    .house{
+      margin: 0 auto;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: rotateY(-45deg);
+      width: 460px;
+    }
+    .house div{
+      position: absolute;
+      transform-style: preserve-3d;
+    }
+    .deck *:not(.covering),
+    .deck *::before,
+    .deck *::after{
+      border-right: 3px solid #78552;
+      border-top: 2px solid #b5854a;
+    }
+    .deck .left{
+      width: 33.75rem;
+      height: 2.06rem;
+      background: #8a693d;
+      transform: translate3D(7.4rem, 19.6rem, 38.3rem);
+    }
+
+    .deck .right{
+      width:61.3;
+      height:2.9rem;
+      background: #4e3b23;
+      transform: translate3D(-38.4rem, 29.1rem, -38.4rem);
+    }
+    .deck .back{
+      width:53rem;
+      height: 2.9rem;
+      background: #4e3b23;
+      transform: translate3D(-66rem, 29.3rem, -12.8rem) rotateY(90deg);
+    }
+    .deck .front{
+      width: 25.3rem;
+      height: 2.2rem;
+      background: #9c7645;
+      transform: translate3d(32.1rem, 21.2rem, 9rem) rotateY(90deg);
+    }
+  </style>
+</head>
+
+<body>
+<article class="scene">
+<section class ="house">
+  <div class="deck">
+    <div class="covering"></div>
+    <div class="left"></div>
+    <div class= "right"></div>
+    <div class="back"></div>
+    <div class="front"></div>
+  </div>
+  <div class="walls"></div>
+  <div class="roof"></div>
+  <div class="staircase"></div>
+  <div class="wedges"></div>
+  <div class="person"></div>
+</section>
+
+</article>
+
+</body>
+
+
+
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  	<link rel="stylesheet" href="../styles.css">
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<style>
+  #mynetwork13 {
+  width: 800px;
+  height: 800px;
+  border: 1px solid lightgray;
+}
+p {
+  max-width: 600px;
+}
+
+h4 {
+  margin-bottom: 3px;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<ul>
+  <li>
+    Clicking on the cluster to view corresponding node in \(\mathcal{E}_2(P_3)\)
+  </li>
+
+</ul>
+<p></p>
+
+<div id="mynetwork13"></div>
+<pre id="eventSpan"></pre>
+
+<script>
+// create an array with nodes
+var nodes = [
+		{ id: 1, label: "A", color: "rgb(234,179,245)", cid: 1},
+    { id: 2, label: "B", color: "rgb(234,179,245)", cid: 1},
+    { id: 3, label: "C", color: "rgb(234,179,245)", cid: 1},
+
+		{ id: 31, label: "A", color: "rgb(234,179,245)", cid: 2},
+		{ id: 32, label: "B", color: "rgb(234,179,245)", cid: 2},
+		{ id: 33, label: "C", color: "rgb(213,250,178)", cid: 2},
+
+		{ id: 41, label: "A", color: "rgb(234,179,245)", cid: 3},
+		{ id: 42, label: "B", color: "rgb(213,250,178)", cid: 3},
+		{ id: 43, label: "C", color: "rgb(234,179,245)", cid: 3},
+
+		{ id: 51, label: "A", color: "rgb(234,179,245)", cid: 4},
+		{ id: 52, label: "B", color: "rgb(213,250,178)", cid: 4},
+		{ id: 53, label: "C", color: "rgb(213,250,178)", cid: 4},
+
+		{ id: 61, label: "A", color: "rgb(213,250,178)", cid: 5},
+		{ id: 62, label: "B", color: "rgb(234,179,245)", cid: 5},
+		{ id: 63, label: "C", color: "rgb(234,179,245)", cid: 5},
+
+		{ id: 71, label: "A", color: "rgb(213,250,178)", cid: 6},
+		{ id: 72, label: "B", color: "rgb(234,179,245)", cid: 6},
+		{ id: 73, label: "C", color: "rgb(213,250,178)", cid: 6},
+
+		{ id: 81, label: "A", color: "rgb(213,250,178)", cid: 7},
+		{ id: 82, label: "B", color: "rgb(213,250,178)", cid: 7},
+		{ id: 83, label: "C", color: "rgb(234,179,245)", cid: 7},
+
+		{ id: 21, label: "A" , color:"rgb(213,250,178)", cid: 8},
+		{ id: 22, label: "B" , color:"rgb(213,250,178)", cid: 8},
+		{ id: 23, label: "C" , color:"rgb(213,250,178)", cid: 8},
+/*   { id: 1, label: "Node 1", color: "orange" },
+  { id: 2, label: "Node 2", color: "DarkViolet", font: { color: "white" } },
+  { id: 3, label: "Node 3", color: "orange" },
+  { id: 4, label: "Node 4", color: "DarkViolet", font: { color: "white" } },
+  { id: 5, label: "Node 5", color: "orange" },
+  { id: 6, label: "cid = 1", cid: 1, color: "orange" },
+  {
+    id: 7,
+    label: "cid = 1",
+    cid: 1,
+    color: "DarkViolet",
+    font: { color: "white" },
+  },
+  { id: 8, label: "cid = 1", cid: 1, color: "lime" },
+  { id: 9, label: "cid = 1", cid: 1, color: "orange" },
+  { id: 10, label: "cid = 1", cid: 1, color: "lime" }, */
+];
+
+// create an array with edges
+var edges = [
+    { from: 1, to: 2, color: "blue" },
+		{ from: 3, to: 2 , color: "blue"},
+
+		{ from: 31, to: 32, color: "blue" },
+		{ from: 33, to: 32 , color: "blue"},
+
+		{ from: 41, to: 42, color: "blue" },
+		{ from: 43, to: 42 , color: "blue"},
+
+		{ from: 51, to: 52, color: "blue" },
+		{ from: 53, to: 52 , color: "blue"},
+
+		{ from: 61, to: 62, color: "blue" },
+		{ from: 63, to: 62 , color: "blue"},
+
+		{ from: 71, to: 72, color: "blue" },
+		{ from: 73, to: 72 , color: "blue"},
+
+		{ from: 81, to: 82, color: "blue" },
+		{ from: 83, to: 82 , color: "blue"},
+
+		{ from: 21, to: 22 , color: "blue"},
+		{ from: 23, to: 22 , color: "blue"}
+/*   { from: 1, to: 2 },
+  { from: 1, to: 3 },
+  { from: 10, to: 4 },
+  { from: 2, to: 5 },
+  { from: 6, to: 2 },
+  { from: 7, to: 5 },
+  { from: 8, to: 6 },
+  { from: 9, to: 7 },
+  { from: 10, to: 9 }, */
+];
+
+// create a network
+var container = document.getElementById("mynetwork13");
+var data = {
+  nodes: nodes,
+  edges: edges,
+};
+var options = { layout: { randomSeed: 8 } };
+var network = new vis.Network(container, data, options);
+
+
+var clusterOptionsByData = {
+  joinCondition: function (childOptions) {
+    return childOptions.cid == 1;
+  },
+  clusterNodeProperties: {
+    id: "cidCluster",
+    borderWidth: 3,
+    shape: "diamond",
+    label: "(A:1,B:1C:1)",
+    color: "rgb(234,179,245)"
+  },
+};
+/* network.cluster(clusterOptionsByData); */
+
+  network.setData(data);
+  var clusterOptionsByData1 = {
+    joinCondition: function (childOptions) {
+      return childOptions.cid == 2;
+    },
+    clusterNodeProperties: {
+      id: "cidCluster2",
+      borderWidth: 3,
+      shape: "diamond",
+      label: "(A:1,B:1,C:2)",
+      color: "rgb(213,250,178)"
+    },
+  };
+
+    network.setData(data);
+  var clusterOptionsByData2 = {
+    joinCondition: function (childOptions) {
+      return childOptions.cid == 3;
+    },
+    clusterNodeProperties: {
+      id: "cidCluster3",
+      borderWidth: 3,
+      shape: "diamond",
+      label: "(A:1,B:2,C:1)",
+      color: "rgb(213,250,178)"
+    },
+  };
+
+  network.setData(data);
+  var clusterOptionsByData3 = {
+    joinCondition: function (childOptions) {
+      return childOptions.cid == 4;
+    },
+    clusterNodeProperties: {
+      id: "cidCluster4",
+      borderWidth: 3,
+      shape: "diamond",
+      label: "(A:1,B:2,C:2)",
+      color: "rgb(213,250,178)"
+    },
+  };
+
+    network.setData(data);
+  var clusterOptionsByData4 = {
+    joinCondition: function (childOptions) {
+      return childOptions.cid == 5;
+    },
+    clusterNodeProperties: {
+      id: "cidCluster5",
+      borderWidth: 3,
+      shape: "diamond",
+      label: "(A:2,B:1,C:1)",
+      color: "rgb(213,250,178)"
+    },
+  };
+
+  network.setData(data);
+  var clusterOptionsByData5 = {
+    joinCondition: function (childOptions) {
+      return childOptions.cid == 6;
+    },
+    clusterNodeProperties: {
+      id: "cidCluster6",
+      borderWidth: 3,
+      shape: "diamond",
+      label: "(A:2,B:1,C:2)",
+      color: "rgb(213,250,178)"
+    },
+  };
+
+  network.setData(data);
+  var clusterOptionsByData6 = {
+    joinCondition: function (childOptions) {
+      return childOptions.cid == 7;
+    },
+    clusterNodeProperties: {
+      id: "cidCluster7",
+      borderWidth: 3,
+      shape: "diamond",
+      label: "(A:2,B:2,C:1)",
+      color: "rgb(213,250,178)"
+    },
+  };
+
+    network.setData(data);
+  var clusterOptionsByData7 = {
+    joinCondition: function (childOptions) {
+      return childOptions.cid == 8;
+    },
+    clusterNodeProperties: {
+      id: "cidCluster8",
+      borderWidth: 3,
+      shape: "diamond",
+      label: "(A:2,B:2,C:2)",
+      color: "rgb(213,250,178)"
+    },
+  };
+
+
+  network.cluster(clusterOptionsByData);
+  network.cluster(clusterOptionsByData1);
+  network.cluster(clusterOptionsByData2);
+  network.cluster(clusterOptionsByData3);
+  network.cluster(clusterOptionsByData4);
+  network.cluster(clusterOptionsByData5);
+    network.cluster(clusterOptionsByData6);
+    network.cluster(clusterOptionsByData7);
+/*
+ var clusterOptionsByData1 = {
+  joinCondition: function (childOptions) {
+    return childOptions.cid == 2;
+  },
+  clusterNodeProperties: {
+    id: "cidCluster",
+    borderWidth: 3,
+    shape: "diamond",
+    label: "hello",
+    color: "Red"
+  },
+};
+network.cluster(clusterOptionsByData1);  */
+
+network.on("selectNode", function (params) {
+  if (params.nodes.length == 1) {
+    if (network.isCluster(params.nodes[0]) == true) {
+      network.openCluster(params.nodes[0]);
+    }
+  }
+});
+
+network.on("selectEdge", function (params) {
+  if (params.edges.length == 1) {
+    // Single edge selected
+    var obj = {};
+    obj.clicked_id = params.edges[0];
+    network.clustering.updateEdge(params.edges[0], { color: "#aa0000" });
+    obj.base_edges = network.clustering.getBaseEdges(params.edges[0]);
+    obj.all_clustered_edges = network.clustering.getClusteredEdges(
+      params.edges[0]
+    );
+    document.getElementById("eventSpan").innerHTML =
+      "<h2>selectEdge event:</h2>" + JSON.stringify(obj, null, 4);
+  }
+});
+
+</script>
+As we can see, each green clusters contain a node that is \(B\) or adjacent to \(B\) that is also colored green.
+Hence the green color is \(B\)-robust.
+</body>
+
+
+</html>

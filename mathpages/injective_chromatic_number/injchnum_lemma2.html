@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+
+#mynetwork1 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+#mynetwork2 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+#mynetwork3 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+  <div class="lemma">
+  \(\textbf{3) }\)	 If \(G\) is a graph of diameter \(2\) whose independence number is \( \alpha(G)=p\), then \(p \leq \chi_i(G)\).
+   </div>
+   <div class="proof">
+     Let's start with a very simple example:
+
+
+    <div id="mynetwork1"></div>
+
+    <script type="text/javascript">
+      // create an array with nodes
+      var nodes = new vis.DataSet([
+        { id: 1, label: "A" },
+        { id: 2, label: "B" },
+        { id: 3, label: "C" },
+        { id: 4, label: "D" },
+        { id: 5, label: "E" }
+
+      ]);
+
+      // create an array with edges
+      var edges = new vis.DataSet([
+        { from: 1, to: 2 },
+        { from: 2, to: 3 },
+        { from: 4, to: 3 },
+        { from: 4, to: 1 },
+        { from: 5, to: 2 }
+      ]);
+
+      // create a network
+      var container = document.getElementById("mynetwork1");
+      var data = {
+        nodes: nodes,
+        edges: edges
+      };
+      var options = {};
+      var network = new vis.Network(container, data, options);
+    </script>
+    Recall that the denifinition of an independent set of a graph \(G\) is:
+    <br>
+   A subset of the vertex set of \(S \subset V(G)\), where \(\forall u,v \in S, (u,v) \notin E(G)\).
+   <br>
+   The size of a largest independent set of a graph is denoted by \(\alpha(G)\)
+   <br>
+    In general, a graph could have many maximum independent set,
+    but here, the maximum independent set \(S \subset V(G) \) is:
+    \[S=\{E,A,C\}\]
+    Notice that any two vertices in \(S\) is neighbhor to some vertex in \(V(G)-S\):
+    \[\begin{cases}
+    E A, \text{ neightbhors of } D\\
+    E C, \text{ neightbhors of } D\\
+    C A, \text{ neightbhors of } B
+    \end{cases}
+    \]
+    This is because the diameter of the graph is \(2\) and so any two no adjacent verteces must be connected via a path of length \(2\).
+    Therefore, they must have a common neighbhors.
+    <br>
+    Now since any vertices in the independent set \(S\) have a common neighbhor,
+    they need to be colored differently in an injective coloring. Let's consider vertices \(E,A\):
+    <br>
+
+    <div id="mynetwork2"></div>
+
+    <script type="text/javascript">
+      // create an array with nodes
+      var nodes = new vis.DataSet([
+        { id: 1, label: "A", color: "pink" },
+        { id: 2, label: "B" },
+        { id: 3, label: "C" },
+        { id: 4, label: "D" },
+        { id: 5, label: "E", color:"orange" }
+
+      ]);
+
+      // create an array with edges
+      var edges = new vis.DataSet([
+        { from: 1, to: 2 },
+        { from: 2, to: 3 },
+        { from: 4, to: 3 },
+        { from: 4, to: 1 },
+        { from: 5, to: 2 }
+      ]);
+
+      // create a network
+      var container = document.getElementById("mynetwork2");
+      var data = {
+        nodes: nodes,
+        edges: edges
+      };
+      var options = {};
+      var network = new vis.Network(container, data, options);
+    </script>
+    Now, when consider the coloring of the vertex \(C\),
+     well since \(C\) and \(A\) needs different coloring
+     and \(C\) and \(E\) needs different coloring,
+     we must give \(C\) a third color:
+
+     <div id="mynetwork3"></div>
+
+     <script type="text/javascript">
+       // create an array with nodes
+       var nodes = new vis.DataSet([
+         { id: 1, label: "A", color: "pink" },
+         { id: 2, label: "B" },
+         { id: 3, label: "C" , color: "yellow"},
+         { id: 4, label: "D" },
+         { id: 5, label: "E", color:"orange" }
+
+       ]);
+
+       // create an array with edges
+       var edges = new vis.DataSet([
+         { from: 1, to: 2 },
+         { from: 2, to: 3 },
+         { from: 4, to: 3 },
+         { from: 4, to: 1 },
+         { from: 5, to: 2 }
+       ]);
+
+       // create a network
+       var container = document.getElementById("mynetwork3");
+       var data = {
+         nodes: nodes,
+         edges: edges
+       };
+       var options = {};
+       var network = new vis.Network(container, data, options);
+     </script>
+
+And we need \(|S|\) colors to color the vertices in the largest independent set of the graph alone.
+Therefore, the injective chromatic number of the graph should be at least as large as the size of the laegest independent set of \(G\):
+\[\chi_i(G) \geq \alpha(G)\]
+
+To give a coloring procedure, given an arbitary simple graph \(G\),
+ let \(S \subset V(G)\) be a largest independent set of \(G\), namely \(\alpha(G)=|S|\).
+ Then Enumerate vertices in \(S\):
+ \[S=\{v_1,v_2,...,v_{\alpha(G)} \} \]
+
+ Then color \(v_1\) arbitrary,
+ <br>
+ color of \(v_2\) needs to differ from that of \(v_1\),
+ <br>
+ color of \(v_3\) needs to differ from that of \(v_1,v_2\),
+ <br>
+ and so on until:
+ <br>
+ color of \(v_{\alpha(G)}\) need to differ from that of \(v_1,v_2,...,v_{\alpha(G)-1}\)
+ <br>
+ And so we needed at least \( \alpha(G)\) colors for an injective coloring of \(G\).
+
+
+
+</div>
+</body>
+</html>

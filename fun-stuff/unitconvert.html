@@ -1,0 +1,260 @@
+<!-- <!DOCTYPE>
+<html>
+
+<head>
+
+</head>
+
+<body>
+<div class = "converter-wrapper">
+  <h1>ENGINEERING <br>UNIT CONVERTER</h1>
+  <form name = "property_form">
+    <span>
+      <select class = "select-property" name = "the_menu" size=1 onChange = "UpdateUnitMenu(this, document.form_A.unit_menu); UpdateUnitMenu(this, document.form_B.unit_menu)">
+      </select>
+    </span>
+  </form>
+
+  <div class = "converter-side-a">
+    <form name = "form_A" onSubmit = "return false">
+      <input type = "text" class = "numbersonly" name = "unit_input" maxlength = "20" value = "0" onKeyUp = "CalculateUnit(document.form_B, document.form_A)">
+      <span>
+        <select name = "unit_menu" onChange = "CalculateUnit(document.form_b, document.form_A)">
+        </select>
+      </span>
+    </form>
+  </div>
+  <div class = "converter-equals">
+    <p> = </p>
+  </div>
+
+  <div class = "converter-side-b">
+    <form name = "form_B" onSubmit = "return false">
+       <input type = "text" class = "numbersonly", name = "unit_input" maxlength = "20" value = "0" onkeyup = "CalculateUnit(document.form_A, document.form_B)">
+       <span>
+         <select name = "unit_menu" onChange = "CalculateUnit(document.form_A, document.form_B)">
+         </select>
+       </span>
+     </form>
+   </div>
+ </div>
+
+<script>
+
+var property = new Array();
+var unit =  new Array();
+var factor = new Array();
+
+property[0] = "Acceleration";
+unit[0] = new Array("Meter/ sq.sec (m/sec^2)", "Foot/sq.sec(ft/sec^2)", "G (g)", "Inch/sq.sec(in/sec^2)");
+factor[0] = new Array(1, .3048, 9.806650, .01, 2.54E-02);
+
+property[1] = "Area";
+unit[1] = new Array("Square meter (m^2)", "Acre(acre)", "Are", "Barn(barn)", "Hectare", "Rood", "Square centimeter","Square kilometer","Circular mil","Square foot (ft^2)","Square inch (in^2)","Square mile(mi^2)","Square yard (yd^2)");
+factor[1] = new Array(1, 4046.856, 100, 1E-28, 10000, 1011.71413184285, 0.0001, 1000000, 5.067075E-10, 9.290304E-02, 6.4516E-04, 2589988, 0.8361274);
+
+
+function UpdateUnitMenu(propMenu, unitMenu){
+  var i;
+  i =  propMenu.selectedIndex;
+  FillMenuWithArray(unitMenu, unit[i]);
+}
+
+function FillMenuWithArray(myMenu, myArray){
+  var i;
+  myMenu.length = myArray.length;
+  for ( i =0; i< myArray.length; i++) {
+    myMenu.options[i].text = myArray[i];
+  }
+}
+
+function calculateUnit(sourceForm, targetForm){
+  var sourceValue = sourceForm.unit_input.value;
+  sourceValue = parseFloat(sourceValue);
+  if(!isNaN(sourceValue) || sourceValue == 0){
+    sourceForm.unit_input.value = sourceValue;
+    ConvertFromTo(sourceForm, targetForm);
+  }
+}
+
+function ConvertFromTo(sourceForm, targe)
+{
+  var propIndex;
+  var sourceIndex;
+  var sourceFactor;
+  var targetIndex;
+  var targetFactor;
+  var result;
+
+  propIndex = document.property_form.the_menu.selectedIndex;
+
+  sourceIndex = sourceForm.unit_menu.selectedIndex;
+  sourceFactor = factor[propIndex][sourceIndex];
+
+  targetIndex = targetForm.unit_menu.selectedIndex;
+  targetFactor = factor[propIndex][targetIndex];
+
+  result = sourceForm.unit_input.value;
+  // if(property[propIndex] == "Temperature"){
+  //   result = parseFloat(result) + tempIncrement[sourceIndex];
+  // }
+  result = result * sourceFactor;
+  result = result / targetFactor;
+
+  targetForm.unit_input.value = result;
+}
+
+window.onload = function(e) = {
+  FillMenuWithArray(document.property_form.the_menu, property);
+  UpdateUnitMenu(document.property_form.the_menu, document.form_A.unit_menu);
+  UpdateUnitMenu(document.property_form.the_menu, document.form_B.unit_menu)
+}
+
+
+</script>
+
+
+</body>
+
+<html> -->
+
+
+<!DOCTYPE>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:800|Poppins:700" rel="stylesheet">
+</head>
+
+<body>
+<div class="converter-wrapper">
+  <h1>ENGINEERING <br>UNIT CONVERTER</h1>
+
+  <form name="property_form">
+    <span>
+      <select class="select-property" name="the_menu" size=1 onChange="UpdateUnitMenu(this, document.form_A.unit_menu); UpdateUnitMenu(this, document.form_B.unit_menu)">
+      </select>
+    </span>
+  </form>
+
+  <div class="converter-side-a">
+    <form name="form_A" onSubmit="return false">
+      <input type="text" class="numbersonly" name="unit_input" maxlength="20" value="0" onKeyUp="CalculateUnit(document.form_A, document.form_B)">
+      <span>
+        <select name="unit_menu" onChange="CalculateUnit(document.form_B, document.form_A)">
+        </select>
+      </span>
+    </form>
+  </div> <!-- /converter-side-a -->
+
+ <div class="converter-equals">
+   <p>=</p>
+ </div> <!-- /converter-side-a -->
+
+  <div class="converter-side-b">
+    <form name="form_B" onSubmit="return false">
+      <input type="text" class="numbersonly" name="unit_input" maxlength="20" value="0" onkeyup="CalculateUnit(document.form_B, document.form_A)">
+      <span>
+        <select name="unit_menu" onChange="CalculateUnit(document.form_A, document.form_B)">
+        </select>
+      </span>
+    </form>
+  </div> <!-- /converter-side-b -->
+</div><!-- /converter-wrapper -->
+
+
+<script>
+var property = new Array();
+var unit = new Array();
+var factor = new Array();
+
+property[0] = "Acceleration";
+unit[0] = new Array("Meter/sq.sec (m/sec^2)", "Foot/sq.sec (ft/sec^2)", "G (g)", "Galileo (gal)", "Inch/sq.sec (in/sec^2)");
+factor[0] = new Array(1, .3048, 9.806650, .01, 2.54E-02);
+
+property[1] = "Area";
+unit[1] = new Array("Square meter (m^2)", "Acre (acre)", "Are", "Barn (barn)", "Hectare", "Rood", "Square centimeter", "Square kilometer", "Circular mil", "Square foot (ft^2)", "Square inch (in^2)", "Square mile (mi^2)", "Square yard (yd^2)");
+factor[1] = new Array(1, 4046.856, 100, 1E-28, 10000, 1011.71413184285, .0001, 1000000, 5.067075E-10, 9.290304E-02, 6.4516E-04, 2589988, .8361274);
+
+
+
+function UpdateUnitMenu(propMenu, unitMenu) {
+  // Updates the units displayed in the unitMenu according to the selection of property in the propMenu.
+  var i;
+  i = propMenu.selectedIndex;
+  FillMenuWithArray(unitMenu, unit[i]);
+}
+
+function FillMenuWithArray(myMenu, myArray) {
+  // Fills the options of myMenu with the elements of myArray.
+  // !CAUTION!: It replaces the elements, so old ones will be deleted.
+  var i;
+  myMenu.length = myArray.length;
+  for (i = 0; i < myArray.length; i++) {
+    myMenu.options[i].text = myArray[i];
+  }
+}
+
+function CalculateUnit(sourceForm, targetForm) {
+  // A simple wrapper function to validate input before making the conversion
+  var sourceValue = sourceForm.unit_input.value;
+
+  // First check if the user has given numbers or anything that can be made to one...
+  sourceValue = parseFloat(sourceValue);
+  if (!isNaN(sourceValue) || sourceValue == 0) {
+    // If we can make a valid floating-point number, put it in the text box and convert!
+    sourceForm.unit_input.value = sourceValue;
+    ConvertFromTo(sourceForm, targetForm);
+  }
+}
+
+function ConvertFromTo(sourceForm, targetForm) {
+  // Converts the contents of the sourceForm input box to the units specified in the targetForm unit menu and puts the result in the targetForm input box.In other words, this is the heart of the whole script...
+  var propIndex;
+  var sourceIndex;
+  var sourceFactor;
+  var targetIndex;
+  var targetFactor;
+  var result;
+
+  // Start by checking which property we are working in...
+  propIndex = document.property_form.the_menu.selectedIndex;
+
+  // Let's determine what unit are we converting FROM (i.e. source) and the factor needed to convert that unit to the base unit.
+  sourceIndex = sourceForm.unit_menu.selectedIndex;
+  sourceFactor = factor[propIndex][sourceIndex];
+
+  // Cool! Let's do the same thing for the target unit - the units we are converting TO:
+  targetIndex = targetForm.unit_menu.selectedIndex;
+  targetFactor = factor[propIndex][targetIndex];
+
+  // Simple, huh? let's do the math: a) convert the source TO the base unit: (The input has been checked by the CalculateUnit function).
+
+  result = sourceForm.unit_input.value;
+  // Handle Temperature increments!
+  // if (property[propIndex] == "Temperature") {
+  //   result = parseFloat(result) + tempIncrement[sourceIndex];
+  // }
+  result = result * sourceFactor;
+
+  // not done yet... now, b) use the targetFactor to convert FROM the base unit
+  // to the target unit...
+  result = result / targetFactor;
+  // Again, handle Temperature increments!
+  // if (property[propIndex] == "Temperature") {
+  //   result = parseFloat(result) - tempIncrement[targetIndex];
+  // }
+
+  // Ta-da! All that's left is to update the target input box:
+  targetForm.unit_input.value = result;
+}
+
+
+window.onload = function(e) {
+  FillMenuWithArray(document.property_form.the_menu, property);
+  UpdateUnitMenu(document.property_form.the_menu, document.form_A.unit_menu);
+  UpdateUnitMenu(document.property_form.the_menu, document.form_B.unit_menu)
+}
+
+</script>
+</body>
+</html>

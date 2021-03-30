@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>可怜的卡地亚(poor 卡地亚)</h2>
+		像卡尔森公司这样的公司提供高质量和专业的毒物测试。因此，出现以下问题：
+    有\(1000\)个水桶，其中只有一个，是装有毒的水，其余的则装满水。它们看起来都一样。如果卡地亚喝了毒药，它将在\(15\)分钟内死亡。我们需要在一小时内弄清楚哪个桶有毒所需要的卡地亚的最低数量是多少？
+    回答这个问题，并为一般情况编写一个算法。<br>
+    一般情况：<br>
+    如果有\(n\)个桶，喝有毒药的桶的卡地亚的会在\(m\)分钟内死亡，那么如果需要在\(p\)分钟内找出有毒药的桶需要多少只卡地亚？恰好有一个装有毒药的水桶。<br>
+    如下条件：
+    <ul>
+      <li>可以允许一头卡地亚在任意数量的桶上同时喝水，而且喂食没有时间。</li>
+      <li> 卡地亚立即喝完水桶后，必须有\(m\)分钟的冷却时间。在这段时间里，只允许观察，根本不喂食 </li>
+      <li>任何给定的存储桶都可以无限次采样（无限数量的卡地亚）</li>
+    </ul>
+    <br>
+		A compagny like Carlson Company offers high quality and professional poison test. Hence the following question:
+    There are \(1000\) buckets, one and only one of them is poisonous, while the rest are filled with water.
+    They all look identical. If a 卡地亚 drinks the poison it will die within \(15\) minutes.
+    What is the minimum amount of 卡地亚s you need to figure out which bucket is poisonous within one hour?<br>
+    Answer this question, and write an algorithm for the general case.<br>
+    General case:<br>
+    If there are \(n\) buckets and a 卡地亚 drinking poison will die within \(m\) minutes, how many 卡地亚s you need to figure out the poisonous bucket within \(p\) minutes? There is exactly one bucket with poison.
+    <ul>
+      <li>A 卡地亚 can be allowed to drink simultaneously on as many buckets as one would like, and the feeding takes no time.</li>
+      <li>After a 卡地亚 has instantly finished drinking buckets, there has to be a cool down time of \(m\) minutes. During this time, only observation is allowed and no feedings at all.</li>
+      <li> Any given bucket can be sampled an infinite number of times (by an unlimited number of 卡地亚s).</li>
+    </ul>
+    <hr>
+    <label for="tagBucketNumber">有几桶水:(How many bucket of water are there)</label><br>
+    <input type="number" id = "tagBucketNumber" class="numbersonly" value="2"><br>
+    <label for="tagPoinsonTime">毒药生效要​​几分钟:(How long will the poison takes effect in mimute)</label><br>
+    <input type="number" id = "tagPoinsonTime" class="numbersonly" value="2"><br>
+    <label for="tagTime">我们有多少时间来识别毒药桶:(How much time do we have to identify the poison bucket)</label><br>
+    <input type="number" id = "tagTime" class="numbersonly" value="2"><br>
+    <input type="Button" onclick="computeResult()" value="找最长连续序列(Find Longest Continous Sequence)" /> <br>
+
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+		答案暗示如下：
+		<br>
+		我们从一个简单的示例开始，计算出测试8桶水（其中一桶含有毒药）所需的最小卡地亚只数量。
+		我们可以使用二进制表示的数字来表示可能存在毒药的8种情况。
+		例如，如果毒药位于第三个存储桶中，那么我们使用二进制数3（以10为底）= 11（以2为底）表格来代表这种情况。
+		对于8个存储桶，我们需要\(\log_2 8\)个二进制数字来表示1到8之间的数字。
+		我们有以下策划:
+		<ul>
+			<li>第一个水桶有毒： 000 没有卡地亚喝</li>
+			<li>第二个水桶有毒： 001 第一只卡地亚喝</li>
+			<li>第三`个水桶有毒： 010 第二之卡地亚喝</li>
+			<li>第四个水桶有毒： 011 第一和第二之卡地亚喝</li>
+			<li>第五个水桶有毒： 100 第三只卡地亚喝</li>
+			<li>第六个水桶有毒： 101 第一和第三之卡地亚喝</li>
+			<li>第七个水桶有毒： 110 第二和第三之卡地亚喝</li>
+			<li>第八个水桶有毒： 111 第一第二和第三之卡地亚和</li>
+		</ul>
+		我们可以由此得出结论，比如如果第一和第三之卡地亚死了那么第六个水桶有毒。
+		<br>
+		Hint:
+		<br>
+		We start with a simple example of figuring out the minimum number of 卡地亚 needed to test \(8\) buckets of water with one of them containing poison.
+		We can use number in binary representation to represent the 8 possible situations in which a poison could be in.
+		For example, if the poison is in 3rd bucket, then we use the number 3(base 10)=11(base 2) in binary form to represent this situation.
+	  For 8 bucket, we need log_2 8 binary digits to represent numbers from 1 to 8.
+		<br>
+		We have the following representation:
+		<ul>
+			<li>The first bucket contains poison： 000 no 卡地亚 drinks it</li>
+			<li>The second bucket contains poison： 001 The first 卡地亚  drinks it</li>
+			<li>The third bucket contains poison： 010 The second 卡地亚 drinks it</li>
+			<li>The fourth bucket contains poison： 011  The first and second 卡地亚 drinks it</li>
+			<li>The fifth bucket contains poison： 100  The third 卡地亚 drinks it </li>
+			<li>The six bucket contains poison： 101  The first and third 卡地亚 drink it</li>
+			<li>The seventh bucket contains poison： 110 The second and third 卡地亚 drink it</li>
+			<li>The eigth bucket contains poison： 111 The first, second and third 卡地亚 drink it</li>
+		</ul>
+		The for example, if The first and second 卡地亚 dies then the fourth bucket contains poison.
+		Hope that hepls.
+    <script>
+      var poisonTime = 0;
+      var numberOfBucket = 0;
+      var timeAllowed = 0;
+      var result = 0;
+
+      /**
+        *
+       */
+      function computeResult(){
+				document.getElementById("tagMessage").innerHTML= "";
+        timeAllowed  = parseFloat(document.getElementById("tagTime").value);
+        numberOfBucket = parseFloat(document.getElementById("tagBucketNumber").value);
+        poisonTime = parseFloat(document.getElementById("tagPoinsonTime").value);
+
+        if(isNaN(poisonTime)){ //If number of food entered is not a number, display an an explainatory error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的毒有效时间不是数字(error: the poison effective time entered is not a number)"; // Put the error message inside the msg element in HTML.
+          return false;
+        }
+        if(isNaN(numberOfBucket)){ //If the number of animal entered by the user is not a number, display an error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的水桶数量不是数字(error: the number of buckets entered is not a number)";
+          return false;
+        }
+        if(isNaN(timeAllowed)){ //If the number of animal entered by the user is not a number, display an error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的允许时间不是数字(error: the allowed time entered is not a number)";
+          return false;
+        }
+        if(timeAllowed <= 0 || numberOfBucket <=0 || poisonTime<= 0){ //If the number of type of food or the number of type of nutrients entered is a negetive number, display an error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的所有条目都必须为正(error: all entries entered needs to be positive)";
+          return false;
+        }
+        if(!(Number.isInteger(numberOfBucket)) || !(Number.isInteger(timeAllowed)) || !(Number.isInteger(poisonTime))){
+          document.getElementById("tagMessage").innerHTML= "错误：所有条目都必须是整数(error: all entries need to be an Integer)";
+          return false;
+        }
+
+        var numberOfSubperiods = Math.floor(timeAllowed / poisonTime)+1;
+        var mult = numberOfSubperiods;
+        if(numberOfBucket === 1){
+          result = 0;
+          displayResult();
+          return 1;
+        }
+        result =1;
+        while(numberOfBucket > mult){
+          mult = mult * numberOfSubperiods;
+          result++
+        }
+        //console.log(result);
+        displayResult();
+        return 1;
+
+
+      }
+      function displayResult(){
+        clearTable("tagOutput")
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("结果如下(The result is as follow)"));
+        resultBody.appendChild(createDescriptionRow("最少需要的卡地亚的数量是(The minimum number of 卡地亚s needed is)",result));
+        resultTbl.append(resultBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>

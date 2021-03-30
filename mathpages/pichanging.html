@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="../styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+.table1{
+	width: 300px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 1px;
+}
+
+ #mynetwork1 {
+  width: 500px;
+  height: 300px;
+  margin: 0 auto;
+}
+.images{
+  text-align: center;
+  width: 500px;
+  height: 300px;
+  padding: 20px;
+  margin: 0 auto;
+}
+.table1{
+	width: 300px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+<h2><a href ="../pdffiles/pic.pdf">Picture-Hanging Puzzles</a></h2>
+By Eric D. Demaine, Martin L. Demaine, Yair N. Minsky, Joseph S. B. Mitchell, Ronald L. Rivest, Mihai Patrascu
+<hr>
+
+We want to hang a picture on the wall with \(n\) nails such that with the removal of \(k\) arbitrary nails, the picture fall.
+Here is an example of how to shang a picture on \(2\) nails so that with the removal of any arbitrary nail, the picture falls:
+<br>
+<a href="pichang.html">Try it here by Antoine Lorcy</a>
+<div class="images">
+  <img src="../images/convnn_tut/pic.jpg" width="380" height="250"/>
+</div>
+
+<div class="definition">
+A \(\textbf{free group}\) on \(n\) generators, \(F_n\) is a group whose elements are strings on the alphabet \(\{x_1,x_1^{-1},x_2,x_2^{-1},...,x_n,x_n^{-1}\}\)
+and the binary operation on the group is string concatenation. We think of the symbol \(x_i\) as the inverse of \(x_i^{-1}\).
+The elements in \(F_n\) are called \(\textbf{words}\).
+</div>
+
+<div class="table1">
+  <style type="text/css">
+  .tg  {border-collapse:collapse;border-spacing:0;}
+  .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+    overflow:hidden;padding:10px 5px;word-break:normal;}
+  .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+    font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+  .tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+  </style>
+  <table class="tg">
+  <thead>
+    <tr>
+      <th class="tg-iifz"></th>
+      <th class="tg-iifz">e</th>
+      <th class="tg-iifz">\(x_1\)</th>
+      <th class="tg-iifz">\(x_1^{-1}\)</th>
+      <th class="tg-iifz">\(x_2\)</th>
+      <th class="tg-iifz">\(x_2^{-1}\)</th>
+      <th class="tg-iifz">---</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tg-iifz">e</td>
+      <td class="tg-iifz">e</td>
+      <td class="tg-iifz">\(x_1\)</td>
+      <td class="tg-iifz">\(x_1^{-1}\)</td>
+      <td class="tg-iifz">\(x_2\)</td>
+      <td class="tg-iifz">\(x_2^{-1}\)</td>
+      <td class="tg-iifz">...</td>
+    </tr>
+    <tr>
+      <td class="tg-iifz">\(x_1\)</td>
+      <td class="tg-iifz">\(x_1\)</td>
+      <td class="tg-iifz">\(x_1x_1\)</td>
+      <td class="tg-iifz">e</td>
+      <td class="tg-iifz">\(x_1x_2\)</td>
+      <td class="tg-iifz">\(x_1x_2^{-1}\)</td>
+      <td class="tg-iifz">...</td>
+    </tr>
+    <tr>
+      <td class="tg-iifz">\(x_1^{-1}\)</td>
+      <td class="tg-iifz">\(x_1^{-1}\)</td>
+      <td class="tg-iifz">e</td>
+      <td class="tg-iifz">\(x_1^{-1}x_1^{-1}\)</td>
+      <td class="tg-iifz">\(x_1^{-1}x_2\)</td>
+      <td class="tg-iifz">\(x_1^{-1}x_2^{-1}\)</td>
+      <td class="tg-iifz">...</td>
+    </tr>
+    <tr>
+      <td class="tg-iifz">\(x_2\)</td>
+      <td class="tg-iifz">\(x_2\)</td>
+      <td class="tg-iifz">\(x_2x_1\)</td>
+      <td class="tg-iifz">\(x_2x_1^{-1}\)</td>
+      <td class="tg-iifz">\(x_2x_2\)</td>
+      <td class="tg-iifz">e</td>
+      <td class="tg-iifz">...</td>
+    </tr>
+    <tr>
+      <td class="tg-iifz">\(x_2^{-1}\)</td>
+      <td class="tg-iifz">\(x_2^{-1}\)</td>
+      <td class="tg-iifz">\(x_2^{-1}x_1\)</td>
+      <td class="tg-iifz">\(x_2^{-1}x_1^{-1}\)</td>
+      <td class="tg-iifz">e</td>
+      <td class="tg-iifz">\(x_2^{-1}x_2^{-1}\)</td>
+      <td class="tg-iifz">...</td>
+    </tr>
+    <tr>
+      <td class="tg-iifz">...<br></td>
+      <td class="tg-iifz">---</td>
+      <td class="tg-iifz">...</td>
+      <td class="tg-iifz">...</td>
+      <td class="tg-iifz">...</td>
+      <td class="tg-iifz">...</td>
+      <td class="tg-iifz">...</td>
+    </tr>
+  </tbody>
+  </table>
+</div>
+
+We can abstract the weaving of the rope around the nails using a free group.
+If we need to weave the rope around two nails, if the rope pass clockwise over(on top) nail \(i\)  we use \(x_i\) to denote it.
+If the rope pass counterclockwise over a nail \(i\), we use \(x_i^{-1}\) to denote it.
+For example, consider the weaving:
+
+<div class="images">
+  <img  src="../images/convnn_tut/pic2.jpg" width="380" height="250"/>
+</div>
+The element in \(F_2\) associated with this weaving is \(x_1x_2x_1^{-1}x_2^{-1}\).
+This can be seen be travelling from left of the rope and read the group element wheever the rope pass over a nail.
+In this representation, removing a nail \(i\) correspond to removing all ocurrence of \(x_i, x_i{-1}\).
+For example, removing nail \(1\) in the above example, we get the word \(x_2x_2^{-1}=e\) so the picture falls.
+
+<div class="definition">
+Given a group \(G\) and \(g,h \in G\), the \(\textbf{commutator}\) of \(g,h\) is denoted by \([g:h]\) and it is equals to \(ghg^{-1}h^{-1}\)
+</div>
+<div class="definition">
+A \(\textbf{picture hanging on n nails}\) is just a free group representation of a weaving of a rope around \(n\) nails.
+Namely, it is just a word in \(F_n\). The \(\textbf{length}\) of the hanging is just length of the word representing the weaving of the rope.
+</div>
+For example, the picture hanging in the above example is \(x_1x_2x_1^{-1}x_2^{-1}\) and its length is \(4\).
+
+<div class="lemma">
+Given \(n \geq 1\), there is a picture hanging on \(n\) nails of length at most \(2n^2\) that fails the picture whenever we remove any nail.
+also, the symbole \(x_i, x_i^{-1}, i \in [n]\) appear at most \(2n\) times.
+</div>
+<div class="proof">
+we already have a solution to when we have only \(2\) nails, namely, \(s_2 = x_1x_2x_1^{-1}x_2^{-1}\). We use the notation \(s_n\) to denote the
+solution to when there is \(n\) nails. Then here is a solution for \(n\) nails:
+\[ s_n =[s_{n-1},x_n] \]
+the length of \(s_n\) is \(2^n+2^{n-1}-2\) by induction.
+</div>
+
+<div class="lemma">
+Given \(n \geq 1\), there is a picture hanging on \(n\) nails of length polynomial in \(n\) that fails the picture whenever we remove any nail.
+</div>
+<div class="proof">
+Given nails \(1,...,n\), We denote \(E(i:j)\) the word solution for when using only nails \(i\) to \(j\).
+for example,
+\[E(i:i) =x_i \]
+and
+\[E(i:i+1) = [x_i,x_{i+1}]=x_ix_{i+1}x_i^{-1}x_{i+1}^{-1} \]
+and a recursive solution can be given as :
+\[E(i:j) = [E(i: \lfloor \frac{i+j}{2} \rfloor), E(\lfloor \frac{i+j}{2}+1 \rfloor :j )]\]
+</div>
+
+We now turn to a general theory of the puzzle.
+<div class="definition">
+Given a picture hanging \(p\) on \(n\) nails, the \(\textbf{fall function}\) \(f_p(r_1,...,r_n)\) where each \(r_i\) is a boolean value is
+a boolean function that evaluate to true when removing the nail \(i\) for which \(r_i\) is true.
+</div>
+For example, the fall function for the above picture hanging \(x_1x_2x_1^{-1}x_2^{-1}\) is \(r_1 \vee r_2\).
+<div class="definition">
+A fall function \(f_p(r_1,...,r_n)\) is \(\textbf{monotone}\) if \(r_1 \leq r_1', r_2 \leq r_2',...,r_n \leq r_n'\) implies that
+\(f_p(r_1,...,r_n) \leq f_p(r_1',...,r_n')\).
+</div>
+We establish in the paper that monotone boolean function as define above are exactly the fall function of some picture hanging.
+
+<!-- <div class="lemma">
+Every monotone Boolean function \(f\) on \(n\) variables is the fall function \(f_p\) of a picture hanging \(p\) on \(n\) nails.
+
+</div> -->
+<div class="lemma">
+For any two words \(p,q\) in the free group on \(x_1,....,x_n\), then equation :
+\[p^2x_1p^2x_1^{-1} = (qx_2qx_2^{-1})^2\]
+is equivalent to \((p=1) \wedge (q=1)\).
+</div>
+<!-- <div class="proof">
+
+</div> -->
+It is well known that monotone boolean function can be constructed using boolean "and" and boolean "or" only.
+We use the above lemma to construct the boolean and operation:
+
+\[P \wedge q = p^2x_1p^2x_1^{-1}(qx_2qx_2^{-1})^{-2} \]
+because by above lemma, \(p^2x_1p^2x_1^{-1}(qx_2qx_2^{-1})^{-2} =1 \iff (p=1) \wedge (q=1)\)
+
+<div class="lemma">
+  For any two words \(p,q\) in the free group on \(x_1,....,x_n\), then equation :
+  \[ (px_1^spx_1^{-s})(qx_2^{t}qx_2^{-t})(px_1^spx_1^{-s})^{-1}(qx_2^tqx_2^{-t})^{-1}=1 \forall s,t = \pm 1  \]
+
+  is equivalent to \((p=1) \vee (q=1)\).
+</div>
+So the above word equation can be simplify to \([ps_1^spx_1^{-s}, qx_2^tqx_2^{-t}] =1 \forall s,t = \pm 1\)
+So we can therefore construct the "or" logical operation operation by using the above two lemma.
+<br>
+So this is it,
+
+
+
+</body>
+
+
+
+
+
+</html>

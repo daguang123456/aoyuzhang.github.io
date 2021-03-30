@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	  <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+      #projectNetwork {
+        width: 700px;
+        height: 700px;
+        border: 1px solid lightgray;
+        margin: 0 auto;
+        background-color: coral;
+      }
+      #networkFlow{
+        width: 700px;
+        height: 700px;
+        border: 1px solid lightgray;
+        margin: 0 auto;
+        background-color: coral;
+      }
+			#residualNetwork{
+				width: 700px;
+				height: 700px;
+				border: 1px solid lightgray;
+				margin: 0 auto;
+				background-color: coral;
+			}
+
+		</style>
+
+	</head>
+
+	<body>
+		<h2>生成对抗网络(Generative Adversarial Network)</h2>
+    <br>
+
+    <label for = "myCanvas" >Please draw a number:</label><Br>
+        <canvas id="myCanvas" height="100" width="100"  style="border:1px solid #000000; background-color: #FFFFFF"></canvas>
+        <br>
+    <input type="Button" onclick="train()" value="提交(Submit)" /> <br>
+    <label for = "myCanvas1" >:</label><Br>
+        <canvas id="myCanvas" height="100" width="100"  style="border:1px solid #000000; background-color: #FFFFFF"></canvas>
+        <br>
+    <input type="Button" onclick="computeResult()" value="生成(Generate)" /> <br>
+
+    <script>
+      /* Script to draw a number on Canvas
+       * From:   https://www.html5canvastutorials.com/labs/html5-canvas-paint-application/
+       */
+      var canvas = document.getElementById('myCanvas');
+      var ctx = canvas.getContext('2d');
+      var mouse = {x: 0, y: 0};
+
+      canvas.addEventListener('mousemove', function(e) {
+        mouse.x = e.pageX - this.offsetLeft;
+        mouse.y = e.pageY - this.offsetTop;
+      }, false);
+
+      ctx.lineWidth = 3;
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = '#000000';
+
+      canvas.addEventListener('mousedown', function(e) {
+          ctx.beginPath();
+          ctx.moveTo(mouse.x, mouse.y);
+
+          canvas.addEventListener('mousemove', onPaint, false);
+      }, false);
+
+      canvas.addEventListener('mouseup', function() {
+          canvas.removeEventListener('mousemove', onPaint, false);
+      }, false);
+
+      var onPaint = function() {
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.stroke();
+      };
+
+      function getPixelValues(){
+          var canvas_style = getComputedStyle(canvas);
+          var canvasWidth = parseInt(canvas_style.getPropertyValue('width'));
+          var canvasHeight = parseInt(canvas_style.getPropertyValue('height'));
+          var redPixel = [];
+          var bluePixel = [];
+          var greenPixel = [];
+          var intensity = [];
+
+          var imgd = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+          for (var y=0;y<canvasHeight;++y){
+            var tempRedPixelRow = [];
+            var tempBluePixelRow = [];
+            var tempGreenPixelRow = [];
+            var tempIntensityRow = [];
+            for (var x=0;x<canvasWidth;++x){
+              var i=(y*canvasWidth+x)*4;
+              tempRedPixelRow.push(imgd.data[i]);
+              tempBluePixelRow.push(imgd.data[i+2]);
+              tempGreenPixelRow.push(imgd.data[i+1]);
+              tempIntensityRow.push(imgd.data[i+3]);
+            }
+            redPixel.push(tempRedPixelRow);
+            bluePixel.push(tempBluePixelRow);
+            greenPixel.push(tempGreenPixelRow);
+            intensity.push(tempIntensityRow);
+          }
+          return [redPixel,bluePixel,greenPixel,intensity];
+      }
+
+      // var pixel = ctx.getImageData()
+      function train(){
+        var pixelValues = getPixelValues();
+        var pixelRedValues = pixelValues[0];
+        var pixelBlueValue = pixelValues[1];
+        var pixelGreenValue = pixelValues[2];
+        var pixelIntensityValues = pixelValues[3];
+
+
+        var filters = createFilters(3, 4, 3,3);
+
+        convolution(pixelValues, filters, 1,1)
+        //oneFilterConvolution(pixelValues, filters[0], 3, 1);
+
+
+      }
+
+      /* End of script to draw a number on Canvas*/
+      // class Generator{
+      //   constructor(input_size=[28,28,3],
+      //               feature_vector){
+      //   }
+      // }
+      function generateRandomWeightMatrix(height, width){
+        var result = [];
+        for(var i =0 ; i < height; i++){
+          var tempRow = [];
+          for(var j = 0; j < width; j++){
+            tempRow.push(Math.random());
+          }
+          result.push(tempRow);
+        }
+        return result;
+      }
+      function generateRandomWeightTensor(num_layer,height,width){
+        var result = [];
+        for( var i = 0 ; i< num_layer ; i++){
+          result.push(generateRandomWeightMatrix(height, width));
+        }
+        return result;
+      }
+      //console.log(generateRandomWeightTensor(4,3,3));
+      function createFilters(numFilters, filterdepth, width,height){
+        var result = [];
+        for(var i = 0 ; i < numFilters ;  i++){
+          result.push(generateRandomWeightTensor(filterdepth,width,height));
+        }
+        return result;
+      }
+      //console.log(createFilters(5, 4, 3,3));
+
+      function shapeOf(atensor){
+        var result = [];
+        var temp = atensor;
+        while(!(temp === undefined)){
+          if(!(temp.length === undefined)){
+            result.push(temp.length);
+          }
+          temp = temp[0];
+        }
+        return result;
+      }
+
+      function zerosPaddingsMatrix(mat, paddingSize){
+        var matrixHeight = mat.length;
+        var matrixWidth = mat[0].length;
+        var result = [];
+        // pad the first paddingSize row with 0
+        for( var i = 0; i < paddingSize ; i++){
+          var tempRow = [];
+          for(var j = 0; j < matrixWidth+2*paddingSize ; j++){
+            tempRow.push(0);
+          }
+          result.push(tempRow);
+        }
+        // pad the left and right of the matrix with paddingSize number of zero
+        for( var i = 0 ; i < matrixHeight ; i ++){
+          var tempRow = [];
+          for(var j = 0; j< paddingSize ; j++){
+            tempRow.push(0);
+          }
+          for(var k = 0 ; k< matrixWidth ; k++){
+            tempRow.push(mat[i][k]);
+          }
+          for(var j = 0; j< paddingSize ; j++){
+            tempRow.push(0);
+          }
+          result.push(tempRow);
+        }
+        // pad the last paddingSize row with 0
+        for( var i = 0; i < paddingSize ; i++){
+          var tempRow = [];
+          for(var j = 0; j < matrixWidth+2*paddingSize ; j++){
+            tempRow.push(0);
+          }
+          result.push(tempRow);
+        }
+        return result;
+      }
+      function zeroPaddingTensor(tensor, num_layer, height, width, paddingSize){
+        var result = []
+        if(tensor.length === num_layer){
+          for(var i =0; i< num_layer ; i++){
+            result.push(zerosPaddingsMatrix(tensor[i], paddingSize));
+            //console.log(zerosPaddingsMatrix(tensor[i], paddingSize));
+          }
+        }
+        //console.log(result);
+        return result;
+      }
+      function oneFilterConvolution(imgTensor, filter, stepSize, padding){ // here we assume that filter has shape a square
+        var filterSize = filter[0].length;
+        var result = [];
+        var paddedImgTensor = zeroPaddingTensor(imgTensor, imgTensor.length, imgTensor[0].length, imgTensor[0][0].length, padding);
+        var paddedImHeight = paddedImgTensor[0].length;
+        var paddedImWidth = paddedImgTensor[0][0].length;
+        for(var i = 0 ; i < (paddedImHeight-filterSize+1); i = i+stepSize){
+          var tempRow = [];
+          for(var j = 0 ; j< (paddedImHeight-filterSize+1); j = j+stepSize){
+            var convResult = 0;
+            for(var k = i; k < i + filterSize; k++){
+              for(var m = j ; m < j+filterSize ; m++){
+                for(var n = 0 ; n < filter.length ; n++ ){
+                  convResult = convResult + filter[n][k-i][m-j]*paddedImgTensor[n][k][m];
+                }
+              }
+            }
+            tempRow.push(convResult);
+          }
+          result.push(tempRow);
+        }
+        return result;
+      }
+      function convolution(imgTensor, filter,stepSize, paddings){
+        var result = [];
+        //var paddedImageTensor = zeroPaddingTensor(imgTensor, imgTensor.length, imgTensor[0].length, imgTensor[0][0].length, paddings);
+        for(var i = 0 ; i <  filter.length; i++){
+          result.push(oneFilterConvolution(imgTensor, filter[i], stepSize, paddings));
+        }
+        return result;
+      }
+
+
+      // console.log(generateRandomWeightMatrix(3, 5));
+      // console.log(zerosPaddingsMatrix(generateRandomWeightMatrix(3, 5), 2));
+      // function segmentImage(img, segment_X, segment_y){
+      //   var imgHeight = img.length;
+      //   var imgWidth = img.width;
+      //   var result = [];
+      //
+      //
+      // }
+
+      // class Discriminator(){
+      //   constructor(number_filters){
+      //     this.numberOfFilter = number_filters;
+      //     this.filters =  generateRandomWeightTensor(number_filters,3,3);
+      //   }
+      //   convolution(img, conv_filter, stepSize){
+      //     var result = [];
+      //
+      //   }
+      // }
+
+    </script>
+
+	</body>
+</html>

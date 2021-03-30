@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+<!-- 	        <link rel="stylesheet" href="tensorntut.css"> -->
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+	 <meta charset="utf-8">
+
+	  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+	  <script id="MathJax-script" async
+	          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+	  </script>
+<!-- 	  <script type="text/javascript" src="//unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script> -->
+	  <script
+  type="text/javascript"
+  src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"
+></script>
+
+  <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+	  <style>
+	.theorem {
+	    display: block;
+	    margin: 12px 0;
+	    font-style: italic;
+	}
+	.theorem:before {
+	    content: "Theorem.";
+	    font-weight: bold;
+	    font-style: normal;
+	}
+	.lemma {
+	    display: block;
+	    margin: 12px 0;
+	    font-style: italic;
+	}
+	.lemma:before {
+	    content: "Lemma.";
+	    font-weight: bold;
+	    font-style: normal;
+	}
+	.proof {
+	    display: block;
+	    margin: 12px 0;
+	    font-style: normal;
+	}
+	.proof:before {
+	    content: "Proof.";
+	    font-style: italic;
+	}
+	.proof:after {
+	    content: "\25FC";
+	    float:right;
+	}
+	.definition {
+	    display: block;
+	    margin: 12px 0;
+	    font-style: normal;
+	}
+	.definition:before {
+	    content: "Definition.";
+	    font-weight: bold;
+	    font-style: normal;
+	}
+	#mynetwork1 {
+	  width: 500px;
+	  height: 300px;
+	  /*border: 1px solid lightgray;*/
+	  margin: 0 auto;
+	}
+
+	.table1{
+		width: 300px;
+		height: 200px;
+		/*border: 1px solid lightgray;*/
+		margin: 0 auto;
+	}
+	.gadget {
+		width : 500px;
+		height: 500px;
+  border: 5px outset red;
+  background-color: lightblue;
+  text-align: center;
+  margin: 0 auto;
+}
+.gadget1 {
+	width : 600px;
+	height: 650px;
+border: 5px outset red;
+background-color: lightblue;
+text-align: center;
+margin: 0 auto;
+}
+
+
+
+	</style>
+	<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+	<script type="text/javascript" src="https://unpkg.com/vis-graph3d@latest/dist/vis-graph3d.min.js"></script>
+	  </head>
+  </head>
+
+<body>
+This will be random reading on probability theory and statistics. Some gif are found on <a href = "https://gfycat.com/gifs/search/matrix+multiplication">gifcat</a>.
+Thank professor Guillaume Rabusseau for the wonderful lectures on the topic.<br>
+Thank professor Geofffrey Grimmett and David Stirzaker for the probability note.<Br>
+Thank professor Philippe Rigollet for the note on statistics.
+<br>
+
+<h2>Table Of Content:</h2>
+<ul>
+	<li><a href="probabilitytheory.html#la">Linear algebra</a></li>
+	<li><a href="probabilitytheory.html#pb">Probability Theory</a></li>
+	<li><a href="probabilitytheory.html#apl">Applications</a></li>
+</ul>
+
+<h2 id = "la">Linear Algebra </h2>
+<div class ="definition">
+A \(\textbf{matrix}\) is a rectangular grid of numbers, if the number of rows in the grid is \(n\) and the number of column of the grid is \(m\), then we say the size of the matrix is \(n \times m\).
+</div>
+Here is a \(2 \times 3\) matrix with entries in the real numbers:
+\[
+\begin{bmatrix}
+1 & 2 & 3\\
+4 & 5 & 6
+\end{bmatrix}
+\]
+
+<div class ="definition">
+Given matrix \(m \times n\) matrix \(A\) and \(n \times k\) matrix \(B\) , the \(i,j\) entry of their product is defined as:
+\[AB_{ij} = \sum_{k=1}^n A_{ik}B_{kj} \]
+</div>
+Here is an example of matrix product in action:
+<div >
+<img src="../images/matmult.gif" alt="Matrix Multiplication" style="width:500px;height:300px;">
+</div>
+
+To understand vector space, we need to understand several concepts: span, independent, linear combination, basis, dimension...
+
+<div class ="definition">
+Given vector space \(V\) and vectors \(v_1,v_2,...v_n \in V\), their span consists of vectors generated from all their linear combination:
+\[ span(v_1,v_2,...,v_n) = \{a_1v_1+a_2v_2+...a_nv_n|a_i's \in \mathbb{F}\} \]
+<div>
+
+<div>
+\(\textbf{Computing the span of vectors}\):<br>
+Please enter the coordinates of two vector that we want to take the span from:<br>
+<label for="idx1">\(x_1\):</label>
+<input type="number" id = "idx1" class="numbersonly" name="namex1" value="1"><br>
+<label for="idy1">\(y_1\):</label>
+<input type="number" id = "idy1" class="numbersonly" name="namey1"  value="6" ><br>
+<label for="idz1">\(z_1\):</label>
+<input type="number" id = "idz1" class="numbersonly" name="namez1"  value="0.3" ><br>
+<br>
+<label for="idx2">\(x_2\):</label>
+<input type="number" id = "idx2" class="numbersonly" name="namex2" value="1" ><br>
+<label for="idy2">\(y_2\):</label>
+<input type="number" id = "idy2" class="numbersonly" name="namey2"  value="6" ><br>
+<label for="idz2">\(z_2\):</label>
+<input type="number" id = "idz2" class="numbersonly" name="namez2"  value="0.3"><br>
+<button onclick="drawspan()">Draw Span</button>
+<button onclick="drawvector()" >Draw vectors</button>
+<p> Messages:<span id = "spanerror"></span></p>
+<div id="mygraph1"></div>
+
+<script>
+var data = null;
+var graph = null;
+var xrange = 50;
+var yrange = 50;
+var dataPlane = null;
+
+var x1
+var y1;
+var z1;
+
+var x2;
+var y2;
+var z2;
+
+function getData(){
+	x1 = parseFloat(document.getElementById("idx1").value);
+	y1 = parseFloat(document.getElementById("idy1").value);
+	z1 = parseFloat(document.getElementById("idz1").value);
+
+	x2 = parseFloat(document.getElementById("idx2").value);
+	y2 = parseFloat(document.getElementById("idy2").value);
+	z2 = parseFloat(document.getElementById("idz2").value);
+
+	if(isNaN(x1) || isNaN(y1) || isNaN(z1) || isNaN(x2) || isNaN(y2) || isNaN(z2))
+	{
+		document.getElementById("spanerror").innerHTML= "The input is not a number, please enter a number";
+		return false;
+	}
+	return true;
+}
+// function to check if one vector (a,b,c) is a multiple of another vector (d,e,f)
+function isMultiple(a,b,c,d,e,f){
+	var ratiox = a / d;
+	var ratioy = b / e;
+	var ratioz = c / f;
+	return (ratiox === ratioy && ratiox === ratioz && ratioy === ratioz);
+}
+
+function makeVisOption(){
+	var optionsa = {
+		width: "700px",
+		height: "700px",
+		style: "dot-color",
+		showPerspective: true,
+		showGrid: true,
+		showShadow: false,
+		keepAspectRatio: true,
+		verticalRatio: 0.5,
+		//legendLabel: "distance",
+		cameraPosition: {
+			horizontal: -8.633,
+			vertical: 0.50,
+			distance: 1.887,
+		}
+	};
+	return optionsa;
+}
+
+function drawspan(){
+	var isInputOk = getData();
+	if(isInputOk){ // is the input numeric
+		if( isMultiple(x1,y1,z1,x2,y2,z2)) // if the two vector are multiple of each other
+		{
+			document.getElementById("spanerror").innerHTML= "The two vectors lie on the same line";
+			data = new vis.DataSet();
+			for (var x = 0; x < xrange; x ++) {
+					//data.add({ id: counter++, x: x, y: y, z: value, style: value });
+					data.add({ x: x, y: x/x1*y1, z: x/x1*z1});
+					data.add({ x: -x, y: -x/x1*y1, z: -x/x1*z1});
+					// style: "#00ffff"
+			}
+			// specify options
+			var options = makeVisOption();
+			var container = document.getElementById("mygraph1");
+			graph = new vis.Graph3d(container, data, options);
+		}
+		else{ // the two vectors that we are taking the span from are linearly independent
+			data = new vis.DataSet();
+			var aa = y1*z2 - y2*z1;
+			var bb = z1*x2 - x1*z2;
+			var cc = x1*y2 - y1*x2;
+			// console.log("aa is"+aa);
+			// console.log("bb is"+bb);
+			// console.log("cc is"+cc);
+
+			var counter = 0;
+			var steps = 12; // number of datapoints will be steps*steps
+			var axisMax = 200;
+			var axisStep = axisMax / steps;
+
+			if(cc != 0){ // case where the plan spanned by the two vectors are parallel to z axis
+				document.getElementById("spanerror").innerHTML= "The plane will be represented by dots and both vectors and the plan they span will be shown.";
+				for (var i = 0; i < axisMax; i += axisStep) {
+					for (var j = 0; j < axisMax; j += axisStep) {
+						var value = (-aa * i - bb * j ) / cc;
+						console.log("z value of the plan is:" + value);
+						data.add({ id: counter++, x: i, y: j, z: value, style : 30});
+					}
+				}
+	  	}
+			else{
+				document.getElementById("spanerror").innerHTML= "Parallel to z axis";
+				for (var i = 0; i < axisMax; i += axisStep) {
+					for (var j = 0; j < axisMax; j += axisStep){
+						var value = -aa * i / bb;
+						data.add({ id: counter++, x: i, y: value, z: j, style : 30});
+					}
+				}
+			}
+			for (var i = 0; i <= xrange; i ++) {
+					//data.add({ id: counter++, x: x, y: y, z: value, style: value });
+					//console.log("helo");
+					data.add({ x: x1*i/3, y: y1*i/3, z: z1*i/3 , style: 20.5});
+					data.add({ x: x2*i/3, y: y2*i/3, z: z2*i/3, style :17});
+					// style: "#00ffff"
+			}
+
+
+
+
+
+			// for (var i = 0; i <= xrange; x ++) {
+			// 	for (var j = 0; j <= yrange; j++){
+			// 		//data.add({ id: counter++, x: x, y: y, z: value, style: value });
+			// 		data.add({ x: i, y: j, z: (-aa * i - bb * j ) / cc });
+			// 		// data.add({ x: -x, y: -x/x1*y1, z: -x/x1*z1});
+			// 		// style: "#00ffff"
+			// 	}
+			// }
+			// specify options
+			var options = makeVisOption();
+			var container = document.getElementById("mygraph1");
+			graph = new vis.Graph3d(container, data, options);
+		}
+	}
+}
+
+function drawvector(){
+	var isInputOk = getData();
+	if(isInputOk){
+		  data = new vis.DataSet();
+		  // specify options
+			for (var i = 0; i <= xrange; i ++) {
+					//data.add({ id: counter++, x: x, y: y, z: value, style: value });
+					data.add({ x: x1*i/xrange, y: y1*i/xrange, z: z1*i/xrange});
+					data.add({ x: x2*i/xrange, y: y2*i/xrange, z: z2*i/xrange});
+					// style: "#00ffff"
+			}
+
+		  var options = makeVisOption();
+		  var container = document.getElementById("mygraph1");
+		  graph = new vis.Graph3d(container, data, options);
+	}
+}
+
+
+</script>
+</div>
+
+
+<div class="definition">
+Given matrix \(A \in \mathbb{R}^{m \times n}\), a \(\textbf{factorization}\) \(A=BC\) where \(B \in \mathbb{R}^{m \times r}\), \(C \in \mathbb{R}^{r \times n}\) and \(r =rank(A)\), is called a
+rank factorization.
+</div>
+
+<div class="theorem">
+For a matrix \(A \in \mathbb{R}^{m \times n}\), the following are equivalent:
+<ol>
+<li> \(rank(A) \leq r\) </li>
+<li> \(dim(R(A)) \leq r\)</li>
+  <li> \(\exists B \in \mathbb{R}^{m \times r}, \exists C \in \mathbb{R}^{r \times n}\) such that  \(A =BC\)</li>
+  <li> \(\exists b_1,b_2,...,b_r \in \mathbb{R}^m, \exists c_1,c_2,...,c_r \in \mathbb{R}^n\) such that:
+    \[A = \sum_{k=1}^r b_k c_k^T \] </li>
+    <li> \(dim(R(A^T)) \leq r\) </li>
+
+</ol>
+</div>
+
+<div class="proof">
+2) \(\to\) 3):
+So we have that columns \(a_1,...,a_n\) of \(A\) are linear combination of \(r\) vectors \(b_1,...,b_r \in \mathbb{R}^m\).
+So say \(b_i = c_{i1}v_1+...+c_{ir}v_r \), We construct the matrix C whose columns are vectors \(c_i=(c_{i1},...,c_{ir})\)
+and we construct the matrix \(B\) whose columns are the \(b_i\).
+then \(A=BC\)
+</div>
+
+<div class="lemma">
+Given orthogonal matrix \(U \in \mathbb{n \times k} \), it has the property that \(U U^T\) acts as identity on colum-space \(U\).
+</div>
+<div class="proof">
+\(x \in R(U) \Rightarrow \exists a \in \mathbb{R}^k, x= Ua \Rightarrow UU^T(x)=UU^TUa=Ua=x\)
+</div>
+
+
+
+
+
+<div class ="definition">
+If \(U\) is a subspace of \(\mathbb{R}^n\), the orthogonal complement of \(U\) is defined as:
+\[ U^{\bot} = \{v \in \mathbb{R}^n | \langle u,v \rangle = 0 \forall u \in U \}\]
+</div>
+
+<div class ="lemma">
+Given subspace \(U \subset V\) of vector space \(V\), the orthogonal complement of \(U\), \(U^{\bot}\) is a subspace of \(V\) as well.
+</div>
+<div class="proof">
+Well, we just need verify two properties:
+<ol>
+	<li> Given any \(u \in U\), we have \( \langle u, 0 \rangle = 0 \) Hence \( 0 \in U^{\bot} \)</li>
+	<li> Suppose \(w, v \in U^{\bot}\), so we have \( \langle u,v-w \rangle = \langle u,v \rangle - \langle u, w \rangle =0\) so \(U^{\bot}\) is closed under addition and taking inverse.</li>
+<ol>
+</div>
+
+<div class ="definition">
+Let \(u_1,...,u_k \in \mathbb{R}^n \) be an orthonormal basis of a subspace \(U\), If we make matrix :
+\[U =\begin{bmatrix}
+|& \quad & | \\
+u_1 & \dotsm & u_k \\
+| & \quad & |
+\end{bmatrix}\]
+Then the \(\textbf{orthogonal projection}\) onto \(U\) is defined as :
+\[ \Pi_u : \mathbb{R}^n \to \mathbb{R}^n \text{ by } x \to UU^Tx\]
+
+</div>
+<div class ="lemma">
+Let \(U\) be a subspace of \(\mathbb{R}^n\). Then for any \(x \in \mathbb{R}^n\) we have:
+\[ argmin_{u \in U} \|u-x\| = \Pi_U(x) \]
+</div>
+<div class ="proof">
+use pythagorus theorem + cosine law
+</div>
+
+<div class = "lemma">
+Let \(u_1,...,u_k\) be a basis for vector subspace \(\mathcal{U}\), then consider matrix \(U\)whose columns are the vectors \(u_i\).
+We have that the orthogonal projection onto \(\mathcal{U}\) is :
+\[\Pi_u(x) = U(U^TU)^{-1}U^Tx \]
+</div>
+<div class = "proof">
+Consider QR decomposition of \(U\), then
+\[U(U^TU)^{-1}U^Tx = QR(R^TQ^TQR)^{-1}R^TQ^Tx =QQ^Tx= \Pi_u(x) \]
+</div>
+
+<!-- Linear regression concern with representing a set of points with points on a straight line. Suppose we have a set of points \( \{ (x_1,y_1),...,(x_N,y_n)\} \)
+We want to represent the set of points by a straight line \(W^Tx\). We can try to minimize the square error for finding the optimal values for \(W\):
+\[w* = argmin_{w \in \mathbb{R}^d} \|Xw - y\|^2 \]. In which case \(Xw \in \mathbb{R}(X) \).
+If \(X\) has linearly independent columns, then \(w^* = X(X^TX)^{-1}X^Ty \) -->
+
+
+<div>
+\(\textbf{Computing the projection}\):<br>
+Please enter the coordinates of two vectors of a subspace spanned by them so that we can project vectors on it:<br>
+<label for="orthogidx1">\(x_1\):</label>
+<input type="number" id = "orthogidx1" class="numbersonly" name="orthognamex1" value="1"><br>
+<label for="orthogidy1">\(y_1\):</label>
+<input type="number" id = "orthogidy1" class="numbersonly" name="orthognamey1"  value="6" ><br>
+<label for="orthogidz1">\(z_1\):</label>
+<input type="number" id = "orthogidz1" class="numbersonly" name="orthognamez1"  value="0.3" ><br>
+<br>
+<label for="orthogidx2">\(x_2\):</label>
+<input type="number" id = "orthogidx2" class="numbersonly" name="orthognamex2" value="2" ><br>
+<label for="orthogidy2">\(y_2\):</label>
+<input type="number" id = "orthogidy2" class="numbersonly" name="orthognamey2"  value="5" ><br>
+<label for="orthogidz2">\(z_2\):</label>
+<input type="number" id = "orthogidz2" class="numbersonly" name="orthognamez2"  value="0.5"><br>
+<br>
+Next enter the coordinate of the vector that needs to be projected:<br>
+<label for="orthogidx3">\(x_3\):</label>
+<input type="number" id = "orthogidx3" class="numbersonly" name="orthognamex3" value="1" ><br>
+<label for="orthogidy3">\(y_3\):</label>
+<input type="number" id = "orthogidy3" class="numbersonly" name="orthognamey3"  value="6" ><br>
+<label for="orthogidz3">\(z_3\):</label>
+<input type="number" id = "orthogidz3" class="numbersonly" name="orthognamez3"  value="0.3"><br>
+
+<button onclick="drawProject()">Project</button>
+<!-- <button onclick="drawOrthoComp()" >Orthogonal Complement</button> -->
+<p> Messages:<span id = "orthogSpanerror"></span></p>
+<div id="mygraph3"></div>
+
+<script>
+
+var data3 = null;
+var graph3 = null;
+var xxrange3 = 50;
+var yyrange3 = 50;
+
+var xx1
+var yy1;
+var zz1;
+
+var xx2;
+var yy2;
+var zz2;
+
+var xx3;
+var yy3;
+var zz3;
+
+function getData1(){
+	xx1 = parseFloat(document.getElementById("orthogidx1").value);
+	yy1 = parseFloat(document.getElementById("orthogidy1").value);
+	zz1 = parseFloat(document.getElementById("orthogidz1").value);
+
+	xx2 = parseFloat(document.getElementById("orthogidx2").value);
+	yy2 = parseFloat(document.getElementById("orthogidy2").value);
+	zz2 = parseFloat(document.getElementById("orthogidz2").value);
+
+	xx3 = parseFloat(document.getElementById("orthogidx3").value);
+	yy3 = parseFloat(document.getElementById("orthogidy3").value);
+	zz3 = parseFloat(document.getElementById("orthogidz3").value);
+
+	if(isNaN(xx1) || isNaN(yy1) || isNaN(zz1) || isNaN(xx2) || isNaN(yy2) || isNaN(zz2) || isNaN(xx3) || isNaN(yy3) || isNaN(zz3))
+	{
+		document.getElementById("orthogSpanerror").innerHTML= "The input is not a number, please enter a number";
+		return false;
+	}
+	return true;
+}
+
+function makeProjectionMatrix(v1x,v1y,v1z,v2x,v2y,v2z){
+	// make projection matrix
+	const umatrix = math.matrix([[v1x, v2x], [v1y, v2y], [v1z, v2z]]);
+	const utranspose =  math.transpose(umatrix);
+	const utransposeu = math.multiply(utranspose, umatrix);
+	const utransposeuinv = math.inv(utransposeu);
+	const uutransposeuinv = math.multiply(umatrix, utransposeuinv);
+	return  math.multiply(uutransposeuinv,utranspose);
+}
+
+function drawProject(){
+	var isDataNumeric = getData1();
+	if(isDataNumeric){// check if the input is numbers
+		if(isMultiple(xx1,yy1,zz1,xx2,yy2,zz2)){
+			var uTu = xx1*xx1+yy1*yy1+zz1*zz1;
+			var uTx = xx1*xx3+yy1*yy3+zz1*zz3;
+			var projectedx = xx1*uTx/uTu;
+			var projectedy = yy1*uTx/uTu;
+			var projectedz = zz1*uTx/uTu;
+			data3 = new vis.DataSet();
+			for (var i = 0; i <= xxrange3; i ++) {
+				data3.add({ x: projectedx*i/3, y: projectedy*i/3, z: projectedz*i/3}); // add projected line
+				data3.add({ x: xx3*i/3, y: yy3*i/3, z: zz3*i/3}); // add line
+			}
+			var options2 = makeVisOption();
+			var container2 = document.getElementById("mygraph3");
+			graph3 = new vis.Graph3d(container2, data3, options2);
+		}
+		else{
+			const uutransposeuinvutranspose = makeProjectionMatrix(xx1,yy1,zz1,xx2,yy2,zz2);
+			const vectorv = math.matrix([[xx3], [yy3], [zz3]]);
+			//console.log("here is v:"+vectorv );
+			const projectedv = math.multiply(uutransposeuinvutranspose,vectorv);
+			//console.log("here is projection of v:"+projectedv );
+			var projectedv_x = math.subset(projectedv, math.index(0,0));
+			var projectedv_y = math.subset(projectedv, math.index(1,0));
+			var projectedv_z = math.subset(projectedv, math.index(2,0));
+
+			//draw the vector v that needs to be projected:
+			data3 = new vis.DataSet();
+
+			// draw the projected line and the line to be projected
+			for (var i = 0; i <= xxrange3; i ++) {
+					//data.add({ id: counter++, x: x, y: y, z: value, style: value });
+					//console.log("helo");
+					data3.add({ x: projectedv_x*i/xxrange3, y: projectedv_y*i/xxrange3, z: projectedv_z*i/xxrange3});
+					data3.add({ x: xx3*i/xxrange3, y: yy3*i/xxrange3, z: zz3*i/xxrange3});
+					// style: "#00ffff"
+			}
+			// draw the plane
+
+			var aa1 = yy1*zz2 - yy2*zz1;
+			var bb1 = zz1*xx2 - xx1*zz2;
+			var cc1 = xx1*yy2 - yy1*xx2;
+			// console.log("aa is"+aa);
+			// console.log("bb is"+bb);
+			// console.log("cc is"+cc);
+
+			var counter1 = 0;
+			var steps1 = 16; // number of datapoints will be steps*steps
+			var axisMax1 = 350;
+			var axisStep1 = axisMax1 / steps1;
+
+			if(cc1 != 0){
+				document.getElementById("orthogSpanerror").innerHTML= "The plane will be represented by dots.";
+				for (var i = 0; i < axisMax1; i += axisStep1) {
+					for (var j = 0; j < axisMax1; j += axisStep1) {
+						var value1 = (-aa1 * i - bb1 * j ) / cc1;
+						console.log("z value of the plan is:" + value1);
+						data3.add({ id: counter1++, x: i, y: j, z: value1});
+					}
+				}
+			}
+			else{
+				document.getElementById("orthogSpanerror").innerHTML= "subspace spanned by the two vectors is Parallel to z axis";
+				for (var i = 0; i < axisMax1; i += axisStep1) {
+					for (var j = 0; j < axisMax1; j += axisStep1){
+						var value1 = -aa1 * i / bb1;
+						data3.add({ id: counter1++, x: i, y: value1, z: j});
+					}
+				}
+			}
+
+			// specify options
+			var options2 = makeVisOption();
+			var container2 = document.getElementById("mygraph3");
+			graph3 = new vis.Graph3d(container2, data3, options2);
+		}
+	}
+}
+</script>
+
+</div>
+
+
+<div class ="definition">
+Given a vector \(v\) and a number \(p \in \mathbb{R}\), the \(\textbf{vector } p-\textbf{norm}\) is defined as :
+\[ \|x\|_p = (\sum_{i=1}^n |x_i|^p)^{\frac{1}{p}} \]
+</div>
+
+<div class ="definition">
+Given a matrix \(A\) and a number \( p \in \mathbb{R}\), the \(\textbf{matrix }p-\textbf{ norm}\) is defined as:
+\[ \|A\|_p = sup_{x \neq 0} \frac{\|Ax\|_p}{\|x\|_p}\].
+</div>
+
+<div class ="definition">
+The \( \textbf{Frobenius norm}\) of a matrix \(A\) is defined as:
+\[ \|A \|_F = (\sum_{i=1}^n \sum_{j=1}^m |a_{ij}|^2)^{\frac{1}{2}} \]
+</div>
+
+<div class ="definition">
+Let \(A\) be \(n \times n\) symmetric matrix, the \(\textbf{Rayleigh Quotient}\) is the ratio:
+\[\frac{x^TAx}{x^Tx}\]
+</div>
+
+<div class = "definition">
+Given symmetric matrix \(A \in \mathbb{R}^{n \times n}\), the solution to maximizing the
+</div>
+
+<div class = "theorem">
+	If matrix \(A \in \mathbb{R}^{m \times n} \) is symmetric then:
+	<ol>
+		<li> All eigenvalues of \(A\) are real numbers</li>
+		<li> \(A= UDU^T, U,D \in \mathbb{R}^{m \times m} \)</li>
+	</ol>
+</div>
+<div class = "proof">
+<ol>
+	<li> Let \(v \neq 0\) be an eigenvector of \(A\) with eigenvalue \(\lambda\), then :
+		\[\begin{align*}
+		  \lambda v^T\bar{v} & = (Av)^T \bar{v} \\
+		  & = vTA^T\bar{v} \\
+		  & = v^T A \bar{v} \\
+		  & = v^T \bar{A}\bar{v}\\
+		  & = v^T \bar{Av} \\
+		  & = v^T \bar{\lambda v} \\
+		  & = \bar{\lambda} v^T \bar{v} \\
+		  & \Rightarrow \lambda = \bar{\lambda} \\
+		  & \Rightarrow \lambda \in \mathbb{R}
+		  \end{align*}
+		\]
+	</li>
+	<li>
+		Let \(v\) be a unit eigenvector for \(\lambda\) and \(U = span(v)^{\perp}\)
+	</li>
+
+</div>
+
+<hr>
+
+<!-- <h3>Support vector machine:</h3>
+<br>
+
+Support vector machine is a supervised learning technique that is used for classification purpose.
+Given a set of \(n\) points \(x_1,x_2,...,x_n \in \mathbb{R}^2\) in the plane beloning to two classes \(\{1,-1\}\), we want to separate the two classes of point with a line \(ax+b-y=0\)
+So if we make vector \((X=(x,y), W=(a ,-1)\), then the vector in the hyperplane is \(W^TX+b = 0\).
+
+
+<div class ="lemma">
+Given any vector \(0 \neq a=(a_1,a_1,...,a_n) \in \mathbb{R}^n \) there is a vector \(b \in \mathbb{R}^n\) perpendicular to \(a\).
+
+<div class ="proof">
+Say \(a_i \neq 0\) then the vector \(b=(0,,,-a_{i+1},a_i...,0) \) is perpendicular to \(a\) as \(\sum_{k=0}^n a_kb_k=0\)
+</div>
+
+<div class ="lemma">
+Given a plane \(WX=0 , W,X \in \mathbb{R}^n\), if we shift the plane by a vector \(b \in \mathbb{R}^n\), then the distance between the shifted plane and the original plane is
+\[c=\frac{\langle W,b \rangle}{|W|} \]
+and the equation of the shifted plane is \(WX-c|W|=0\)
+</div>
+<div class ="proof">
+points on the shifted plane satisfies \(W(X-b)=0\), which means \(W_1(X_1-b_1)+W_2(x_2-b_2)+...+W_n(x_n-b_n)=0\) which means
+\(WX-\langle W,b \rangle = 0 \). If \( \langle W,b \rangle > 0 \) then the shifted plane is shifted in the same direction as \(W\),
+if  \( \langle W,b \rangle < 0 \) then the shifted plane is in opposite dirrection to \(W\).
+</div>
+Let's reformulate the training data:
+We have \(n\) data points \(\{x_i,y_i\}\) where \(y_i \in \{1,-1\}\) and \(x \in \mathbb{R}^D \).
+
+We want to orient the hyperplane as far as possible from the closest member of both classes.
+Suppose that we want class \(1\) points to satisfy \(WX+b \geq 1\) and class \(-1\) points to satisfy \(WX+b \leq -1\), which, by combining both inequality , we get:
+\[y_i(Wx_i+b)-1 \geq 0\].
+
+<div class ="definition">
+The margin is just the distance between the two plane \(WX+b =1\) and \(WX-b=1\). It is denoted by
+\[M = \frac{2}{|W|}\]
+</div>
+So the optimization problem can be formulated as:
+\[\min \frac{\|w\|^2}{2}, y_i(Wx_i+b)-1 \geq 0 \]
+
+
+ -->
+<h2 id ="pb">Probability Theory</h2>
+
+We introduce basic probability theory,
+<br>
+To begin, given a set \(S\), we want to have a function \(P\) that assign a number \(P(K)\) to a subset \(K \subset S\),
+such that the number assigned represent the probability that if you pick an element from \(S\), that element belongs to \(K\).
+<br>
+Ok, so now say that we are picking a real number in the interval \([0,1]\), and that we want to know what is the probability that the number you picked lies in the interval \([0,0.5]\).
+We would just take the "length" of the interval \([0,0.5]\) and divide by the length of the interval \([0,1]\) which gives \(\frac{1}{2}\).
+Ok, but what if you want to know the probability that the number you pick is a rational number? Then you would need to find the "length" of the set of rational numbers in the interval \([0,1]\).
+but how are you going to assign a length to the set of rational numbers since they don't form an interval?
+And so we say, why not just define a size function \(P: 2^{\mathbb{R}} \to \mathbb{R}^+\) over all subsets of the real line?
+This size function \(P\) should capture the idea that the size of an interval \(P([a,b])\) is just \(b-a\).
+But we would want some additional properties for this size function, here are a few reasonable ones:
+<ul>
+	<li> \(P(S) = P(S+a) , S+a =\{s+a|s \in S\}\) :If you translate elements in \(S\) by a fixed number \(a\), the resulting set has the same number of elements and should have the same size as \(S\)</li>
+	<li> \(P(S_1 \cup S_2 \cup ...) = P(S_1)+P(S_2)+... \) if \(S_i \cap S_j = \emptyset \forall i \neq j\) If you have a countable number of disjoints sets, then the size of their union must be the sum of their size.</li>
+	<li> \(P(S) \geq 0 \) size of a set should be always positive.</li>
+</ul>
+But as we will see, a size function over the set of all subsets of real numbers, which satisfies all of the properties above, may not exist.
+A counterexample will be the Vitali set that we are going to build now.
+Additional Notes, there is a paradox called the Banach Tarski Paradox which says that you can cut a ball in three-dimensional space into 5 pieces and just moving around those pieces, spinning them and winding them up, you get two identical balls as the original one.
+ If we were to define a probability as a function based on the volume of a set of points in \(3\) dimensional space , we would come to a situation where the volume of a ball could change.
+And this change is simply due to the fact that we have "rotated" and "translated" some subsets of points in this ball to create a set with the same number of points but double the volume.
+Therefore, the probability assigned to two sets of same number of points could be different.
+<br>
+So here is the construction of the Vitali set,<br>
+We partition the real line \(\mathbb{R} \) with two numbers \(x, y \in \mathbb{R} \) to belong to the same partition if their difference is a rational number, that is - their diefference is of the form \(\frac{p}{q}, p, q \in \mathbb{N} \).
+We can simply denote this partition using an element inside it, say the partition \([x] \) is the set of numbers whose difference with \(x \) is a rational number.
+\[[x] = \{y \in \mathbb{R} | y-x \in \mathbb{Q} \} \]
+Ok now each real number belongs to a unique partition and we are going to select a single element from each partition to form a new set \(\Omega \). This set \(\Omega\) is called a Vitali set.
+In fact, the selected numbers can be chosen to be in the range \((0,1) \). This is because any real number, say \(23847.42378234234 ... \) is in the same partition as the number made up of its decimal points \(0.42378234234 ... \).
+We now give a claim:
+\[\forall p,q \in \mathbb{Q}, \text{ either } \Omega +q = \Omega + p \text{ or } (\Omega +q)  \cap (\Omega +p) = \emptyset\]
+Here is the proof:
+\[ \begin{align*}
+x \in (\Omega +q)  \cap (\Omega +p) \\
+& \Rightarrow  \exists c,d \in \Omega \text{ such that } c+p = a = d+q \\
+& \Rightarrow c-d = q-p \in \mathbb{Q} \\
+& \Rightarrow \exists m \text{ such that }c,d \in [m] \\
+& \Rightarrow c = d \\
+& \Rightarrow p=q \\
+& \Rightarrow \Omega +q  = \Omega +p
+\end{align*}
+\]
+So that is the proof.
+Ok now consider this set
+\[\Gamma = \cup_{q \in \mathbb{Q}, -1 < q < 1 } \Omega + q \subset (-1,2)\],
+this set is in the interval \((-1,2)\) means its size/measure is \[P(\Gamma) \leq 3\].
+But by the last two properties that we want the size function to have, it must be that:
+\[P(\Gamma)= \sum_{q \in \mathbb{Q}, -1 < q < 1 }P(\Omega)\]
+And because there are infinitly many rational numbers in \((-1,1)\), if the size
+\[P(\Omega) > 0 \Rightarrow P(\Gamma)= \infty >3\].
+That is a contradiction.
+Therefore we need to have that \(P(\Omega)=0\) which implies that \(P(\Gamma)=0\). But now, since \((0,1) \subset \Gamma\), \(P(\Gamma) \geq 1\).
+So this is a contraduction and hence a size function cannot be defined on all subsets of the real numbers.
+
+<br>
+The existance of an example of set like Vitali set made us realized that it is not possible sometimes to define a size/measure function on the set of all subsets of an uncountable set.
+But pehapse we could define a measure function over a subset of the powerset of the set.
+This prompt us to think about the structure of a subset of the powerset of a set in which we could define a measure function that will help us calculate probabilities,
+ whatever that means, over it. And that is the following:
+
+
+<div class ="definition">
+Given a set \(S\), \(\Sigma \subset 2^S \) is called \(\sigma\)-\(\textbf{algebra}\) if :
+<ol>
+	<li> \(S \subset \Sigma\), the sigma algebra contains the whole set.</li>
+	<li> \( A \in \Sigma \Rightarrow A^C \in \Sigma \), the sigma algebra is closed under taking complement</li>
+	<li> \(A_1,A_2,... \in \Sigma \Rightarrow A_1 \cup A_2 \cup ... \in \Sigma \), the sigma algebra is closed under taking countable union.</li>
+</ol>
+</div>
+
+Once we have a \(\sigma\)-algebra, we can define a "probability" on it:
+
+<div class ="definition">
+Given a set \(S\) and a \(\sigma\)-algebra \(\Sigma\) on \(S\), a \(\textbf{probability measure}\) is a function \(P: \Sigma \to [0,1]\) such that:
+<ul>
+	<li>\(0 \leq P(X) \leq 1 \forall X \in \Sigma\)</li>
+	<li>\(P(S) =1\)</li>
+	<li>\(P(A_1 \cup A_2 \cup...) = \sum_{i}P(A_i) \text{ if } \forall i \neq j, A_i \cap A_j = \emptyset\)</li>
+</ul>
+</div>
+
+Now that we have the definition of a probability measure. We would like to see that it agrees with the probability intuitions.
+<div class = "lemma">
+	Given a set \(S\) and a \(\sigma\)-algebra \(\Sigma\) on it, we have that :
+<ol>
+	<li> \(P(A^C) = 1- P(A), \forall A \in \Sigma \)</li>
+	<li> \(A \subset B \Rightarrow P(B) = P(A)+P(B-A) \geq P(A), \forall A,B \in \Sigma\)</li>
+	<li>\(P(A \cup B) = P(A)+P(B)-P(A \cap B), \forall A,B \in \Sigma\)</li>
+	<li> If \(A_1,...,A_n \in \Sigma\) are events, then
+		\[P(\cup_{i=1}^n A_i) = \sum_i P(A_i) - \sum_{i< j}P(A_i \cap A_j) +...+ (-1)^{n+1}P(A_1 \cap...\cap A_n) \]</li>
+	</ol>
+</div>
+<div class ="proof">
+<ol>
+<li> we have \(P(A \cup A^c) = P(S)\) and \(A \cap A^c = \emptyset\), So that \(P(A \cup A^c)=P(A)+P(A^c)=1 \Rightarrow P(A) = 1- P(A^c)\)</li>
+<li> We have \(P(B) = P(B-A \cup A) = P(A)+P(B-A)\) and since probability is non-negative, \(P(A) \leq P(B)\ )  </li>
+<li> We have \(P(A \cup B) = P((A-B) \cup (A \cap B) \cup (B-A) )=P(A-B)+P(A \cap B) +P(B-A)+P(A \cap B)-P(A \cap B)=P(A)+P(B)-P(A \cap B) \)</li>
+<li> Induction would be a way on how we can prove it</li>
+</ol>
+</div>
+
+<div class = "definition">
+If \(P(B) > 0 \) then the \(\textbf{conditional probability}\) that \(A\) occurs given that \(B\) occurs is defined to be :
+\[P(A|B) = \frac{P(A \cap B)}{P(B)} \]
+</div>
+
+<div class = "definition">
+Events \(A\), \(B\) are called \(\textbf{indepenedent}\) if
+\[P(A \cap B) = P(A)P(B)\]
+</div>
+
+
+
+
+<div class = "lemma">
+Let \(A_1,A_2,...\) be an increasing sequence of sets, and consider their union:
+\[A = \cup_{i=1}^{\infty} A_i = \lim_{i \to \infty} A_i\]
+then \(P(A) = \lim_{i \to \infty} p(A_i)\).
+</div>
+<div class ="proof">
+We define sets \(B_i = A_i - A_{i-1}, B_1=A_1 \)
+Then ,
+<!-- we have that \[B_i \cap B_j = \emptyset \forall i \neq j\].
+also, -->
+\[
+\begin{align*}
+P(A) & = P(\cup_{i=1}^{\infty} A_i) \\
+& = P(\cup_{i \geq 1}B_i) \\
+& = \sum_{i \geq 1} P(B_i) \tag{\(B_i \cap B_j = \emptyset \forall i \neq j\)}\\
+& = P(A_1)+\sum_{i \geq 2} P(A_i) -P(A_{i-1}) \\
+& = \lim_{i \to \infty} P(A_i)
+\end{align*}
+\]
+<!-- \cup_{i \geq 1}B_i = \cup_{i \geq 1}A_i \].
+But now, \[P(\cup_{i \geq 1}B_i) = \sum_{i \geq 1} P(B_i)\] by axiom \(3\) of probability measure.
+We can rewrite as :\[\sum_{i \geq 1} P(B_i) = P(A_1)+\sum_{i \geq 2} P(A_i) -P(A_{i-1})= \lim_{i \to \infty} P(A_i) \] -->
+</div>
+
+<div class = "lemma">
+	Let \(A_1,A_2,...\) be a decreasing sequence of sets, and let
+	\[A = \cap_{i=1}^{\infty} A_i = \lim_{i \to \infty} A_i\]
+	then \(P(A) = \lim_{i \to \infty} p(A_i)\).
+</div>
+<div class = "proof">
+Let's construct a sequence of sets \(B_i = A_i - A_{i+1} \), then
+\[\begin{align*}
+P(A)  & = 1- P(A^c) \\
+& = 1 - P((\cap_{i=1}^{\infty} A_i)^c) \\
+& = 1- P((\cup_{i=0}^{\infty} A_i^c)) \\
+& = 1 - \lim_{i \to \infty} P(A_i^c) \\
+& = \lim_{i \to \infty} 1 - P(A_i^c)\\
+& = \lim_{i \to \infty} P(A_i)
+\end{align*}
+\]
+</div>
+
+<div class ="definition">
+Given a set \(S\), a \(\sigma\)-algebra \(\Sigma\) on \(S\) and a probability measure \(P\) defined on \(\Sigma\), the tuple
+\((S, \Sigma, P)\) is called a \(\textbf{probability space}\).
+</div>
+
+When we do an experiment, sometimes the outcomes are qualitative.
+For example, the experiment could be to look at the weather outside. Then, an event could be that the weather is sunny.
+We can certainly construct a probability space \((S, \Sigma, P) \) for this random experiment and do calculation using the probability space.
+But what if we ask: in average, what kind of weather do we expect?
+Well then it is not a very meaningful question as we don't understand what it means to say the average of weather.
+However, if we associate \(30\) degree to sunny, and \(10\) degree to windy, and \(70%\) of time, it is sunny,
+then we might say that the average temperature is about \(0.7 \cdot 30+0.3 \cdot 10 = 21.3\) degree.
+Namely, because mathematics involves numbers, it would be easier to translate the events of an experiment into subsets of real numbers.
+There is a well-known \(\sigma \)-algebra associated with the real number called Borel sigma-algebra denoted by \(\mathcal{B} \).
+So, if we can translate the probability space \((S, \Sigma, P) \) to a probability space in which the events are Borel sets, \((\mathbb{R}, \mathcal{B }, P_r )\),
+ then we would have introduced numbers into a qualitative events.
+And so the way to do that is to map the elements of the sample space \(S \) to the elements of \(\mathbb{R} \) using a function \(X : S \to \mathbb{R}\),
+such that the events of \(\mathcal(B) \) correspond to events in \(\Sigma \) under this map.
+Namely, we want to have \(X^{-1}(Y) \in \Sigma, \forall Y \in \mathcal{B} \).
+There is a theorem which says that as long as \(X^{-1}((- \infty, x)) \in \Sigma, \forall x \in \mathbb{R} \), the condition above for \(X\) will be satisfied.
+This is probably the purpose of defining a random variable or under a different name, a measurable function.
+Namely, a random variable is a probability space transforming function, it transform one probability space to another probability space where the translated probability space consist of a borel sigma-algebra.
+<div class = "definition">
+Given a probability space \((S,\Sigma, P)\), a \(\textbf{random variable}\) \(X\) is a "measurable function" \(X: S \to \mathbb{R}\), namely with the property that:
+\[ \{w | Z(w) \leq x \in \mathbb{R}\} \in \Sigma \forall x \in \mathbb{R} \]
+</div>
+
+
+Here is a basic building block of random variable,
+<div class ="definition">
+Given probability space \((\Omega, \Sigma, P)\). Let \(A\) be an event and let \(I_A: \Omega \to \mathbb{R}\) be defined as:
+\[I_A(\omega) =
+\begin{cases}
+1, \text{ if } \omega \in A\\
+0, \text{ if } \omega \in A^c
+\end{cases}
+\]
+Then \(I\) is called \( \textbf{indicator random variable}\) of \(A\).
+</div>
+
+From the indicator random variable, we can build the so call simple random variable:
+<div class ="definition">
+Let \((S, \Sigma, P)\) be a probability space and events \(A_1,A_2,... \in \Sigma\),
+ then a \(\textbf{simple random variable}\) is a linear combination of indicator random variables, namely it has form:
+ \[\sum_{i=1}^n a_i 1_{A_i} \]
+</div>
+
+<div class ="theorem">
+Any non negative random variable can be written as an approximate sum of simple random variable.
+</div>
+<div class ="proof">
+Consider
+\[X_n := \sum_{k=0}^{n2^n-1}\frac{k}{2^n}1_{\{\frac{k}{2^n} \leq x \leq \frac{k+1}{2^n}\}} + n1_{\{x \geq n\}}\]
+</div>
+
+Random variable comes in two types, discrete and continous and mixed:
+<div class ="definition">
+A random variable \(X\) is called \(\textbf{discrete}\) if it takes values in some countable subset \(\{x_1,x_1,...\}\), only of \(\mathbb{R}\).
+The discrete random varibale has a \(\textbf{mass function}\):
+\[f : \mathbb{R} \to [0,1] \] given by \(f(x) = P(X=x)\).
+</div>
+
+Some times, we talk about random variable as the probability mass function or the probability density function defined over its range. So in those cases, we think less about it as being a function from one probability space to another probability space. We just think of it as a probability defined on the Borel sigma algebra?
+<div class = "definition">
+The random variable \(X\) is called continous if its distribution function can be expressed as:
+\[F(x) = \int_{- \infty}^x f(u)du, x \in \mathbb{R}\].
+</div>
+
+<div class ="theorem">
+If \(X\) and \(Y\) are independent and \(g,h : \mathbb{R} \to \mathbb{R}\) are two real valued functions then \(g(X),h(Y)\) are independent as well.
+</div>
+<div class ="proof">
+We need tp show that \[P(g(X) =x, h(Y)=y) = P(g(x)=x) P(h(Y)=y)\]
+But,
+\[P(g(X) =x, h(Y)=y) = P(X=g^{-1}(x), Y=g^{-1}(y)) = P(X=g^{-1}(x))P(Y=g^{-1}(y))=P(g(x)=x) P(h(Y)=y)\]
+</div>
+
+
+
+
+<div class="definition">
+The \(\textbf{distribution function}\) of a random variable \(X\) is the function \(F : \mathbb{R} \to [0,1] \) given by: \[F(x) = P(X \leq x)\]
+</div>
+There are classes of distribution functions parametrized by variables. For example, Class(p), that if a random variable has its distribution function in Class(p), the we say that the random variable follow the Class(p) distribution.
+
+<div class = "lemma">
+A distribution function \(F\) for random varaible \(X\) on the probability space \(\Omega, \Sigma, P\) has the following properties:
+<ol>
+	<li>\( \lim_{x \to - \infty} F(x) = 0, \lim_{x \to \infty} F(x) =1\)</li>
+	<li>\(x < y \Rightarrow F(x) \leq F(y) \) </li>
+	<li>\(F\) is right-continous, meaning \(F(x+h) \to F(x)\) as \(h \to 0, h>0\).
+	</ol>
+</div>
+
+<div class ="proof">
+<ol>
+	<li>Consider the events \(B_n = \{w \in \Omega |X(w) \leq n \}, n \in \mathbb{N} \),
+		then the events \(B_i\) form a decreasing set of events in \(\Sigma\) that decrease to the empty set \(\emptyset\).
+		So that means
+	</li>
+</div>
+
+<div class ="definition">
+Given a random variable \(X\), the \(\textbf{expected value}\) of \(X\) is defined as:
+\[E(X) = \sum_{x}xP(x) \]
+</div>
+The expected value of a random variable measure the average value of that random variable. If we remember the Riemann sum, then the expected value of a random variable is analogous to the riemann sum of a function.
+
+<div class ="definition">
+Given a random variable \(X\), the \(\textbf{Variance}\) of the random variable is defined as:
+\[V(X) = E((X-E(x))^2) =E(X^2)-E(X)^2\]
+</div>
+
+<div class ="lemma">
+Given random variables \(X,Y\) and a number \(a\), then
+\[E(X+aY)=E(X)+aE(Y)\]
+</div>
+<div class = "proof">
+\[ \begin{align*}
+E(X+aY) & = \sum_x \sum_y (x+ay)P(X=x,Y=y) \\
+& = \sum_x \sum_y xP(X=x,Y=y) + \sum_x \sum_y ayP(X=x,Y=y) \\
+& = \sum_x s P(X=x) + a\sum_y\sum_x ayP(X=x,Y=y) \\
+& = E(X)+a\sum_y yP(Y=y) \\
+& = E(X)+aE(Y)
+\end{align*}\]
+</div>
+
+<div class ="definition">
+Given random variables \(X,Y\), the \(\textbf{covariance}\) between the two is defined as:
+ \[ \begin{align*}
+ cov(X,Y) & = E((X-E(X))(Y-E(Y))) \\
+ & = E(XY) - E(X)E(Y)
+ \end{align*}\]
+</div>
+
+<div class ="definition">
+If \(k\) is a positive integer, the kth \(\textbf{moment}\) \(m_k\) of \(X\) is defined to be \(m_k = E(X^k)\).
+The kth \(\textbf{central moment}\) \(\sigma_k\) is \(\sigma_k = E((X-m_1)^k)\).
+</div>
+
+<div class ="definition">
+(Conditional Expectation)
+Given
+</div>
+
+
+<div class ="lemma">
+(Cauchy-Schwarz inequality)For random variables \(X\) and \(Y\), we have
+\[ E(XY)^2 \leq E(X^2)E(Y^2) \]
+with equality if and only if \(P(aX =bY)=1\) for some real \(a,b\) and at least one of which is non-zero.
+</div>
+<div class = "proof">
+Given \(a,b \in \mathbb{R}\), and let \(Z := aX - bY\) then
+\[0 \leq E(Z^2) = E((aX -bY)^2) = E(a^2X^2-2abXY +b^2Y^2)=a^2E(X^2) -2abE(XY)+b^2E(Y^2) \]
+So we think of the righ hand side as a quadratic equation in \(A\), its discreminant is:
+\[4b^2E(XY)^2- 4b^2E(X^2)E(Y^2) \]
+Because the quadratic equation is greater than or equals to \(0\), it must be that it has at most one real root.
+The discriminant must be zero for the quadratic equation to have a real root. so we have :
+\[
+</div>
+Note that E(X) is like an integral for continous random variable, the space of continous function is a vector space, we can then define a inner product on it using the integration. then the result follow from the Chauchy -Schwartz inequality from the theory of vector spaces.
+
+
+The variance of a random variable measure how disperse its value can be.
+
+<h3>Generating functions</h3>
+Suppose that we have a sequence \(a= \{a_i : i= 0,1,2,...\}\), a way to wrap up infomations contained in this sequence is to transfom the sequence into a function. Hence we have the following definition:
+
+<div class ="definition">
+Given a sequence \(a= \{a_i : i=0,1,2,...\}\) of real numbers, the \(\textbf{generating function \}\) of the sequence \(a\) is defined as:
+\[G_a(s) = \sum_{i=0}^{\infty} a_i s^i \]
+Domain of the function \(G_a(s)\) is for all \(s\) in which the serie converge.
+</div>
+
+<div class ="definition">
+The \(\textbf{convolution}\) of the real sequence \(a= \{a_i : i \geq 0\}\) and \(b = \{b_i | i \geq 0\}\) is the sequence \(c = \{c_i | i \geq 0\} \) defined by:
+\[c_n = a_0b_n +a_1b_{n-1} + ... + a_nb_0\]
+We write \(c = a*b \).
+</div>
+
+<div class = "lemma">
+Given sequence \(a= \{a_i : i \geq 0\}\) and \(b = \{b_i | i \geq 0\}\), let \(G_a,G_b\) be their respective generating function, then the generation function for their convolution \(c = a*b\) is:
+\[G_c(s) = \sum_{n=0}^{\infty} c_n s^n = \sum_{n=0}^{\infty}(\sum_{i=0}^n a_ib_{n-i}) \]
+</div>
+<div class ="proof">
+\[
+\begin{align*}
+G_c(s) & = \sum_{n=0}^{\infty} c_n s^n \\
+& = \sum_{n=0}^{\infty} (\sum_{i=0}^n a_ib_{n-i}) s^n \\
+& = a_0b_0 \\
+& + a_0b_1s + a_1b_0s \\
+& + a_0b_2s^2 + a_1b_1s^2 + a_2b_0s^2 +..\\
+& + a_0b_3s^3 + a_1b_2s^3 + a_2b_1s^3 + a_3b_0s^3 \\
+& = a_0s^0(b_0s^0+b_1s+b_2s^2+b_3s^3...)+a_1s(b_0s^0+b_1s^1+b_2s^2...)\\
+& = \sum_{i=0}^{\infty} a_is^i \sum_{i=0}^{\infty}b_is^i\\
+& = G_a(s)G_b(s)
+\end{align*}
+\]
+</div>
+
+<div class ="definition">
+If \(X_1, X_2,...\) is a sequence of independent identically distributed random variable with common generating function \(G_X\), and \(N\) is a random variable which is independent of the \(X_i\) and has generating function \(G_N\), then \(S= X_1+...+X_N\) has generating function :
+\[G_S(s) = G_N(G_X(s))\]
+</div>
+
+<div class = "definition">
+The \(\textbf{generating function} \) of the random variable \(X\) is defined to be :
+\[G(s)=S(s^X) = \sum_i s^i f(i) \]
+</div>
+
+The use of generating function we'll soon in branching process that we'll introduce.
+
+<h3>Secretary Problem</h3>
+Imagine an administrator who wants to hire the best secretary out of \(n\) rankable applicants for a position.  A decision about each particular applicant is to be made immediately after the interview. Once rejected, an applicant cannot be recalled.
+The administrator can rank the applicant among all applicants interviewed so far, but is unaware of the quality of yet unseen applicants. So wa want a strategy that maximize the probability of selecting the best candidate.
+<br>
+One strategy is to look at the first \(k\) applicants, reject all \(k\) but remembers the best. Then the administrator select the first one that is better than the best of the first \(k\).
+The question is therefore,
+
+<h3>Gambler's ruin Problem</h3>
+So we look at an example of problem.
+Suppose that a gambler has \(k\) units of money. He then plays a gamble game as follow: he tosses a coin repeatedly;
+if the coin comes up heads, then he gets one unit of money, if the coin comes up tails then he loses one unit of money.
+He plays until either he runs out of money or he win \(N\) unit of money. The question is what is the probability that he wins \(N\) units of money before he is bankrupted?
+<br>
+\(\textbf{Solution:}\)
+Let \(A\) be the event that the gambler eventually wins \(N\) unit of money, and \(B\) be the event that the first toss of coin shows heads.
+Let \(P_k\) denote the probability calculated with starting unit of money \(k\), then we have:
+\[P_k(A) = P_k(A|B)P(B) + P_k(A|B^c)P(B^c) \]
+If he tosses heads the first time, then he gets one unit of money and so \(P_k(A|B) = P_{k+1}(A) \).
+If he tosses tails the first time, then he losses one unit of money and so \(P_k(A|B^c) = P_{k-1}(A) \). Therefore,
+\[P_k(A) = P_{k+1}(A)P(B) + P_{k-1}(A)P(B^c) \]
+Let \(p := P(B), q:= P(B^c) = 1-p, P_k := P_k(A)\), we continue:
+\[
+\begin{align*}
+(p+q)P_k = pP_{k+1} +qP_{k-1} \\
+& \iff pP_k+qP_k = pP_{k+1} +qP_{k-1} \\
+& \iff P_{k+1}-P_k = \frac{q}{p}(P_k - P_{k-1}) \\
+& \Rightarrow P_2-P_1=\frac{q}{p}P_1 \\
+& \Rightarrow P_3-P_2 = (\frac{q}{p})^2P_1 \\
+& \Rightarrow P_{k+1} - P_k = (\frac{q}{p})^kP_1, 0< k < N \\
+& \Rightarrow P_{k+1}-P_1 = \sum_{i=1}^k(P_{i+1}-P_i) = \sum_{i=1}^k (\frac{q}{p})^i P_1 \\
+& \Rightarrow P_{k+1} = P_1 + \sum_{i=1}^k (\frac{q}{p})^i P_1 = \sum_{i=0}^k (\frac{q}{p})^i P_1 \\
+& \Rightarrow P_{k+1} =
+\begin{cases}
+P_1\frac{1-(\frac{q}{p})^{k+1}}{1-\frac{q}{p}}, \text{ if }p \neq q \\
+P_1(k+1), \text{ if } p = q =0.5
+\end{cases} \\
+& \Rightarrow 1= P_{N-1+1} =
+\begin{cases}
+P_1\frac{1-(\frac{q}{p})^{N}}{1-\frac{q}{p}}, \text{ if }p \neq q \\
+NP_1, \text{ if } p = q =0.5
+\end{cases} \\
+& \Rightarrow P_1 =
+\begin{cases}
+\frac{1-\frac{q}{p}}{1-(\frac{q}{p})^N}, \text{ if }p \neq q  \\
+\frac{1}{N}, \text{ if } p = q =0.5
+\end{cases} \\
+& \Rightarrow P_i =
+\begin{cases}
+\frac{1-(\frac{q}{p})^i}{1-(\frac{q}{p})^N}, \text{ if }p \neq q \\
+\frac{i}{N}, \text{ if } p = q =0.5
+\end{cases}
+\end{align*}
+\]
+
+
+<br>
+<div class = "gadget">
+Here we can compute the probability that the gambler wins:
+<br>
+<label for="gamblerInit">Initial unit of money the gambler has:</label><br>
+<input type="number" id = "gamblerInit" class="numbersonly" name="init_money" value="1" oninput="displayGamblerProb()"
+  onchange="displayGamblerProb()"><br>
+<label for="gamblerDest">How many units of money the gambler wants to win:</label><br>
+<input type="number" id = "gamblerDest" class="numbersonly" name="dest_money"  value="6" oninput="displayGamblerProb()"
+onchange="displayGamblerProb()"><br>
+<label for="gamblerProb">Probability that the coin lands heads when flipped:</label><br>
+<input type="number" id = "gamblerProb" class="numbersonly" name="coin_prob"  value="0.3" oninput="displayGamblerProb()"
+onchange = "displayGamblerProb()"><br>
+<p> Probability of wining is:<span id = "probwin"></span></p>
+<!-- <p> Probability of wining is: <input id = "probwin2"></p> -->
+</div>
+<script>
+function displayGamblerProb(){
+	var icoin = parseFloat(document.getElementById("gamblerInit").value);
+	var dcoin = parseFloat(document.getElementById("gamblerDest").value);
+	var coinp = parseFloat(document.getElementById("gamblerProb").value);
+	if(coinp < 0 || coinp > 1 || isNaN(coinp)){
+		document.getElementById("probwin").innerHTML= "Invalid input, Probability that coin lands head is between 0 and 1";
+	}
+	else if(icoin < 0 || dcoin<0 || isNaN(icoin) || isNaN(dcoin)){
+		//console.log(true);
+		document.getElementById("probwin").innerHTML= "Invalid input, Cannot have negative coins or no number input";
+	}
+	else if(coinp === 0.5){
+	  document.getElementById("probwin").innerHTML= icoin/ dcoin;
+	}
+	else{
+		var qoverp = (1- coinp) / coinp;
+		var powi = Math.pow( qoverp , icoin);
+		var pown = Math.pow( qoverp , dcoin);
+		var result = (1-powi)/ (1-pown);
+		document.getElementById("probwin").innerHTML= result;
+	}
+	//var result = parseFloat(initcoin)+parseFloat(destcoin)+parseFloat(coinprob)
+//document.getElementById("probwin2").value = icoin+dcoin;
+
+}
+</script>
+
+The Gambler ruin problem can be modeled as follow:
+Let \(X_1,X_2,...\) be an independent random variables taking values \(-1\) or \(1\) with probability \(q\) and \(p=1-q\).
+Let \(S_n = a + \sum_{i=1}^n X_i \). The probability \(P(S_n = k)\) denote the probability that the gambler gets \(k\) units of money after \(n\) coin toss if he start with \(a\) units of money.
+Then \(P(S_n = b) = \sum_r M_n^r(a,b) p^rq^{n-r} \).
+Here \(M_n^r(a,b)\) is the number of paths \((s_0,...s_n)\) with \(s_0 = a, s_n =b\) and having \(r\) head flips.
+If we denote \(l\) by number of tail flips and \(r\) be the number of head flips in the first \(n\) flips, then \(n=l+r, r-l = b-a\).
+From here, we can solve for \(r = \frac{1}{2}(n+b-a) l= \frac{1}{2}(n-b+a)\).
+Therefore, by basic combinatorial argument, we get the following:
+\[P(S_n = b) = \binom{n}{\frac{1}{2}(n+b-a)}p^{\frac{1}{2}(n+b-a)}q^{\frac{1}{2}(n-b+a)}\]
+
+<div class = "gadget1">
+Here we can compute the probability that the gambler wins \(b\) units of money starting with \(a\) unit of money in \(n\) coin toss:
+<br>
+<label for="gamblerInit1">Initial unit of money the gambler has:</label><br>
+<input type="number" id = "gamblerInit1" class="numbersonly" name="init_money1" value="1" oninput="displayGamblerProbInNToss()"
+  onchange="displayGamblerProbInNToss()"><br>
+<label for="gamblerDest1">How many units of money the gambler wants to win at the end of the game:</label><br>
+<input type="number" id = "gamblerDest1" class="numbersonly" name="dest_money1"  value="6" oninput="displayGamblerProbInNToss()"
+onchange="displayGamblerProbInNToss()"><br>
+<label for="gamblerProb1">Probability that the coin lands heads when flipped:</label><br>
+<input type="number" id = "gamblerProb1" class="numbersonly" name="coin_prob1"  value="0.3" oninput="displayGamblerProbInNToss()"
+onchange = "displayGamblerProbInNToss()"><br>
+<label for="gamblerToss1">Number of coin toss:</label><br>
+<input type="number" id = "gamblerToss1" class="numbersonly" name="num_toss1"  value="5" oninput="displayGamblerProbInNToss()"
+onchange = "displayGamblerProbInNToss()"><br>
+<label for="gameMax">How many units of money the gambler wants to win during the game:</label><br>
+<input type="number" id = "gameMax" class="numbersonly" name="max_money1"  value="10" oninput="displayGamblerProbInNToss()"
+onchange="displayGamblerProbInNToss()"><br>
+
+<p> Probability of getting <span id = "bcoin"></span> coins at the end of the game is:<span id = "probwinn"></span></p>
+<p> Probability of getting a maximum of <span id = "dcoin"></span> coins during the game is:<span id = "maxdcoin"></span></p>
+<!-- <p> Probability of wining is: <input id = "probwin2"></p> -->
+</div>
+<script>
+function factorial(n){
+  let answer = 1;
+  if (n == 0 || n == 1){
+    return answer;
+  }else{
+    for(var i = n; i >= 1; i--){
+      answer = answer * i;
+    }
+    return answer;
+  }
+}
+
+function psnEqualB(p,n,a,b){
+	var l = (n - b + a) / 2;
+	var r = (n + b - a) / 2;
+	if( !Number.isInteger(l) || !Number.isInteger(r)){
+		return 0;
+	}
+	else{
+		var rfac = factorial(r);
+		var lfac = factorial(l);
+		var nfac = factorial(n);
+		var nabn = nfac / (rfac * lfac);
+		var psEqualsn =  nabn * Math.pow( p , r) * Math.pow( 1-p , l);
+		return psEqualsn;
+	}
+}
+
+function mnGreaterEqualToR(n,r,p,a,b){
+		if(b >= r){
+			return psnEqualB(p,n,a,b);
+		}
+		else{
+			console.log("in here");
+			console.log(Math.pow((1-p)/p , r-b) * psnEqualB(p,n,0,2*r - b))
+			return Math.pow((1-p)/p , r-b) * psnEqualB(p,n,0,2*r - b);
+		}
+}
+
+function displayGamblerProbInNToss(){
+	var icoin = parseFloat(document.getElementById("gamblerInit1").value);
+	var dcoin = parseFloat(document.getElementById("gamblerDest1").value);
+	var coinp = parseFloat(document.getElementById("gamblerProb1").value);
+	var ntoss = parseFloat(document.getElementById("gamblerToss1").value);
+	var maxHope = parseFloat(document.getElementById("gameMax").value);
+
+	if(coinp < 0 || coinp > 1 || isNaN(coinp)){
+		document.getElementById("probwinn").innerHTML= "Invalid input, Probability that coin lands head is between 0 and 1";
+	}
+	else if(icoin < 0 || dcoin<0 ||  isNaN(icoin) || isNaN(dcoin) || isNaN(maxHope)){
+		//console.log(true);
+		document.getElementById("probwinn").innerHTML= "Invalid input, Cannot have negative coins or no number input";
+	}
+	else if(ntoss < Math.abs(dcoin - icoin) || isNaN(ntoss)){
+		document.getElementById("probwinn").innerHTML= "Invalid input, number of coin flips is not enough or no number input";
+	}
+	else{
+		var psnEqualTob = psnEqualB(coinp,ntoss,icoin,dcoin);
+		document.getElementById("probwinn").innerHTML= psnEqualTob;
+		document.getElementById("bcoin").innerHTML= dcoin;
+		if(maxHope<0 || isNaN(maxHope)){
+			document.getElementById("maxdcoin").innerHTML= "Invalid input, Cannot have negative coins or no number input";
+		}
+		else{
+			if(icoin == 0){
+				var re = mnGreaterEqualToR(ntoss,maxHope,coinp,icoin,dcoin);
+				document.getElementById("maxdcoin").innerHTML= re;
+				document.getElementById("dcoin").innerHTML= maxHope;
+			}
+			else{
+				document.getElementById("maxdcoin").innerHTML= "we need to start with 0 coin in order to compute the maximum coin got during game";
+			}
+		}
+	}
+}
+
+	//var result = parseFloat(initcoin)+parseFloat(destcoin)+parseFloat(coinprob)
+//document.getElementById("probwin2").value = icoin+dcoin;
+
+
+</script>
+
+We could be interested in questions like:
+<ul>
+	<li> when does the first time the gambler wins a certain unit of money occurs?</li>
+		<li>What is the most amount of money the gambler had during the first \(n\) coin toss?</li>
+	</ul>
+
+To answer those questions, we need more notations and tools.
+<ul>
+<li> Let \(N_n(a,b)\) denote the number of possible paths from \((0,a)\) to \((n,b)\).
+Here \((0,a)\) means the gambler have \(a\) units of money when no coin toss has been perfomed.
+and similarly, \((n,b)\) means the gambler wins \(b\) units of coin after \(n\) coin toss.</li>
+<li> Let \(N_n^0(a,b)\) denote the number of possible paths from \((0,a)\) to \((n,b)\) where the gambler went broke, namely lost all his money.</li>
+<li> Let \(M_n = \max \{ S_i | 0 \leq i \leq n\}\), \(M_n\) is the maximum amount of money the gambler get in the first \(n\) coin toss.</li>
+</ul>
+
+<div class ="theorem">
+(\(\textbf{The reflection principle}\)) If \(a,b >0\) then \(N_n^0(a,b) = N_n(-a,b)\).
+</div>
+<div class = "proof">
+Consider a path \(P\) in \(N_n^0(a,b)\), consider the first time that \(p\) reach \(0\), this segment of the path can be thought of as a path from \(-a\) to \(0\) by just fliping the sign of all entries on the path. So this create a one to one correspondence between paths from \(a\) to \(b\) that reach \(0\) and paths from \(-a\) to \(b\).
+</div>
+
+<div class = "theorem">
+(\(\textbf{Ballot theorem}\)) Let \(b >0 \) then the number of paths from \((0,0)\) to \((n,b)\) in which the gambler do not broke is \((\frac{b}{n}) N_n(0,b)\)
+</div>
+<div class ="proof">
+The number of such path must start by going to \((1,1)\). So we have:
+\[\begin{align*}
+N_{n-1}(1,b) - N_{n-1}^0(1,b)  & = \binom{n-1}{\frac{1}{2}(n+b-2)} - \binom{n-1}{\frac{1}{2}(n+b)}  = \binom{n}{\frac{1}{2}(n+b)}\frac{b}{n} \\
+& \iff \binom{n-1}{k-1} - \binom{n-1}{k} = \binom{n}{k} \frac{b}{n}\\
+& \iff \frac{(n-1)!}{(k-1)!(n-k)!}-\frac{(n-1)!}{k!(n-1-k)!}  = \frac{n!}{k!(n-k)!}\frac{2k-n}{n} \\
+& \iff \frac{(n-1)!}{(k-1)!(n-k-1)!}(\frac{1}{n-k}-\frac{1}{k}) = \frac{(n-1)!}{(k-1)!(n-k-1)!}\frac{n}{k(n-k)}\frac{2k-n}{n}\\
+& \iff \frac{1}{n-k}-\frac{1}{k} = \frac{n}{k(n-k)}\frac{2k-n}{n}\\
+& \iff \frac{k-n+k}{(n-k)k} = \frac{2k-n}{k(n-k)}
+\end{align*}
+\]
+	</div>
+
+<div class = "lemma">
+Suppose that the gambler had \(0\) coin initially and want to reach \(b\) coins in \(n\) coin toss and never get broke during the tosses. The probability of that happenning is:
+\[P(S_1S_2,...,S_n \neq 0, S_n =b) = \frac{|b|}{n}P(S_n =b)\]
+</div>
+
+So the next theorem is about probability that the gambler reached a maximum of more than \(r\) units of coin
+given that he won \(b\) units of coin in the first \(n\) coin toss.
+<div class = "theorem">
+	Suppose that \(S_0 = 0\) and let \(r >1\), then :
+\[P(M_n \geq r, S_n =b) =
+\begin{cases}
+P(S_n =b), \text{ if } b>r \\
+(\frac{q}{p})^{r-b}P(S_n = 2r-b), \text{ if } b < r
+\end{cases}
+\]
+</div>
+<div class = "proof">
+If \(b \geq r\) then \(P(M_n \geq r, S_n =b) =P(S_n =b) P(M_n|S_n=b)=P(S_n=b) \).
+So we assume that \(b < r\).
+Let \(N_n^r(0,b)\) be the number of paths from \((0,0)\) to \((n,b)\) that includes some point with value \(r\). Let \0 < u < n \) be the earliest point in which the path reach \(r\).
+we reflect the part of the path from \((i,r)\) to \((n,b)\) along the line \(y= r\) to get a path from \((0,0)\) to \((n,2r-b)\). So \(N_n^r(0,b) =N_n(0,2r-b)\).
+So \[
+\begin{align*}
+P(M_n \geq r, S_n = b) & = N_n^r(0,b)p^{\frac{1}{2}(n+b)}q^{\frac{1}{2}(n-b)} \\
+& =  N_n(0,2r-b)p^{\frac{1}{2}(n+2r-b)}p^{b-r}q^{\frac{1}{2}(n-2r+b)}q^{r-b} \\
+& = (\frac{q}{p})^{r-b}P(S_n = 2r -b)
+\end{align*}
+\]
+</div>
+
+
+
+
+<h3>Branching Process</h3>
+We are interested in the evolution of population. Since accurate model is hard, we'll look at simple models. So let \(Z_n\) be the number of members of the \(n^{th}\) generation,
+We assume that each person gives birth to a family in the next generation. The size of the familly of each person form a collection of independent random variables.
+All family size have same probability mass function \(f\) and generating function \(G(s)\). Assume that in the first generation, there is only one person, \(Z_0 =1\).
+Let\(G_n(s) = E(s^{Z_n}\) be the generating function of \(Z_n\).
+
+<div class = "lemma">
+Given above branching process settings, We have \(G_{m+n}(s) =G_m(G_n(s)) \). Therefore, we have \(G(G(...G(s)),,,))\)
+</div>
+<div class = "proof">
+Let \(Z_{m+n} = X_1+X_2+...+X_{Z_m} \) where \(Z_i\) is the number of members of \(m+n\) generation stem from \(i^{th}\) member of the \(m^{th}\) generation.
+So we have a sum of \(Z_m\) number of independent identically distributed random variable, so we have:
+\[G_{m+n}(s)=G_m(G_n(s))\]
+Hence we can conclude that \(G_{m+n}(s)=G_1(G_1(...(G_1(s))...))\).
+</div>
+<!-- Let \(N_n^0(a,b)\) be the number of paths containing some point \((k,0)\) -->
+
+
+<h3> Interesting problems</h3>
+<ul>
+	<li><a href= "consecutiveCoin.html"> x consecutive tails in n coin toss</a> </li>
+	<li><a href= "roundtable.html"> Couple sits at table</a> </li>
+</ul>
+
+<hr>
+
+<h2 id ="apl">Applications</h2>
+
+<h3> Principal Component Analysis</h3>
+Ok say you have done some experiments and then you collected data. For example, you collected some flowers and you measured several variables. For example, you can consider the size of the pedals, the length of the stem and the number of pedals. Hence, each data you collected consists of three different numbers representing the values of the three different variables about that data. With the data you have collected, you can plot them in a graph. But sometimes, when you look at the graph you plotted, it seems that the data points are all clumbed together. In those times, you need to rotate the coordiante system a bit so that you can see clearer separtions between datapoints. And the way you can do it is via the Principal component analysis.
+
+<br>
+
+
+The idea is to project the data onto a line so that the variation between data on the line is as large as possible.
+We think of the line as an axis and so if you have the axis facing you, you can see the maximum separation between the data points. Please rotate the following so that it is easy to see the distinction between the data points.
+<!-- We'll do an example, Consider the following set of made up data points about the flowers. Use your curser to move the plot, you can find a position of the coordinate system so that separation of the data points can be seen clearly. Other times, it looks as if the data points are all clumped together. -->
+
+<div id="mygraph"></div>
+
+<script>
+  var data1 = null;
+  var graph1 = null;
+
+// function onclick(point) {
+//   console.log(point);
+// }
+
+// Called when the Visualization API is loaded.
+// function drawVisualization() {
+  // create the data table.
+  data1 = new vis.DataSet();
+
+
+
+  data1.add({ x: 1, y: 2, z: 3, style: { "fill":"#00ffff", "stroke":"#999" } });
+  data1.add({ x: 2, y: 3, z: 4, style: { "fill":"#00ffff", "stroke":"#999" }});
+	data1.add({ x: 3, y: 6, z: 5, style: { "fill":"#00ffff", "stroke":"#999" }});
+	data1.add({ x: 6, y: 10, z: 15, style: { "fill":"#00ffff", "stroke":"#999" }});
+	// data.add({ x: 12, y: 13, z: 14, style: "#00ffff" });
+	data1.add({ x: 12, y: 13, z: 13, style: { "fill":"#00ffff", "stroke":"#999" } });
+
+
+
+  // specify options
+  var options1 = {
+    width: "600px",
+    height: "600px",
+    style: "dot-color",
+    xLabel: "Pedal size(Ps)",
+    yLabel: "number of Pedals(Pn)",
+    zLabel: "Stem length(Sl)",
+    showPerspective: true,
+    showGrid: true,
+    keepAspectRatio: true,
+    verticalRatio: 1.0,
+    legendLabel: "distance",
+    cameraPosition: {
+      horizontal: -8.633,
+      vertical: 0.50,
+      distance: 1.887,
+    },
+  };
+
+  var container1 = document.getElementById("mygraph");
+  graph1 = new vis.Graph3d(container1, data1, options1);
+</script>
+<!--
+Here are the points on the plot: -->
+
+<!-- <div class = "table1">
+	<style type="text/css">
+	.tg  {border-collapse:collapse;border-spacing:0;}
+	.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+	</style>
+	<table class="tg">
+	<thead>
+	  <tr>
+	    <th class="tg-iifz">\(X_1\)</th>
+	    <th class="tg-iifz">\(X_2\)</th>
+	    <th class="tg-iifz">\(X_3\)</th>
+	    <th class="tg-iifz">\(X_4\)</th>
+	    <th class="tg-iifz">\(X_5\)</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr>
+	    <td class="tg-iifz">\(\begin{bmatrix}<br>1 \\<br>2\\<br>3<br>\end{bmatrix}\)<br></td>
+	    <td class="tg-iifz">\(\begin{bmatrix}<br>2 \\<br>3\\<br>4<br>\end{bmatrix}\)</td>
+	    <td class="tg-iifz">\(\begin{bmatrix}<br>3 \\<br>6\\<br>5<br>\end{bmatrix}\)</td>
+	    <td class="tg-iifz">\(\begin{bmatrix}<br>6 \\<br>10\\<br>15<br>\end{bmatrix}\)</td>
+	    <td class="tg-iifz">\(\begin{bmatrix}<br>12 \\<br>13\\<br>13<br>\end{bmatrix}\)</td>
+	  </tr>
+	</tbody>
+	</table>
+</div> -->
+
+
+
+It is convenient to study the datas using a matrix \(S\). So we first create a matrix from the \(n\) data point \(\{d_1,d_2...,d_n \in \mathbb{R}^k\}\) by just stacking our data points in a \(n \times k\) matrix so that the rows of the matrix represent the data point and the column of the matrix represent the different attributes of the data that we think of as random variables \(X_1,X_2,...X_k\)
+
+\[
+S=
+\begin{bmatrix}
+\cdots & d_1^T & \cdots \\
+\cdots & d_2^T & \cdots \\
+\quad & \vdots & \quad \\
+\cdots & d_{n}^T & \cdots
+\end{bmatrix} \in \mathbb{R}^{n \times k}
+<!-- \begin{bmatrix}
+1 & 2 & 3\\
+2 & 3 & 4\\
+3 & 6 & 5\\
+6 & 10 & 15\\
+12 & 13 & 13
+\end{bmatrix} -->
+\]
+
+Now, the attributes of the datas \(X_i's\) are random variables that follow some distribution. So we can find the average of the values that the variable takes on. However, since we are only given some random sample of the data, we cannot determine the mean of the attibutes. What we are going to do instead is to find the average from our sample.<br>
+We compute the average of variables for our example:
+\[
+E(S)=
+\begin{bmatrix}
+E(X_1)\\
+E(X_2) \\
+\vdots \\
+E(X_k)
+\end{bmatrix}=
+\begin{bmatrix}
+\frac{S_{11}+S_{21}+...+S_{n1}}{n} \\
+\frac{S_{12}+S_{22}+...+S_{n2}}{n} \\
+\vdots\\
+\frac{S_{1k}+S_{2k}+...+S_{nk}}{n}
+\end{bmatrix} \in \mathbb{R}^k
+\]
+But we can actually rewrite this as operation on matrices and vectors, Let's see how.
+<br>
+Let's denote \(1_n\) the vector consisting of \(n\) \(1\).
+\[
+\begin{bmatrix}
+1\\
+1\\
+\vdots \\
+1
+\end{bmatrix} \in \mathbb{R}^n
+\]
+then
+\[
+E(S)= \frac{1}{n}S^T1_n \in \mathbb{R}^k
+<!-- \begin{bmatrix}
+E(Ps)\\
+E(Pn) \\
+E(Sl)
+\end{bmatrix}
+=\frac{1}{n} -->
+<!-- =\frac{1}{5}
+(1_5^TX)^T=
+\frac{1}{5}
+(
+\begin{bmatrix}
+1 & 1 & 1 &1 & 1
+\end{bmatrix}
+\begin{bmatrix}
+1 & 2 & 3\\
+2 & 3 & 4\\
+3 & 6 & 5\\
+6 & 10 & 15\\
+12 & 13 & 13
+\end{bmatrix}
+)^T
+=
+\frac{1}{5}
+\begin{bmatrix}
+24 \\
+34 \\
+40
+\end{bmatrix}
+=
+\begin{bmatrix}
+4.8 \\
+6.8 \\
+8
+\end{bmatrix} -->
+\]
+
+So now, why don't we look at the variance and covariace of the random variable representing the attributes? Again, since we don't know the true distribution of the attributes, we can just compute the variance and covariance from the sample instead.
+<br>
+For our example, we want to make a covariance matrix:
+\[
+	\Sigma =
+	\begin{bmatrix}
+		Cov(X_1,X_1) & Cov(X_1,X_2) & \dotsm & Cov(X_1,X_k)\\
+		Cov(X_2,X_1) & Cov(X_2,X_2) & \dotsm & Cov(X_2,X_k)\\
+		\vdots & \vdots & \vdots & \vdots\\
+		Cov(X_k,X_1) & Cov(X_k,X_2) & \dotsm & Cov(X_k,X_k)
+	\end{bmatrix} \in \mathbb{R}^{k \times k}
+\]
+
+It can be calculated by:
+\[\begin{align*}
+\Sigma & = \frac{1}{n}(S^T-\frac{1}{n}S^T1_n1_n^T)(S-\frac{1}{n}1_n1_n^TS) \\
+& = \frac{1}{n}(S^TS - \frac{1}{n}S^T1_n1_n^TS-\frac{1}{n}S^T1_n1_n^T + \frac{1}{n}\frac{1}{n}S^T1_n1_n^T1_n1_n^TS)\\
+& = \frac{1}{n}(S^TS - \frac{1}{n}S^T1_n1_n^TS-\frac{1}{n}S^T1_n1_n^T + \frac{1}{n}S^T1_n1_n^T)\\
+& = \frac{1}{n}(S^TS - \frac{1}{n}S^T1_n1_n^TS )\\
+& = \frac{1}{n}S^T(I_n-\frac{1}{n}1_n1_n^T)S \in \mathbb{R}^{k \times k}
+\end{align*}
+<!-- S= \frac{1}{5} XX^T-\frac{1}{5^2}(X^T1_5)(1_5^TX^T)=
+\frac{1}{5}
+\begin{bmatrix}
+1 & 2 &3 &6 & 12 \\
+2 & 3 & 6 & 10 & 13\\
+3 & 4 & 5 & 15 & 13
+\end{bmatrix}
+\begin{bmatrix}
+1 & 2 & 3\\
+2 & 3 & 4\\
+3 & 6 & 5\\
+6 & 10 & 15\\
+12 & 13 & 13
+\end{bmatrix}
+-
+\frac{1}{5}
+\begin{bmatrix}
+4.8 \\
+6.8 \\
+8
+\end{bmatrix}
+\begin{bmatrix}
+4.8 & 6.8 & 8
+\end{bmatrix} -->
+\]
+
+<!-- But we can write \(S\) in another way:
+\[S = \frac{1}{5}X( I_5 - \frac{1}{5}1_5 1_5^T)X^T \] -->
+
+Let \[H = I_n - \frac{1}{n}1_n 1_n^T \in \mathbb{R}^{n \times n}\]
+
+then \(H^2= H\) and so \(H\) is a projection matrix and since for a given vector \(v \in \mathbb{R}^n\)
+\[ Hv = v - \frac{1}{n}1_n((1_n)^T v) \]
+We see that the effect of multiply on the left of \(v\) by \(H\) is to subtract from \(v\), its average. And the projection is onto the subspace spanned by the vector of all \(1\).
+
+<br>
+
+
+Now, given a fixed vector \(u \in \mathbb{R}^k, |u|=1\), then
+\[
+\begin{align*}
+u^T \Sigma u & = u^T(\frac{1}{n}S^TS-E(S)E(S)^T)u \\
+& = \frac{1}{n}u^TS^TSu-u^TE(S)E(S)^Tu \\
+& = \frac{1}{n}u^TS^TSu-u^T\frac{1}{n}S^T1_n \frac{1}{n}1_n^TSu \\
+& = E((Su)^2)-E(Su)^2 \\
+& = Var(Su)
+\end{align*}\]
+
+\(Su\) can be thought of as projecting the datapoint on vector \(u\) to get a number and so we want to maximize the variance of the projected datapoints. We want to find \(u \in \mathbb{R}^k\) that maximize the variance of \(Su\):
+
+\[argmax_{u \in \mathbb{R}^k, |u| =1} Var(Su)   \]
+By Rayleigh-Ritz theorem, the solution to this maximization problem is the eigenvector of the largest eigenvalue of \(\Sigma\).
+
+
+
+<div>
+
+\(\textbf{Perform Principal Component Analysis}\):<br>
+Add data points by specifying their coordinates:<br>
+<label for="idata_x">\(x\):</label>
+<input type="number" id = "idatax" class="numbersonly" name="ndatax" value="1"><br>
+<label for="idata_y">\(y\):</label>
+<input type="number" id = "idatay" class="numbersonly" name="ndatay"  value="6" ><br>
+<label for="idata_z">\(z\):</label>
+<input type="number" id = "idataz" class="numbersonly" name="ndataz"  value="0.3" ><br>
+<button onclick="addDataPoint()">Add data</button>
+<button onclick="clearDataPoint()">Clear data</button>
+<br><br>
+
+<button onclick="computeMean()">Calculate Mean</button>
+<button onclick="displayFirstpc()">compute first principal component</button>
+<button onclick="displaySecondpc()">compute second principal component</button>
+<button onclick="projectOnTwoPc()">Project on first two principal components</button>
+<!-- <button onclick="drawOrthoComp()" >Orthogonal Complement</button> -->
+<p> Vectors added:<span id = "vadded"></span></p><br>
+<p> Message:<span id = "msgs"></span></p>
+<div id="mygraph5"></div>
+
+<script>
+
+var data5 = new vis.DataSet();
+var graph5 = null;
+var xxrange5 = 50;
+var yyrange5 = 50;
+
+var datalistx = [];
+var datalisty = [];
+var datalistz = [];
+
+var tempdx;
+var tempdy;
+var tempdz;
+var eigenvalueAndVectorOfCovarianceMatrix;
+
+function getData2(){
+	tempdx = parseFloat(document.getElementById("idatax").value);
+	tempdy = parseFloat(document.getElementById("idatay").value);
+	tempdz = parseFloat(document.getElementById("idataz").value);
+	if(isNaN(tempdx) || isNaN(tempdy) || isNaN(tempdz))
+	{
+		document.getElementById("orthogSpanerror").innerHTML= "The input is not a number, please enter a number";
+		return false;
+	}
+	return true;
+}
+
+function displayDatapoints(){
+	//var blabla = [1,2,3];
+	var resultingString = "";
+	for(var i = 0 ; i < datalistx.length ; i++){ // iterate over all datapoints
+		// resultingString =resultingString+ "\\(";
+		// //console.log(resultingString);
+		// resultingString = resultingString + "\\begin{bmatrix} \n";
+		// //console.log(resultingString);
+		//  // iterate over all entries in the data
+		// resultingString = resultingString + datalistx[i].toString() + "\\\\";
+		// resultingString = resultingString + datalisty[i].toString() + "\\\\";
+		// resultingString = resultingString + datalistz[i].toString() + "\\end{bmatrix}\\),";
+		// //console.log(resultingString);
+		resultingString = resultingString+"("+datalistx[i].toString()+","+datalisty[i].toString()+","+datalistz[i].toString()+")"+",";
+	}
+	//console.log(resultingString);
+	document.getElementById("vadded").innerHTML= resultingString;
+	//document.getElementById("vadded").insertAdjacentHTML('afterBegin', resultingString);
+}
+
+function drawGraph(){
+	var options5 = makeVisOption();
+	var container5 = document.getElementById("mygraph5");
+	graph5 = new vis.Graph3d(container5, data5, options5);
+}
+
+function addDataPointToList(){
+	var isDataPointNumber = getData2();
+	if(isDataPointNumber){
+		datalistx.push(tempdx);
+		datalisty.push(tempdy);
+		datalistz.push(tempdz);
+	}
+	else{
+		document.getElementById("msgs").innerHTML= "Data need to be numeric.";
+	}
+}
+
+function addDatPointsToDrawData(){
+	for(var i = 0 ; i < datalistx.length ; i++){
+		data5.add({x:datalistx[i] , y: datalisty[i], z: datalistz[i], style: 15.0});
+	}
+}
+
+function addDataPoint(){
+	addDataPointToList();
+	addDatPointsToDrawData();
+	displayDatapoints();
+	drawGraph();
+}
+
+function clearDataPoint(){
+	datalistx = [];
+	datalisty = [];
+	datalistz = [];
+	data5 = new vis.DataSet();
+	document.getElementById("vadded").innerHTML= "";
+	//drawGraph();
+}
+
+function calculateEigenOfCovariance(){
+		const dataMatrixT = math.matrix([datalistx, datalisty, datalistz]);
+		//console.log("the data matrix transpose is:"+dataMatrixT);
+
+		const dataMatrix = math.transpose(dataMatrixT);
+		//console.log("the data matrix is:"+dataMatrix);
+
+		const matrixAllOnes = math.ones(datalistx.length, datalistx.length);
+		//console.log("the n by n matrix of all ones is:"+matrixAllOnes);
+
+		const identitynbyn = math.identity(datalistx.length);
+		//console.log("the n by n identity matrix is:" + identitynbyn);
+
+		const hmatrix = math.add(identitynbyn, math.multiply(-1/datalistx.length, matrixAllOnes));
+		//console.log("the h matrix is:" + hmatrix);
+
+		const covarianceM = math.multiply(1 / datalistx.length , math.multiply( math.multiply(dataMatrixT , hmatrix),dataMatrix));
+		//console.log("the covariance matrix is:" + covarianceM);
+
+		eigenvalueAndVectorOfCovarianceMatrix = math.eigs(covarianceM);
+		//console.log("the eigenvectors are:"+eigenvalueAndVectorOfCovarianceMatrix.vectors);
+		//console.log("the eigenvalues are:"+eigenvalueAndVectorOfCovarianceMatrix.values);
+}
+
+function displayFirstpc(){
+	if(datalistx.length === 0){
+		document.getElementById("msgs").innerHTML= "Empty dataset.";
+	}
+	else{ // Has some values
+		calculateEigenOfCovariance();
+		// get the first eigen vector
+		var firstPcomponent_x =   math.subset(eigenvalueAndVectorOfCovarianceMatrix.vectors , math.index(0,2));
+		var firstPcomponent_y =   math.subset(eigenvalueAndVectorOfCovarianceMatrix.vectors , math.index(1,2));
+		var firstPcomponent_z =   math.subset(eigenvalueAndVectorOfCovarianceMatrix.vectors , math.index(2,2));
+
+		document.getElementById("msgs").innerHTML= "PC1 is"+"("+firstPcomponent_x.toString()+","+firstPcomponent_y.toString()+","+firstPcomponent_z.toString()+")";
+		// add line spaned by the first principal component vector
+		data5 = new vis.DataSet();
+		addDatPointsToDrawData();
+
+		for (var i = 0; i <= xxrange5; i ++) {
+			data5.add({ x: firstPcomponent_x*i/3, y: firstPcomponent_y*i/3, z: firstPcomponent_z*i/3, style: "red"});
+		}
+		// add the points projected on the principal component vector
+		var uTu = firstPcomponent_x*firstPcomponent_x+firstPcomponent_y*firstPcomponent_y+firstPcomponent_z*firstPcomponent_z;
+		for(var i = 0; i < datalistx.length ; i++){
+			var uTx = firstPcomponent_x*datalistx[i] + firstPcomponent_y*datalisty[i] + firstPcomponent_z*datalistz[i];
+			data5.add({ x: firstPcomponent_x*uTx/uTu, y: firstPcomponent_y*uTx/uTu, z: firstPcomponent_z*uTx/uTu, style: "yellow"});
+		}
+		drawGraph();
+	}
+}
+
+function displaySecondpc(){
+	if(datalistx.length === 0){
+		document.getElementById("msgs").innerHTML= "Empty dataset.";
+	}
+	else{ // Has some values
+		calculateEigenOfCovariance();
+		// get the first eigen vector
+		var firstPcomponent_x =   math.subset(eigenvalueAndVectorOfCovarianceMatrix.vectors , math.index(0,1));
+		var firstPcomponent_y =   math.subset(eigenvalueAndVectorOfCovarianceMatrix.vectors , math.index(1,1));
+		var firstPcomponent_z =   math.subset(eigenvalueAndVectorOfCovarianceMatrix.vectors , math.index(2,1));
+
+		document.getElementById("msgs").innerHTML= "PC2 is"+"("+firstPcomponent_x.toString()+","+firstPcomponent_y.toString()+","+firstPcomponent_z.toString()+")";
+		// add line spaned by the first principal component vector
+		data5 = new vis.DataSet();
+		addDatPointsToDrawData();
+
+		for (var i = 0; i <= xxrange5; i ++) {
+			data5.add({ x: firstPcomponent_x*i/3, y: firstPcomponent_y*i/3, z: firstPcomponent_z*i/3, style: "red"});
+		}
+		// add the points projected on the principal component vector
+		var uTu = firstPcomponent_x*firstPcomponent_x+firstPcomponent_y*firstPcomponent_y+firstPcomponent_z*firstPcomponent_z;
+		for(var i = 0; i < datalistx.length ; i++){
+			var uTx = firstPcomponent_x*datalistx[i] + firstPcomponent_y*datalisty[i] + firstPcomponent_z*datalistz[i];
+			data5.add({ x: firstPcomponent_x*uTx/uTu, y: firstPcomponent_y*uTx/uTu, z: firstPcomponent_z*uTx/uTu, style: "yellow"});
+		}
+		drawGraph();
+	}
+}
+
+function projectOnTwoPc(){
+	if(datalistx.length === 0){
+		document.getElementById("msgs").innerHTML= "Empty dataset.";
+	}
+	else{ // Has some values
+		calculateEigenOfCovariance();
+		// get the first eigen vector
+		var pc1x =   math.subset(eigenvalueAndVectorOfCovarianceMatrix.vectors , math.index(0,2));
+		var pc1y =   math.subset(eigenvalueAndVectorOfCovarianceMatrix.vectors , math.index(1,2));
+		var pc1z =   math.subset(eigenvalueAndVectorOfCovarianceMatrix.vectors , math.index(2,2));
+		//get the second principal component vector
+		var pc2x =   math.subset(eigenvalueAndVectorOfCovarianceMatrix.vectors , math.index(0,1));
+		var pc2y =   math.subset(eigenvalueAndVectorOfCovarianceMatrix.vectors , math.index(1,1));
+		var pc2z =   math.subset(eigenvalueAndVectorOfCovarianceMatrix.vectors , math.index(2,1));
+
+		document.getElementById("msgs").innerHTML= "PC1 is"+"("+pc1x.toString()+","+pc1y.toString()+","+pc1z.toString()+")"+"PC2 is"+"("+pc2x.toString()+","+pc2y.toString()+","+pc2z.toString()+")";
+
+		if(isMultiple(pc1x,pc1y,pc1z,pc2x,pc2y,pc2z)){
+			var uTu = pc1x*pc1x+pc1y*pc1y+pc1z*pc1z;
+			data5 = new vis.DataSet();
+			addDatPointsToDrawData();
+			for (var i = 0; i <= xxrange5; i ++) {
+				data5.add({ x: pc1x*i/3, y: pc1y*i/3, z: pc1z*i/3, style: "red"});
+			}
+			// add the points projected on the principal component vector
+			for(var i = 0; i < datalistx.length ; i++){
+				var uTx = pc1x*datalistx[i] + pc1y*datalisty[i] + pc1z*datalistz[i];
+				data5.add({ x: pc1x*uTx/uTu, y: pc1y*uTx/uTu, z: pc1z*uTx/uTu, style: "yellow"});
+			}
+			drawGraph();
+		}
+		else{
+			data5 = new vis.DataSet();
+			addDatPointsToDrawData();
+			var projectMatrix = makeProjectionMatrix(pc1x,pc1y,pc1z,pc2x,pc2y,pc2z);
+			for(var i = 0; i < datalistx.length ; i++){
+				const vectorv = math.matrix([[datalistx[i]], [datalisty[i]], [datalistz[i]]]);
+				//console.log("here is v:"+vectorv );
+				const projectedv = math.multiply(projectMatrix,vectorv);
+				//console.log("here is projection of v:"+projectedv );
+				var projectedv_x = math.subset(projectedv, math.index(0,0));
+				var projectedv_y = math.subset(projectedv, math.index(1,0));
+				var projectedv_z = math.subset(projectedv, math.index(2,0));
+				data5.add({ x: projectedv_x, y: projectedv_y, z: projectedv_z ,  style : "yellow"});
+			}
+			var aa1 = pc1y*pc2z - pc2y*pc1z;
+			var bb1 = pc1z*pc2x - pc1x*pc2z;
+			var cc1 = pc1x*pc2y - pc1y*pc2x;
+
+			var counter1 = 0;
+			var steps1 = 20; // number of datapoints will be steps*steps
+			var axisMax1 = 30;
+			var axisStep1 = axisMax1 / steps1;
+
+			if(cc1 != 0){
+				//document.getElementById("orthogSpanerror").innerHTML= "The plane will be represented by dots.";
+				document.getElementById("msgs").innerHTML= "PC1 is"+"("+pc1x.toString()+","+pc1y.toString()+","+pc1z.toString()+")"+"PC2 is"+"("+pc2x.toString()+","+pc2y.toString()+","+pc2z.toString()+")";
+				for (var i = 0; i < axisMax1; i += axisStep1) {
+					for (var j = 0; j < axisMax1; j += axisStep1) {
+						var value1 = (-aa1 * i - bb1 * j ) / cc1;
+						console.log("z value of the plan is:" + value1);
+						data5.add({ id: counter1++, x: i, y: j, z: value1, style: "red"});
+					}
+				}
+			}
+			else{
+				document.getElementById("msgs").innerHTML= "PC1 is"+"("+pc1x.toString()+","+pc1y.toString()+","+pc1z.toString()+")"+"PC2 is"+"("+pc2x.toString()+","+pc2y.toString()+","+pc2z.toString()+")";
+				for (var i = 0; i < axisMax1; i += axisStep1) {
+					for (var j = 0; j < axisMax1; j += axisStep1){
+						var value1 = -aa1 * i / bb1;
+						data5.add({ id: counter1++, x: i, y: value1, z: j, style: "red"});
+					}
+				}
+			}
+			drawGraph();
+		}
+	}
+}
+
+function computeMean(){
+	if(datalistx.length === 0){
+		document.getElementById("msgs").innerHTML= "Empty dataset.";
+	}
+	else{
+		data5 = new vis.DataSet();
+		addDatPointsToDrawData();
+		var sum_x = datalistx.reduce(function(a, b){
+        	return a + b;
+    	}, 0);
+    	var sum_y = datalisty.reduce(function(a, b){
+        	return a + b;
+    	}, 0);
+    	var sum_z = datalistz.reduce(function(a, b){
+        	return a + b;
+    	}, 0);
+		data5.add({ x: sum_x/datalistx.length, y: sum_y/datalistx.length, z: sum_z/datalistx.length, style: "yellow"});
+		document.getElementById("msgs").innerHTML= "mean is"+"("+(sum_x/datalistx.length).toString()+","+(sum_y/datalistx.length).toString()+","+(sum_z/datalistx.length).toString()+")";
+		drawGraph();
+	}
+}
+</script>
+
+</div>
+
+
+
+<hr>
+<h2> References:
+	<ul>
+	<li>https://math.stackexchange.com/questions/125122/intuitively-how-should-i-think-of-measurable-functions</li>
+</ul>
+</body>
+
+
+
+
+</html>

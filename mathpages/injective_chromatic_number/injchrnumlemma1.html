@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+
+#mynetwork1 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+  <div class="lemma">
+  \(\textbf{1) }\)Given \(d\)-regular graph \(G\) with \(\chi_i(G)=d\), then \(d\) is a divisor of size of vertex set of \(G\), \(d||V(G)|\)
+  </div>
+  <div class="proof">
+    Let's consider as an example, a \(3\)-regular graph with a \(3\)-injective coloring:
+
+    <div id="mynetwork1"></div>
+
+    <script type="text/javascript">
+      // create an array with nodes
+      var nodes = new vis.DataSet([
+        { id: 1, label: "A", color:"pink" },
+        { id: 2, label: "B" , color:"orange"},
+        { id: 3, label: "C" , color:"orange" },
+        { id: 4, label: "D" , color:"yellow"},
+        { id: 5, label: "E" , color:"yellow"},
+        { id: 6, label: "F" , color:"pink"},
+      ]);
+
+      // create an array with edges
+      var edges = new vis.DataSet([
+        { from: 1, to: 2 },
+        { from: 2, to: 3 },
+        { from: 6, to: 3 },
+        { from: 6, to: 1 },
+        { from: 4, to: 1 },
+        { from: 4, to: 5 },
+        { from: 5, to: 6 },
+        { from: 2, to: 4 },
+        { from: 5, to: 3 }
+      ]);
+
+      // create a network
+      var container = document.getElementById("mynetwork1");
+      var data = {
+        nodes: nodes,
+        edges: edges
+      };
+      var options = {};
+      var network = new vis.Network(container, data, options);
+    </script>
+     Let's denote the set of vertices with color, say pink, by \(V_{pink}\):
+     \[V_{pink}=\{A,F\} \]
+     For each vertex, we count its number of pink neighbhors:
+     \[ \begin{cases}
+     A: \text{ connected to pink vertex } F, 1 \text{ pink neighbhor}\\
+     B:\text{ connected to pink vertex } A, 1 \text{ pink neighbhor}\\
+     C:\text{ connected to pink vertex } F, 1 \text{ pink neighbhor}\\
+     D:\text{ connected to pink vertex } A, 1 \text{ pink neighbhor}\\
+     E:\text{ connected to pink vertex } F, 1 \text{ pink neighbhor}\\
+     F:\text{ connected to pink vertex } A, 1 \text{ pink neighbhor}
+     \end{cases}
+     \]
+    Namely, each vertex has exactly one neighbhor of pink color and each pink vertex are neighbhors to \(3\) vertices.
+     \[\begin{cases}
+     F: \{A,C,E \}\\
+     A: \{B,D,F \}
+     \end{cases}
+     \]
+     The reason is because of injective coloring and the fact that the degree of each vertex is \(3\).
+     <br>
+     So the following is true: (number of different colors) \(\cdot\) (number of pink vertices) \(=\) (total number of vertices):
+     \[3 \cdot 2 =6\]
+     And so here number of colors, which is \(3\), is a divisor of total number of vertices, which is \(6\).
+     <br>
+     We create the proof for arbitary \(d\) injective coloring of \(d\) regular graph \(G\) by miniking the above example.
+     <br>
+     So given an \(d\)- injective coloring of \(G\), we think of each colors as a number in \(\{1,...,d\}\).
+     <br>
+     We denote the set vertices with color \(i\) by \(V_i\).
+     <br>
+     Then, by the same reasonning as above example, we get:
+     \[ |V(G)|=|V_i| \cdot d \]
+
+     Hence this shows that \(d\) is a divisor of \(|V(G)|\).
+  </div>
+</div>
+</body>
+</html>

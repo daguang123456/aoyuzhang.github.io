@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="../styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+	<!-- <script src="https://cdn.zingchart.com/zingchart.min.js"></script> -->
+	<script src="https://cdn.anychart.com/releases/8.7.1/js/anychart-core.min.js"></script>
+	<script src="https://cdn.anychart.com/releases/8.7.1/js/anychart-venn.min.js"></script>
+  <style>
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+.table1{
+	width:300px;
+	height:160px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+.table2{
+	width:300px;
+	height:160px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+.table3{
+	width:750px;
+	height:650px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+
+.table4{
+	width:300px;
+	height:560px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+.table5{
+	width:500px;
+	height:260px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+.table6{
+	width:300px;
+	height:360px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+.table7{
+	width:500px;
+	height:760px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+.table8{
+	width:200px;
+	height:200px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+.table9{
+	width:800px;
+	height:750px;
+	/*border: 1px solid lightgray;*/
+	margin: 0 auto;
+}
+
+#mynetwork1 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork2 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#container {
+    width: 500px;
+    height: 300px;
+    margin: 0 auto;
+    padding: 0;
+}
+#mynetwork5 {
+  width: 550px;
+  height: 450px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork6 {
+  width: 550px;
+  height: 450px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork7 {
+  width: 550px;
+  height: 450px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork8 {
+  width: 550px;
+  height: 450px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+
+<h2><a href = "../pdffiles/Zhang,Alec.pdf">POLYA'S ENUMERATION</a></h2>
+By Alec Zhang, Thank Alec Zhang for the wonderful paper that allowed us to expand our knowledge on Polya's enumeration theorem.
+<hr>
+Hello, here is a counting question for you. Suppose you have to make a necklace with \(11\) gems where \(2\) are blue, \(2\) are green and \(7\) are red.
+ How many different necklaces, up to rotation, you can make with the gems.
+ In this paper, we'll answer this question by using a powerful technique of group action and see its application in a more general setting.
+ So let's see an example of a necklace constructed with the gems:
+<div>
+  <h3 text-align= "center" id = "neck1" >Necklace config 1</h3>
+ <div id="mynetwork5" ></div>
+</div>
+
+ <script type="text/javascript">
+   // create an array with nodes
+   var nodes = new vis.DataSet([
+     { id: 1, label: "1" ,shape: "diamond", color: "rgb(116,254,55)"},
+     { id: 2, label: "2" ,shape: "diamond", color: "rgb(116,254,55)"},
+     { id: 3, label: "3" ,shape: "diamond", color: "rgb(55,228,255)"},
+     { id: 4, label: "4",shape: "diamond" , color: "rgb(55,228,255)"},
+    { id: 5, label: "5",shape: "diamond" , color: "rgb(252,94,75)"},
+    { id: 6, label: "6",shape: "diamond" , color: "rgb(252,94,75)"},
+    { id: 7, label: "7",shape: "diamond" , color: "rgb(252,94,75)"},
+    { id: 8, label: "8",shape: "diamond" , color: "rgb(252,94,75)"},
+    { id: 9, label: "9",shape: "diamond" , color: "rgb(252,94,75)"},
+    { id: 10, label: "10",shape: "diamond" , color: "rgb(252,94,75)"},
+    { id: 11, label: "11" ,shape: "diamond", color: "rgb(252,94,75)"}
+   ]);
+
+   // create an array with edges
+   var edges = new vis.DataSet([
+     { from: 1, to: 2},
+     { from: 2, to: 3},
+    { from: 3, to: 4},
+    { from: 4, to: 5},
+    { from: 5, to: 6},
+    { from: 6, to: 7},
+    { from: 7, to: 8},
+    { from: 8, to: 9 },
+    { from: 9, to: 10},
+    { from: 10, to: 11},
+    { from: 1, to: 11 }
+
+ ])
+   // create a network
+   var container = document.getElementById("mynetwork5");
+   var data = {
+     nodes: nodes,
+     edges: edges
+   };
+   var options = {};
+   var network = new vis.Network(container, data, options);
+ </script>
+
+Fist of all,let's see an example of making a new set out of two old ones:
+<div class="definition">
+Given two set \(G,X\), their \(\textbf{Cartesian product}\) is denoted by and defined as:
+\[G \times X := \{(g,x)| g \in G, x \in X\}\]
+Namely, the cartesian product of two set is a set of ordered pair, where the first element belongs to \(G\) and the second element belongs to \(X\).
+</div>
+For example, if we have \(G=\{1,2,3\}, X= \{a,b\}\) then \( G \times X =\{(1,a),(1,b),(2,a),(2,b),(3,a),(3,b)\} \).
+<br>
+Next, we need to be familia on how we define a function, when we write:
+\[f:A \to B\]
+It means \(f\) is a function whose domain is \(A\) and whose codomain is \(B\).
+<br>
+
+OK, to tell you about how group action solves our problem, we first need to define it:
+<div class="definition">
+  (Definition 2.3)
+  Given a group \(G\) and a set \(X\), a \(\textbf{group action}\) is a function \(\phi : G \times X \to X\) such that:
+  <ol>
+    <li> \(\forall x \in X, \phi((e,x)) = x\). Here \(e\) is the identity element in \(G\)</li>
+    <li> \(\forall g,h \in G, x \in X, \phi(gh,x)= \phi(g,\phi(h,x)) \)
+  </ol>
+  For simplicity, we denote \(\phi(g,x)\) as simply \(gx\). we also denote action of \(G\) to \(X\) by \(G \curvearrowright X\).
+</div>
+Alright, the big idea of group action is that we can think of each element in \(G\) as doing permutations on elements in \(X\).
+Different group element might perform different pemutation on the set \(X\) but we have the additional condition that if you let \(g\) permute elements in \(X\) and you let \(h\) permute the result of \(g\),
+then their combine permutation is the same as how the permutation that \(hg\) would have done on \(X\).
+<br>
+Let's get on with our example of necklace. The idea is to define a group action on some set about the constructed necklaces.
+So we first define that set. As we have \(11\) gems, we can think of the necklace as having \(11\) positions labeled from \(1\) to \(11\)
+where we can place gems in it. Each of the different ways of putting the gems on the necklaces will be an element in our set \(X\).
+And Voila! we have constructed our set \(X\) for which a group will act on!
+Now, let's count the number of elements in \(X\).
+<br>
+There are:
+<ul>
+  <li>\(2\) placeholders out of \(11\) for the \(2\) blue gems: \(\binom{11}{2}\)</li>
+  <li>\(2\) placeholders for the remaining \(9\) for the green gems: \(\binom{9}{2}\)</li>
+  <li> \(7\) placeholders out of the remaining \(7\):\(\binom{7}{7}=1 \)</li>
+</ul>
+for a total of \( \binom{11}{2} \cdot \binom{9}{2} \cdot \binom{7}{7} = 1980 \) elements in \(X\).
+
+Now we need to introduce a group to act on \(X\). We can consider the group \(Z_{11}\) acting on \(X\). It acts as follow:
+element \(i\) shift all gems position on the necklace by \(i\) clockwise.
+Namely, suppose we had the necklace in the <a href="groupaction.html#neck1">necklace config 1,</a>  then the element \(1 \in Z_{11} \) modify it to:
+
+<div>
+  <h3> Necklace Config 2</h3>
+<div id="mynetwork6"></div>
+</div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 2, label: "2" ,shape: "diamond", color: "rgb(116,254,55)"},
+    { id: 3, label: "3" ,shape: "diamond", color: "rgb(116,254,55)"},
+    { id: 4, label: "4" ,shape: "diamond", color: "rgb(55,228,255)"},
+    { id: 5, label: "5",shape: "diamond" , color: "rgb(55,228,255)"},
+   { id: 6, label: "6",shape: "diamond" , color: "rgb(252,94,75)"},
+   { id: 7, label: "7",shape: "diamond" , color: "rgb(252,94,75)"},
+   { id: 8, label: "8",shape: "diamond" , color: "rgb(252,94,75)"},
+   { id: 9, label: "9",shape: "diamond" , color: "rgb(252,94,75)"},
+   { id: 10, label: "10",shape: "diamond" , color: "rgb(252,94,75)"},
+   { id: 11, label: "11",shape: "diamond" , color: "rgb(252,94,75)"},
+   { id: 1, label: "1" ,shape: "diamond", color: "rgb(252,94,75)"}
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2},
+    { from: 2, to: 3},
+   { from: 3, to: 4},
+   { from: 4, to: 5},
+   { from: 5, to: 6},
+   { from: 6, to: 7},
+   { from: 7, to: 8},
+   { from: 8, to: 9 },
+   { from: 9, to: 10},
+   { from: 10, to: 11},
+   { from: 1, to: 11 }
+
+])
+  // create a network
+  var container = document.getElementById("mynetwork6");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+and the element \(2 \in \mathbb{Z}_{11}\) modify it to:
+
+<div>
+  <h3>Necklace Config 3</h3>
+<div id="mynetwork7"></div>
+</div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 3, label: "3" ,shape: "diamond", color: "rgb(116,254,55)"},
+    { id: 4, label: "4" ,shape: "diamond", color: "rgb(116,254,55)"},
+    { id: 5, label: "5" ,shape: "diamond", color: "rgb(55,228,255)"},
+    { id: 6, label: "6",shape: "diamond" , color: "rgb(55,228,255)"},
+   { id: 7, label: "7",shape: "diamond" , color: "rgb(252,94,75)"},
+   { id: 8, label: "8",shape: "diamond" , color: "rgb(252,94,75)"},
+   { id: 9, label: "9",shape: "diamond" , color: "rgb(252,94,75)"},
+   { id: 10, label: "10",shape: "diamond" , color: "rgb(252,94,75)"},
+   { id: 11, label: "11",shape: "diamond" , color: "rgb(252,94,75)"},
+   { id: 1, label: "1",shape: "diamond" , color: "rgb(252,94,75)"},
+   { id: 2, label: "2" ,shape: "diamond", color: "rgb(252,94,75)"}
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2},
+    { from: 2, to: 3},
+   { from: 3, to: 4},
+   { from: 4, to: 5},
+   { from: 5, to: 6},
+   { from: 6, to: 7},
+   { from: 7, to: 8},
+   { from: 8, to: 9 },
+   { from: 9, to: 10},
+   { from: 10, to: 11},
+   { from: 1, to: 11 }
+
+])
+  // create a network
+  var container = document.getElementById("mynetwork7");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+ Do you see what is happening? the element \(i \in \mathbb{Z}_{11} , i < 11 \) just shift all gems on the necklace by \(i\) position.
+ And this is how \(G\) act on \(X\).
+ To see that this is indeed an action, we need to verify that the two conditions that has to be satisfied in the definition of group action is satisfied.
+ <ol>
+ <li>The identity element \(0 \in \mathbb{Z}_{11}\) fixes all configuration in \(X\) because it dosen't shift the positions of the gems</li>
+	 <li>Given \(i,j \in \mathbb{Z}_{11}\), shifting the gems by \(i\) position clockwise on the necklace and then shift the gems by \(j\) position clockwise has
+ the same effect of shifting them by \(i+j\) position.</li>
+  And so this shifting operation is indeed a group action of \(\mathbb{Z}_{11}\) to \(X\).
+<br>
+We said in the beginning that we can think of an element in the group as doing permutation on the elements in the set \(X\). So here is the formal lemma and proof.
+<div class="theorem">
+(Proposition 2.4) Given a group action \(\phi\) of group \(G\) on set \(X\), the function \(f_{\phi} : x \to \phi(g,x) \) is permutation!
+</div>
+<div class="proof">
+Well,  \(gx=gy \iff g^{-1}g(x) =g^{-1}g(y) \iff ex=ey \iff x=y\) and given \(x \in X\), \(g(g^{-1}x)=x\).
+</div>
+
+<div class="definition">
+Given an action \(\phi\) of \(G\) on \(X\), the orbit of an element \(x \in X\) is just
+\[ \mathcal{O}_x = \{gx|g \in G\}\]
+</div>
+We think of the orbit of an element \(x \in X\) exactly as what it is, the set of elements in \(X\) that \(x\) get sent to under some permutation.
+For example, the following necklace is not in the orbit of the previous necklaces under the action of \(\mathbb{Z}_{11}\):
+
+<div>
+  <h3>Necklace Config 4</h3>
+<div id="mynetwork8"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 3, label: "3" ,shape: "diamond", color: "rgb(116,254,55)"},
+    { id: 4, label: "4" ,shape: "diamond", color: "rgb(252,94,75)"},
+    { id: 5, label: "5" ,shape: "diamond", color: "rgb(55,228,255)"},
+    { id: 6, label: "6",shape: "diamond" , color: "rgb(55,228,255)"},
+   { id: 7, label: "7",shape: "diamond" , color: "rgb(252,94,75)"},
+   { id: 8, label: "8",shape: "diamond" , color: "rgb(252,94,75)"},
+   { id: 9, label: "9",shape: "diamond" , color: "rgb(252,94,75)"},
+   { id: 10, label: "10",shape: "diamond" , color: "rgb(116,254,55)"},
+   { id: 11, label: "11",shape: "diamond" , color: "rgb(252,94,75)"},
+   { id: 1, label: "1",shape: "diamond" , color: "rgb(252,94,75)"},
+   { id: 2, label: "2" ,shape: "diamond", color: "rgb(252,94,75)"}
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2},
+    { from: 2, to: 3},
+   { from: 3, to: 4},
+   { from: 4, to: 5},
+   { from: 5, to: 6},
+   { from: 6, to: 7},
+   { from: 7, to: 8},
+   { from: 8, to: 9 },
+   { from: 9, to: 10},
+   { from: 10, to: 11},
+   { from: 1, to: 11 }
+
+])
+  // create a network
+  var container = document.getElementById("mynetwork8");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+This is because you cannot shift the gems from the previous configuration to a configuration in which the red gems dosen't form a continous segment of the necklace.
+
+<div class="theorem">
+(proposition 2.9)Given action \(\phi\) of \(G \curvearrowright X\), the orbits of the action partition the set \(X\)
+</div>
+<div class="proof">
+if \( w \in \mathcal{O}_x \cap \mathcal{O}_y \) then there exist \(g, g' \in G\) such that \(gw=x, g'w=y \Rightarrow g'g^{-1}x=y \Rightarrow \mathcal{O}_y \subset \mathcal{O}_x\).
+Bu similar argement, \(\mathcal{O}_x \subset \mathcal{O}_x\). Hence if two orbits intersect, they are equal. Also, every element belong to an orbit containing themself so orbits partition the set \(X\).
+</div>
+
+<div class="definition">
+  (definition 2.6)
+Given a group action \(\phi\) of group \(G\) to a set \(X\), the \(\textbf{stabilizer}\) of a set element \(x \in X\) is just the set of element in the group that fixes it:
+\[ S_{xx} = \{g \in G| gx=x\}\]
+</div>
+
+For example, the stabilizer of necklace configuration \(1\) is just the identity element \(0\).
+
+<div class="lemma">
+The stabilizer of \(x \in X\) for an action \(\phi\) of \(G\) on \(X\) is a subgroup of \(G\).
+</div>
+<div class="proof">
+\( g,h \in stab(x) \Rightarrow ghx=gx=x \Rightarrow gh \in stab(x), e(x)=x \Rightarrow e \in stab(x)\) So \(stab{x}\) is closed under group operation and contains \(0\) so it is a subgroup.
+</div>
+
+<div class="definition">
+(difinition 2.7)
+Given a group action \(\phi\) of a group \(G\) on a set \(X\), the \(\textbf{transform}\) of two elements \(x,y \in X\) is defined as:
+\[S_{xy} = \{g \in G| gx=y\}\]
+</div>
+For example, \(2\) lies in the transformer of the necklace config1 and necklace config 3 in the above example.
+
+<div class="definition">
+(2.8) Given a group action \(\phi\) of \(G\) on a set \(X\), the quotient of \(\phi\) is just the set of all orbits of the action :
+\[X/G = \{ \mathcal{O}_x |x \in X\} \]
+</div>
+
+<div class="lemma">
+(theorem 3.1, Orbit-Stabilizer theorem):
+Given group action \(\phi\) of \(G\) on \(X\) \(G \curvearrowright  X\), then the number of element in orbit of \(x \in X\) is the number of element in \(G\) over its stabilizer \(S_{xx}\)
+\[|G| = |S_{xx}||\mathcal{O}_x|\]
+</div>
+<div class="proof">
+	We can associate to each element \(y \in \mathcal{O}_x\) a coset of \(S_{xx}\). If \(gx=y\) then elements in coset \(gS_{xx}\)
+		send \(x\) to \(y\). So this is the correspondence beween cosets of \(S_{xx}\) and elements \(\mathcal{O}_{x}\). We know number of cosets of
+		\(S_{xx}\) is \(\frac{|G|}{|S_{xx}|}\) and so that is the number of elements in the orbit \(\mathcal{O}_x\).
+</div>
+
+<div class="theorem">
+(theorem 3.2, Burnside's Lemma) : Given a finite group \(G\) and a finite set \(X\) and an action \(\phi\) of \(G\) on \(X\), then the number of orbits of this action is :
+\[|X/G| = \frac{1}{|G|}\sum_{g \in G}|X^g| \]
+Here, \(X^g=\{x \in X|gx=x\}\) is the set of elements fixed by action of \(g\).
+</div>
+<div class="proof">
+	\(\sum_{g \in G}|X^g| \) is the sum of number of elements in \(X\) fixed by each element \( g\in G\) and so we can count them in a different way,
+	namely, it is the sum of number of elements in the stabilizer of each \(x \in X\), i.e, \(\sum_{x \in X} |S_{xx}| \). Now we do:
+	\[ \frac{1}{|G|} \sum_{x \in X} |S_{xx}| = \frac{1}{|G|} \sum_{x \in X} \frac{|G|}{|\mathcal{O}_x|}=\sum_{x \in X}\frac{1}{|\mathcal{O}_x|}=|X/G|\]
+
+</div>
+So now we are ready to solve our problem of counting number of necklaces. So consider the action \(\phi\) of the group \(\mathbb{Z}_{11}\) on the set of constructed necklaces \(X\) as defined above.
+we have :
+\[\begin{cases}
+|X^0|=1980\\
+|X^i|=0 \forall i \in [11]-\{0\}
+\end{cases}
+\]
+ok so why is it that \( |X^i| \) don't fix anything? It is because if \(i\) fix \(x \in X\), then all elements in \(\langle x \rangle =\{x^n |n \in \mathbb{N} \}\) fix \(x\).
+\(\langle x \rangle \) is a subgroup of \(\mathcal{Z}_{11}\) but size of subgroup is a divisor of size of th group(Lagrange theorem). So \( \langle x \rangle = \mathbb{Z}_{11}\).
+this means that \(1\) fixes \(x\).  But any necklace fixed by shifting the gems by \(1\) position must be monochromatic. Hence a contradiction and \(i\) don't fix anything.
+So by Burnside lemma, we have \(|X/G|=\frac{1980}{11}=180\) different necklaces.
+
+<hr>
+
+So now consider a set \(X\) and a set of colors \(Y\), then functions from \(X\) to \(Y\) can be thought of as coloring of elements of \(X\) with colors in \(Y\).
+
+<div class="lemma">
+Given group action \(\phi\) of \(G\) to \(X\), we can create a group action \(\phi'\) of \(G\) to \(Y^X\).
+</div>
+<div class="proof">
+We construct group action \( \phi' \) as by simply letting the element \(g \in G\) sent the coloring \(f\) to the coloring \(f'\) where
+\(f'(x) =f(gx) \). Namely, \(f'\) colors the image of \(x\) of permutation by action of \(g\), the color of \(f(x)\).
+We let you check this is indeed a group action.
+</div>
+ Let's see an example,
+ consider the following matrices :
+\[
+\begin{bmatrix}
+1 &0\\
+0 &1
+\end{bmatrix}
+
+\begin{bmatrix}
+1 &1\\
+0 &1
+\end{bmatrix}
+
+\begin{bmatrix}
+1 &0\\
+1 &1
+\end{bmatrix}
+
+
+\begin{bmatrix}
+0 &1\\
+1 &0
+\end{bmatrix}
+
+\begin{bmatrix}
+0 &1\\
+1 &1
+\end{bmatrix}
+\begin{bmatrix}
+1 &1\\
+1 &0
+\end{bmatrix} \]
+
+These matrices, whose entries are in \(\mathbb{Z}_2\) form a group \(G\) under matrix multiplication.
+They are call general linear group in \(F_2\) and denoted by \(GL_2(F_2)\) in the literature.
+They act on the set of points \( X=\{(0,1),(1,0),(1,1)\) by doing matrix vector multiplication.
+We can see how each element in \(G\) permute element in \(X\) in this table here:
+
+<div class="table4">
+	<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-iifz">\(\phi\)</th>
+    <th class="tg-iifz">\(1:(1,1)\)</th>
+    <th class="tg-iifz">\(2:(1,0)\)</th>
+    <th class="tg-iifz">\(3:(0,1)\)</th>
+		<th class="tg-iifz">permutation</th>
+		<th class="tg-iifz">number of cycles</th>
+    <th class="tg-iifz">type of perm \(((1,1),(1,0),(0,1))\)</th>
+
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-iifz">\(\begin{bmatrix}<br>1 &amp;0\\<br>0 &amp;1<br>\end{bmatrix}\)</td>
+    <td class="tg-iifz">\(1:(1,1)\)</td>
+    <td class="tg-iifz">\(2:(1,0)\)</td>
+    <td class="tg-iifz">\(3:(0,1)\)</td>
+		<td class="tg-iifz">e</td>
+		<td class="tg-iifz">\(3\)</td>
+    <td class="tg-iifz">\(\{3,0,0\}\)</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">\(\begin{bmatrix}<br>1 &amp;1\\<br>0 &amp;1<br>\end{bmatrix}\)</td>
+    <td class="tg-iifz">\(3:(0,1)\)</td>
+    <td class="tg-iifz">\(2:(1,0)\)</td>
+    <td class="tg-iifz">\(1:(1,1)\)</td>
+		<td class="tg-iifz">\((13)(2)\)</td>
+		<td class="tg-iifz">\(2\)</td>
+    <td class="tg-iifz">\(\{1,1,0\}\)</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">\(\begin{bmatrix}<br>1 &amp;0\\<br>1 &amp;1<br>\end{bmatrix}\)</td>
+    <td class="tg-iifz">\(2:(1,0)\)</td>
+    <td class="tg-iifz">\(1:(1,1)\)</td>
+    <td class="tg-iifz">\(3:(0,1)\)</td>
+		<td class="tg-iifz">\((12)(3)\)</td>
+		<td class="tg-iifz">\(2\)</td>
+    <td class="tg-iifz">\(\{1,1,0\}\)</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">\(\begin{bmatrix}<br>0 &amp;1\\<br>1 &amp;0<br>\end{bmatrix}\)</td>
+    <td class="tg-iifz">\(1:(1,1)\)</td>
+    <td class="tg-iifz">\(3:(0,1)\)</td>
+    <td class="tg-iifz">\(2:(1,0)\)</td>
+		<td class="tg-iifz">\((1)(23)\)</td>
+		<td class="tg-iifz">\(2\)</td>
+    <td class="tg-iifz">\(\{1,1,0\}\)</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">\(\begin{bmatrix}<br>0 &amp;1\\<br>1 &amp;1<br>\end{bmatrix}\)</td>
+    <td class="tg-iifz">\(2:(1,0)\)</td>
+    <td class="tg-iifz">\(3:(0,1)\)</td>
+    <td class="tg-iifz">\(1:(1,1)\)</td>
+		<td class="tg-iifz">\((123)\)</td>
+		<td class="tg-iifz">\(1\)</td>
+    <td class="tg-iifz">\(\{0,0,1\}\)</td>
+  </tr>
+  <tr>
+    <td class="tg-iifz">\(\begin{bmatrix}<br>1 &amp;1\\<br>1 &amp;0<br>\end{bmatrix}\)</td>
+    <td class="tg-iifz">\(3:(0,1)\)</td>
+    <td class="tg-iifz">\(1:(1,1)\)</td>
+    <td class="tg-iifz">\(2:(1,0)\)</td>
+		<td class="tg-iifz">\((132)\)</td>
+		<td class="tg-iifz">\(1\)</td>
+    <td class="tg-iifz">\(\{0,0,1\}\)</td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+Here is infomation about stabilizers:
+
+<div class = "table2">
+	<style type="text/css">
+	.tg  {border-collapse:collapse;border-spacing:0;}
+	.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+	</style>
+	<table class="tg">
+	<thead>
+	  <tr>
+	    <th class="tg-iifz">group element</th>
+	    <th class="tg-iifz">\(\begin{bmatrix}<br>1 &amp;0\\<br>0 &amp;1<br>\end{bmatrix}\)</th>
+	    <th class="tg-iifz">\(\begin{bmatrix}<br>1 &amp;1\\<br>0 &amp;1<br>\end{bmatrix}\)</th>
+	    <th class="tg-iifz">\(\begin{bmatrix}<br>1 &amp;0\\<br>1 &amp;1<br>\end{bmatrix}\)<br></th>
+	    <th class="tg-iifz">\(\begin{bmatrix}<br>0 &amp;1\\<br>1 &amp;0<br>\end{bmatrix}\)<br></th>
+	    <th class="tg-iifz">\(\begin{bmatrix}<br>0 &amp;1\\<br>1 &amp;1<br>\end{bmatrix}\)</th>
+	    <th class="tg-iifz">\(\begin{bmatrix}<br>1 &amp;1\\<br>1 &amp;0<br>\end{bmatrix}\)<br></th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr>
+	    <td class="tg-iifz">its stabilizer</td>
+	    <td class="tg-iifz">\(\{(1,1),(1,0),(0,1)\}\)</td>
+	    <td class="tg-iifz">\(\{(1,0)\}\)</td>
+	    <td class="tg-iifz">\(\{(0,1)\}\)</td>
+	    <td class="tg-iifz">\(\{(1,1)\}\)</td>
+	    <td class="tg-iifz">\(\emptyset\)</td>
+	    <td class="tg-iifz">\(\emptyset\)</td>
+	  </tr>
+	</tbody>
+	</table>
+</div>
+So now consider coloring the points in two color: red and green which can be thought of as entries in \([2]=\{1,2\}\).
+then for example, the induced action \(\phi'\) would let group element:
+\[\begin{bmatrix}
+1 &1\\
+1 &0
+\end{bmatrix}\]
+send the mapping: \(f \in [2]^X, \{(1,1):1, (1,0):2, (0,1):1\}\) to the mapping \(\{ (1,1):2, (1,0):1, (0,1):1\}\)
+Here is the table showing the induced action \(\phi'\):
+
+<div class = "table3" id = "tablephiprime">
+	<style type="text/css">
+	.tg  {border-collapse:collapse;border-spacing:0;}
+	.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+	</style>
+	<table class="tg">
+	<thead>
+	  <tr>
+	    <th class="tg-iifz"> \(\phi'\)</th>
+	    <th class="tg-iifz">\(1:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}<br>\)<br></th>
+	    <th class="tg-iifz">\(2:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}\)<br></th>
+	    <th class="tg-iifz">\(3:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}<br>\)<br></th>
+	    <th class="tg-iifz">\(4:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}\)<br></th>
+	    <th class="tg-iifz">\(5:\begin{cases}<br>(1,1) : 2\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}\)<br></th>
+	    <th class="tg-iifz">\(6:\begin{cases}<br>(1,1) : 2\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}\)</th>
+	    <th class="tg-iifz">\(7:\begin{cases}<br>(1,1) : 2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}\)</th>
+	    <th class="tg-iifz">\(8:\begin{cases}<br>(1,1) : 2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}\)</th>
+			<th class="tg-iifz">permutation of \([8]\) representing the functions</th>
+			<th class="tg-iifz">type of permutation</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr>
+	    <td class="tg-iifz">\(\begin{bmatrix}<br>1 &amp;0\\<br>0 &amp;1<br>\end{bmatrix}\)</td>
+	    <td class="tg-iifz">\(1:\begin{cases}<br>(1,1) : 1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}\)<br></td>
+	    <td class="tg-iifz">\(2:\begin{cases}<br>(1,1) : 1\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}\)<br></td>
+	    <td class="tg-iifz">\(3:\begin{cases}<br>(1,1) : 1\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}\)<br></td>
+	    <td class="tg-iifz">\(4:\begin{cases}<br>(1,1) : 1\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(5:\begin{cases}<br>(1,1) : 2\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(6:\begin{cases}<br>(1,1) : 2\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(7:\begin{cases}<br>(1,1) : 2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(8:\begin{cases}<br>(1,1) : 2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}\)</td>
+			<td class="tg-iifz">e</td>
+			<td class="tg-iifz">\(\{8,0,0,0,0,0,0,0\}\)</td>
+
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">\(\begin{bmatrix}<br>1 &amp;1\\<br>0 &amp;1<br>\end{bmatrix}\)</td>
+	    <td class="tg-iifz">\(1:\begin{cases}<br>(1,1) : 1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}\)<br></td>
+	    <td class="tg-iifz">\(5:\begin{cases}<br>(1,1) : 2\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}\)<br></td>
+	    <td class="tg-iifz">\(3:\begin{cases}<br>(1,1) : 1\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}\)<br></td>
+	    <td class="tg-iifz">\(7:\begin{cases}<br>(1,1) : 2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(2:\begin{cases}<br>(1,1) : 1\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(6:\begin{cases}<br>(1,1) : 2\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(4:\begin{cases}<br>(1,1) : 1\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(8:\begin{cases}<br>(1,1) : 2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}\)</td>
+			<td class="tg-iifz">\((1)(25)(3)(47)(6)(8)\)</td>
+			<td class="tg-iifz">\(\{4,2,0,0,0,0,0,0\}\)</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">\(\begin{bmatrix}<br>1 &amp;0\\<br>1 &amp;1<br>\end{bmatrix}\)</td>
+	    <td class="tg-iifz">\(1:\begin{cases}<br>(1,1) : 1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}\)<br></td>
+	    <td class="tg-iifz">\(2:\begin{cases}<br>(1,1) : 1\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}\)<br></td>
+	    <td class="tg-iifz">\(5:\begin{cases}<br>(1,1) : 2\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}\)<br></td>
+	    <td class="tg-iifz">\(6:\begin{cases}<br>(1,1) : 2\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(3:\begin{cases}<br>(1,1) : 1\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(4:\begin{cases}<br>(1,1) : 1\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(7:\begin{cases}<br>(1,1) : 2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(8:\begin{cases}<br>(1,1) : 2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}\)</td>
+			<td class="tg-iifz">\((1)(2)(35)(46)(7)(8)\)</td>
+			<td class="tg-iifz">\(\{4,2,0,0,0,0,0,0 \}\)</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">\(\begin{bmatrix}<br>0 &amp;1\\<br>1 &amp;0<br>\end{bmatrix}\)</td>
+	    <td class="tg-iifz">\(1:\begin{cases}<br>(1,1) : 1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}\)<br></td>
+	    <td class="tg-iifz">\(3:\begin{cases}<br>(1,1) : 1\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}\)<br></td>
+	    <td class="tg-iifz">\(2:\begin{cases}<br>(1,1) : 1\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}\)<br></td>
+	    <td class="tg-iifz">\(4:\begin{cases}<br>(1,1) : 1\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(5:\begin{cases}<br>(1,1) : 2\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(7:\begin{cases}<br>(1,1) : 2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(6:\begin{cases}<br>(1,1) : 2\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(8:\begin{cases}<br>(1,1) : 2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}\)</td>
+			<td class="tg-iifz">\((1)(23)(4)(5)(67)(8)\)</td>
+			<td class="tg-iifz">\(\{4,2,0,0,0,0,0,0\}\)</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">\(\begin{bmatrix}<br>0 &amp;1\\<br>1 &amp;1<br>\end{bmatrix}\)</td>
+	    <td class="tg-iifz">\(1:\begin{cases}<br>(1,1) : 1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}\)<br></td>
+	    <td class="tg-iifz">\(5:\begin{cases}<br>(1,1) : 2\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}\)<br></td>
+	    <td class="tg-iifz">\(2:\begin{cases}<br>(1,1) : 1\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}\)<br></td>
+	    <td class="tg-iifz">\(6:\begin{cases}<br>(1,1) : 2\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(3:\begin{cases}<br>(1,1) : 1\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(7:\begin{cases}<br>(1,1) : 2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(4:\begin{cases}<br>(1,1) : 1\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(8:\begin{cases}<br>(1,1) : 2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}\)</td>
+			<td class="tg-iifz">\((1)(253)(467)(8)\)</td>
+			<td class="tg-iifz">\(\{2,0,2,0,0,0,0,0\}\)</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">\(\begin{bmatrix}<br>1 &amp;1\\<br>1 &amp;0<br>\end{bmatrix}\)</td>
+	    <td class="tg-iifz">\(1:\begin{cases}<br>(1,1) : 1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}\)<br></td>
+	    <td class="tg-iifz">\(3:\begin{cases}<br>(1,1) : 1\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}\)<br></td>
+	    <td class="tg-iifz">\(5:\begin{cases}<br>(1,1) : 2\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}\)<br></td>
+	    <td class="tg-iifz">\(7:\begin{cases}<br>(1,1) : 2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(2:\begin{cases}<br>(1,1) : 1\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(4:\begin{cases}<br>(1,1) : 1\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(6:\begin{cases}<br>(1,1) : 2\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(8:\begin{cases}<br>(1,1) : 2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}\)</td>
+			<td class="tg-iifz">\((1)(235)(476)(8)\)</td>
+			<td class="tg-iifz">\(\{2,0,2,0,0,0,0,0\}\)</td>
+	  </tr>
+	</tbody>
+	</table>
+</div>
+
+We also list all its orbits,elements in different columns belongs to different orbit in the following table:
+
+<div class = "table6" id ="config1">
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-iifz">orbits/configuration of:<br></th>
+    <th class="tg-iifz">\(1:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}\)<br></th>
+    <th class="tg-iifz">\(2:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}\)</th>
+    <th class="tg-iifz">\(4:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}\)<br><br></th>
+    <th class="tg-iifz">\(8:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}\)</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-iifz"></td>
+    <td class="tg-iifz"></td>
+    <td class="tg-iifz">\(5:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}\)</td>
+    <td class="tg-iifz">\(7:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}\)<br></td>
+    <td class="tg-iifz"></td>
+  </tr>
+  <tr>
+    <td class="tg-iifz"></td>
+    <td class="tg-iifz"></td>
+    <td class="tg-iifz">\(3:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}\)</td>
+    <td class="tg-iifz">\(6:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}\)</td>
+    <td class="tg-iifz"></td>
+  </tr>
+	<tr>
+		<td class="tg-iifz">weight</td>
+		<td class="tg-iifz">\(8\)</td>
+		<td class="tg-iifz">\(12\)</td>
+		<td class="tg-iifz">\(18\)</td>
+		<td class="tg-iifz">\(27\)</td>
+	</tr>
+</tbody>
+</table>
+
+</div>
+
+<div class="definition">
+Let \(p\) be a permutation on \(X\). the \(\textbf{type}\) of \(p\) is the set \(\{b_1,b_2,..,b_n\}\) where \(b_i\) is the number of cycles of length \(i\) in the cycle decomposiiton of \(p\).
+</div>
+For example, the permutation \((12)(345)(678)\) of \([9]\) has type \(\{1,1,2,0,0,0,0,0,0\}\).
+a small remainder of what is a cycle decomposition, \((12)(345)(678)\) is a cycle decomposition of the permutation it defines and it has a 2-cycles\((12)\),
+two \(3\)-cycles \((345),(678)\).
+
+<div class="definition">
+Given group action \(\phi\) of \(G\) to \(X\) where \(|X|=n\), \(\textbf{the Cycle index polynomial}\) is defined as:
+\[Z_{\phi}(x_1,...,x_n) = \frac{1}{|G|}\sum_{g \in G}\prod_{i=1}^n x_i^{b_i(g)}\]
+Here, \(b_i(g)\) is the \(i^{th}\) element of the type of the permutation induced by \(g\).
+</div>
+For example, for the group action of \(M_2(F_2)\) on the set \(F_2^2 -{(0,0)}\) in the example above,
+the cycle index polynomial is:
+
+\[ Z_{\phi}(x_1,x_2,x_3) = \frac{1}{6} ( 2x_3+3x_1x_2+x_1^3)\]
+\[ Z_{\phi'}(x_1,x_2,x_3,x_4,x_5,x_6,x_7,x_8)= \frac{1}{6} (x_1^8+3x_1^4x_2^2+2x_1^2x_3^2) \]
+
+<div class="definition">
+Given action \(\phi\) of a group \(G\) to a set \(X\), this induces an action \(\phi'\) of \(G\) on \(Y^X\).
+Two functions \(f,g \in Y^X\) are \(\textbf{equivalent}\) if they belongs to the same orbit of \(\phi'\).
+A \(\textbf{configuration}\) is an orbit of the action \(\phi'\)
+</div>
+
+<div class="definition">
+Given a function \(w : Y \to \mathbb{R}\), then the weight of a function \(f \in Y^X\) is
+\[W(f) = \prod_{x \in X} w(f(x)) \]
+The weight all any function in the same configuration \(c\) is the same and just call it the weight of the configuration \(W(c)\)
+</div>
+For example, if we give weight \(w : [2] \to \mathbb{R}, w(1)=2, w(2)=3 \) then in the above example, the weight of functions is:
+
+<div class = "table5">
+	<style type="text/css">
+	.tg  {border-collapse:collapse;border-spacing:0;}
+	.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+	</style>
+	<table class="tg">
+	<thead>
+	  <tr>
+	    <th class="tg-iifz">\(f \in [2]^{F_2^2-\{(0,0)\}}\)<br></th>
+	    <th class="tg-iifz">\(1:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}\)<br></th>
+	    <th class="tg-iifz">\(2:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}\)</th>
+	    <th class="tg-iifz">\(3:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}\)<br><br></th>
+	    <th class="tg-iifz">\(4:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}\)<br><br></th>
+	    <th class="tg-iifz">\(5:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}\)</th>
+	    <th class="tg-iifz">\(6:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}\)<br></th>
+	    <th class="tg-iifz">\(7:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}\)<br></th>
+	    <th class="tg-iifz">\(8:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}\)</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr>
+	    <td class="tg-iifz">weight \(w(1)=2, w(2)=3\)</td>
+	    <td class="tg-iifz">\(2^3=8\)</td>
+	    <td class="tg-iifz">\(2^2 \cdot 3=12\)</td>
+	    <td class="tg-iifz">\(2^2 \cdot 3=12\)<br></td>
+	    <td class="tg-iifz">\(2 \cdot 3^2=18\)</td>
+	    <td class="tg-iifz">\(2^2 \cdot 3=12\)</td>
+	    <td class="tg-iifz">\(2 \cdot 3^2=18\)</td>
+	    <td class="tg-iifz">\(2 \cdot 3^2=18\)</td>
+	    <td class="tg-iifz">\(3^3=27\)</td>
+	  </tr>
+	</tbody>
+	</table>
+</div>
+
+
+<div class="definition">
+Given action \(\phi\) of \(G\) to on set \(X\), and induced action \(\phi'\) of \(G\) on \(Y^X\) and weight function \(w: Y \to \mathbb{R}  \),
+Let \(C\) be the set of all configurations of \(Y^X\), then the \(\textbf{Configuration Generating Function}\) is defined as:
+\[ F(C) = \sum_{c \in C} W(c) \]
+</div>
+For our example, refer to the configuration in the <a href="groupaction.html#config1">table</a> above to get CGF is \(8+12+18+27=65\).
+
+<div class="theorem">
+Let \(G\) be a group, and \(X,Y\) be finite sets, where \(|X| = n\). Then for any group action \(\phi\) of \(G\) on \(X\), the number of distinct configurations in \(Y^X\) is :
+\[|C| = \frac{1}{|G|} \sum_{g \in G}|Y|^{c(g)}=Z_{\phi}(|Y|,...,|Y|)\]
+Here, \(c(g)\) is the number of cycles in the cycle decomposition of the permutation induced by \(g\) on the set \(X\).
+</div>
+For example, in our example of action \(\phi'\) induced by action \(\phi\) of \(GL_{2}(F_2) \) to \(F_2^2 - \{(0,0)\}\), the number of configuration is \(4\) and we have:
+\[4 = \frac{1}{6}(2^3+3 \cdot 2^2+2 \cdot 2)= \frac{1}{6}(8+12+4)=4 \]
+
+<div class="theorem">
+Let \(G\) be a group and \(X,Y\) be finite sets with \(|X|=n\). Let \(w\) be a weight function on \(Y\). Then for an action \(\phi\) of group \(G\) on \(X\),
+the CGF is :
+\[Z_{\phi}(\sum_{y \in Y} w(y), \sum_{y \in Y} w(y)^2,..., \sum_{y \in Y} w(y)^n )\]
+</div>
+<div class="proof">
+Let \(A(w)\) be the set of configurations whose weight is \(w\), \(S_{gg}(w)\) be the set of functions fixed by \(g\) whose weight is \(w\)(We have an abuse of notation here just for the purpose of this proof. \(S_{xx}\) usually means stabilizer of \(x\), but here \(S_{gg}\) means the set of elements fixed by \(g \in G\)).
+In our example, we have the table of \(S_{gg}\):
+<div class = "table7">
+	<style type="text/css">
+	.tg  {border-collapse:collapse;border-spacing:0;}
+	.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+	</style>
+	<table class="tg">
+	<thead>
+	  <tr>
+	    <th class="tg-iifz">\(S_{gg}(w)\)<br><br>columns: group element \(g\)<br>row: weight \(w\)<br></th>
+	    <th class="tg-iifz">8<br></th>
+	    <th class="tg-iifz">12</th>
+	    <th class="tg-iifz">18</th>
+	    <th class="tg-iifz">27</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr>
+	    <td class="tg-iifz">\(\begin{bmatrix}<br>1 &amp; 0\\<br>0 &amp; 1<br>\end{bmatrix}\)</td>
+	    <td class="tg-iifz">\(1:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}<br><br>\)<br><br></td>
+	    <td class="tg-iifz">\(2:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}<br><br>5:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}<br><br>3:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}<br>\)</td>
+	    <td class="tg-iifz">\(4:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}<br><br>7:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}<br><br>6:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}<br>\)</td>
+	    <td class="tg-iifz">\(8:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}<br>\)</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">\(\begin{bmatrix}<br>1 &amp; 1\\<br>0 &amp; 1<br>\end{bmatrix}\)</td>
+	    <td class="tg-iifz">\(1:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}\)</td>
+	    <td class="tg-iifz">\(3:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}<br><br>\)</td>
+	    <td class="tg-iifz">\(6:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}<br><br>\)</td>
+	    <td class="tg-iifz">\(8:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}<br><br>\)</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">\(\begin{bmatrix}<br>1 &amp; 0\\<br>1 &amp; 1<br>\end{bmatrix}\)</td>
+	    <td class="tg-iifz">\(1:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}<br><br>\)</td>
+	    <td class="tg-iifz">\(2:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases}<br><br>\)</td>
+	    <td class="tg-iifz">\(7:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases}<br><br>\)</td>
+	    <td class="tg-iifz">\(8:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}<br><br>\)</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">\(\begin{bmatrix}<br>0 &amp; 1\\<br>1 &amp; 0<br>\end{bmatrix}\)</td>
+	    <td class="tg-iifz">\(1:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}<br><br>\)</td>
+	    <td class="tg-iifz">\(5:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}<br><br>\)</td>
+	    <td class="tg-iifz">\(4:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}<br><br>\)</td>
+	    <td class="tg-iifz">\(8:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}<br><br>\)</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">\(\begin{bmatrix}<br>0 &amp; 1\\<br>1 &amp; 1<br>\end{bmatrix}\)</td>
+	    <td class="tg-iifz">\(1:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}<br><br>\)</td>
+	    <td class="tg-iifz"></td>
+	    <td class="tg-iifz"></td>
+	    <td class="tg-iifz">\(8:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}<br><br>\)<br></td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">\(\begin{bmatrix}<br>1 &amp; 1\\<br>1 &amp; 0<br>\end{bmatrix}\)</td>
+	    <td class="tg-iifz">\(1:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases}<br><br>\)</td>
+	    <td class="tg-iifz"></td>
+	    <td class="tg-iifz"></td>
+	    <td class="tg-iifz">\(8:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases}<br><br>\)</td>
+	  </tr>
+	</tbody>
+	</table>
+</div>
+Then when restricting the action \(\phi'\) on the subset of functions in \(Y^X\) for which weight is \(w\), we can apply Burnside lemma to get:
+\[ |A(w)| = \frac{1}{|G|} \sum_{g \in G} |S_{gg}(w)|\].
+In our example, we get for instance \(|A(12)|=\frac{1}{6}(3+1+1+1)=6\).
+We group the CGF by weight to get:
+
+\[
+\begin{gather*}
+CGF & = \sum_{c \in C}W(c) \\
+& = \sum_w w|A(w)| \\
+& = \sum_w \frac{w}{|G|} \sum_{g \in G} |S_{gg}(w)| \\
+& = \frac{1}{|G|}\sum_{g \in G} \sum_w w|S_{gg}(w)| \\
+& = \frac{1}{|G|} \sum_{g \in G} \sum_{f \in S_{gg}} W(f)
+\end{gather*}
+\]
+In our example, all orbits have different weight, so our example cannot fully express the use of the notation \(A(w)\) that is more useful when there are multiple orbits with the same weight.
+<br>
+Given \( f \in S_{gg} \), \(f\) must be constant on each of the cycles induced by \(g\) on \(X\), and so :
+\[\sum_{f \in S_{gg}} W(f) = \sum_{f \in S_{gg}} \prod_{i=1}^{k(g)} w(f(x_i))^{|C_i|}\]
+Here, \(C_1,...,C_k\) are the cycle decomposition of\(f\) and \(x_i\) is some element in \(C_i\).
+<br>
+Before we move on, we look at the expansion of formula like :\((a_1+a_2+...+a_m)^n\), this formulat is just the sum of terms each having \(n a_i\)'s like for example:
+\[ (a_1+a_2+a_3)^3= a_1a_1a_1+a_1a_1a_2+a_1a_1a_3+a_1a_2a_1+...a_3a_3a_3\]
+The case when we are taking the \(n^{th}\) power of sum of two variable is called binomial theorem.
+<br>
+In our example, take say \(g= \begin{bmatrix}1 &1 \\0 &1\end{bmatrix}\), it permute elements in \(F_2^2-\{(0,0)\}\) by swapping \((1,1),(0,1)\) and fix \((1,0)\) making 2 cycles.
+Well, suppose \(g\) send \((11)\) to \((0,1)\), then \(\phi'(g,f)((0,1))=f((1,1))\) but since \(\phi'(g,f)=f\) as \(f \in S_{gg}\), we must have \(f((0,1))=f((1,1))\).
+Same reasonning applied on any adjacent element on a cycle shows that \(f\) is constant on any cycle in the cycle decomposition of permutation induced by \(g\) in the action of \(\phi\).
+<br>
+Now each cycle in the cycle decomposition of induced permutation of \(g\) on \(X\) have \(m\) choise of values in \(Y\), so by binomial theorem type argument, we can rewrite as:
+\[ \sum_{f \in S_{gg}} = \prod_{i=1}^{k(g)}(w(y_1)^{|C_i|}+...+w(y_m)^{|C_i|}) = \prod_{i=1}^{k(g)} \sum_{y \in Y}w(y)^{|C_i|}\]
+
+Then putting into the CGF to get:
+\[ CGF = \frac{1}{|G|} \sum_{g \in G} \sum_{f \in S_{gg}} W(f) = \frac{1}{|G|} \sum_{g \in G} (\prod_{i=1}^{k(g)} \sum_{y \in Y}w(y)^{|C_i|}) \]
+
+We can count in a different way, there are \(b_j(g)\) cycles of length \(j\) so the expression becomes:
+\[CGF = \frac{1}{|G|} \sum_{g \in G} \prod_{j=1}^n (\sum_{y \in Y} w(y)^j)^{b_j(g)} = Z_{\phi}(\sum_{y \in Y} w(y),...,\sum_{y \in Y} w(y)^n)\]
+</div>
+<hr>
+We now see an example of application of the Polya's enumeration theorem.
+The example will be to count the number of no-isomorphic multigraph. multigraph is just a graph with potentially more than one edge between vertices.
+So we need to define our set \(X\), group \(G\) and action \(\phi\).
+We'll let
+
+\[\begin{cases}
+V= \{V_1,...,V_n\}, n \text{ vertex graph}\\
+E= \{ E_{12}, E_{13},...,E_{(n-1)(n)} \},  m = \frac{n(n-1)}{2} \text{ edges })\\
+Y = \{ y_0,y_1,...,y_m\}, y_i \text{denote the number of edges between vertices}
+\end{cases}
+\]
+We let \(S_v\) be the group of permutations of the vertices.
+We let \(S_{X|V}\) be the group of permutations on \(X\) induced by \(S_V\). So we can think of \(S_{X|V}\) acting on \(E\) via action \(\phi\).
+Then \(S_{X|V}\) act on \(Y^X\) via induced action \(\phi'\).
+
+So our example now will be to try to classify all multigraph on \(4\) vertices with at most \(2\) parallel edges.
+Let's first draw \(K_4\):
+
+<div id="mynetwork1"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "V1" },
+    { id: 2, label: "V2" },
+    { id: 3, label: "V3" },
+    { id: 4, label: "V4" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 2, to: 3 },
+		{ from: 4, to: 3 },
+		{ from: 1, to: 4 },
+		{ from: 2, to: 4 },
+		{ from: 1, to: 3 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork1");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+So now the set of vertices is \(V =\{V_1,V_2,V_3,V_4 \}\).
+The set of edges is \(X = \{(V_1,V_2),(V_2,V_3),(V_3,V_4),(V_4,V_1),(V_2,V_4),(V_1,V_3)\} \).
+We have \(Y=[3]\) and each functions in \(Y^X\) represent a multigraph, for example, the function
+\[ \{(V_1,V_2):1,(V_2,V_3):1,(V_3,V_4):0,(V_4,V_1):2,(V_2,V_4):1,(V_1,V_3):0 \}\]
+is the following graph:
+
+<div id="mynetwork2"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "V1" },
+    { id: 2, label: "V2" },
+    { id: 3, label: "V3" },
+    { id: 4, label: "V4" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 2, to: 3 },
+		{ from: 4, to: 1 },
+		{ from: 1, to: 4 },
+		{ from: 2, to: 4 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork2");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+Now \(|Y^X / S_{X|V}|\) is the number of no isomorphic multigraph because each group elements is a parallel edge preserving isomorphisms between the mutigraphs.
+
+<br>
+So to count them, we use the weighted Polya's enumeration theorem with the weight function that sends all elements in \(Y\) to \(1\) say.
+So we fist calculate the cycle index polynomial by calculating the type of each elements in \(S_{X|Y}\).
+Since permutation in \(S_{X|Y}\) of same shape should have the same types, it suffices to look at permutations up to equal shapes:
+<ul>
+<li>\(1\) of shape \((1)(2)(3)(4)\) with type equals to \(\{6,0,0,0,0,0\}\) </li>
+<li>\(8\) of shape \((1)(234)\)  with type equals to \(\{0,0,2,0,0,0\}\)</li>
+<li>\(3\) of shape \((12)(34)\) with type equals to \(\{2,2,0,0,0,0\}\)</li>
+<li>\(6\) of shape \((1234)\) with type equals to \(\{0,1,0,1,0,0\}\)</li>
+<li>\(6\) of shape \((12)(3)(4)\) with type equals to \(\{2,2,0,0,0,0\}\)</li>
+</ul>
+So the cycle index polynomial is :
+\[Z_{\phi}(x_1,x_2,x_3,x_4,x_5,x_6)=\frac{1}{24}x_1^6+8x_3^2+3x_1^2x_2^2+6x_2x_4+6x_1^2x_2^2\]
+So by PET(weighted), we get:
+\[|Y^X|/S_{X|Y}|=Z_{\phi}(3,3,3,3,3,3)=66\]
+
+<hr>
+So now we move on to more generalization. We are going to keep the action \(\phi\) of \(G\) on \(X\), but we are going to create another action \( \psi\) of another group \(H\) on \(Y\).
+Say for our example of action of \(GL_2(F_2)\) acting on \(X= F_2^2 - \{(0,0)\}\) and \(Y=[2]\). Now let \(S_2\) act on \(Y\) by permutations:
+
+<div class ="table8">
+	<style type="text/css">
+	.tg  {border-collapse:collapse;border-spacing:0;}
+	.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+	</style>
+	<table class="tg">
+	<thead>
+	  <tr>
+	    <th class="tg-iifz">\(\psi\)</th>
+	    <th class="tg-iifz">\(1\)</th>
+	    <th class="tg-iifz">\(2\)</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr>
+	    <td class="tg-iifz">\(e\)</td>
+	    <td class="tg-iifz">\(1\)</td>
+	    <td class="tg-iifz">\(2\)</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">\((12)\)</td>
+	    <td class="tg-iifz">\(2\)</td>
+	    <td class="tg-iifz">\(1\)</td>
+	  </tr>
+	</tbody>
+	</table>
+</div>
+
+<div class="definition">
+Given action \(\phi\) of \(G\) on \(X\) and \( \psi\) of \(H\) on \(Y\), two function \(f_1,f_2 \in Y^X\) are \(\textbf{Equivalent}\) \((f_1 \sim_{gh} f_2)\) if
+\[ \exists g \in G, h \in H \text{ s.t } \forall x \in X, f_1(gx)=hf_2(x) \]
+</div>
+We list below the effect of \(g,h\):
+
+<div class = "table9">
+	<style type="text/css">
+	.tg  {border-collapse:collapse;border-spacing:0;}
+	.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+	  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+	.tg .tg-iifz{background-color:#38fff8;border-color:#fe0000;text-align:left;vertical-align:top}
+	</style>
+	<table class="tg">
+	<thead>
+	  <tr>
+	    <th class="tg-iifz">action of \(G \times H\) <br></th>
+	    <th class="tg-iifz">\(1:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases} \)</th>
+	    <th class="tg-iifz">\(2:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases} \)</th>
+	    <th class="tg-iifz">\(3:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases} \)</th>
+	    <th class="tg-iifz">\(4:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases} \)</th>
+	    <th class="tg-iifz">\(5:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases} \)</th>
+	    <th class="tg-iifz">\(6:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases} \)</th>
+	    <th class="tg-iifz">\(7:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases} \)</th>
+	    <th class="tg-iifz">\(8:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases} \)</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr>
+	    <td class="tg-iifz">\((\begin{bmatrix}<br>1 &amp;0\\<br>0 &amp;1<br>\end{bmatrix},(1,2)) \)</td>
+	    <td class="tg-iifz">\(8:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(7:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(6:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(5:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(4:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(3:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases} \)<br></td>
+	    <td class="tg-iifz">\(2:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases} \)<br></td>
+	    <td class="tg-iifz">\(1:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases} \)<br></td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">\((\begin{bmatrix}<br>1 &amp;1\\<br>0 &amp;1<br>\end{bmatrix},(1,2)) \)</td>
+	    <td class="tg-iifz">\(8:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(4:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(6:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(2:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(7:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(3:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(5:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(1:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases} \)</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">\((\begin{bmatrix}<br>1 &amp;0\\<br>1 &amp;1<br>\end{bmatrix},(1,2)) \)</td>
+	    <td class="tg-iifz">\(8:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(7:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(4:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(3:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(6:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(5:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(2:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(1:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases} \)</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">\((\begin{bmatrix}<br>0 &amp;1\\<br>1 &amp;0<br>\end{bmatrix},(1,2)) \)</td>
+	    <td class="tg-iifz">\(8:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases} \)<br></td>
+	    <td class="tg-iifz">\(6:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(7:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(5:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(4:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(2:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(3:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(1:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases} \)</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">\((\begin{bmatrix}<br>0 &amp;1\\<br>1 &amp;1<br>\end{bmatrix},(1,2)) \)</td>
+	    <td class="tg-iifz">\(8:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(4:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(7:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(3:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(6:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(2:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(5:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(1:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases} \)</td>
+	  </tr>
+	  <tr>
+	    <td class="tg-iifz">\((\begin{bmatrix}<br>1 &amp;1\\<br>1 &amp;0<br>\end{bmatrix},(1,2)) \)</td>
+	    <td class="tg-iifz">\(8:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(6:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(4:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(2:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):2<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(7:\begin{cases}<br>(1,1):2\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(5:\begin{cases}<br>(1,1):2\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(3:\begin{cases}<br>(1,1):1\\<br>(1,0):2\\<br>(0,1):1<br>\end{cases} \)</td>
+	    <td class="tg-iifz">\(1:\begin{cases}<br>(1,1):1\\<br>(1,0):1\\<br>(0,1):1<br>\end{cases} \)</td>
+	  </tr>
+	</tbody>
+	</table>
+</div>
+We only listed the effect of \(GL_2(F_2) \times \{(1,2)\}\), the effect of \(GL_2(F_2) \times \{e\}\) is exactly like our <a href = "groupaction.html#tablephiprime" >previous table</a>.
+Here we can see that the two constant functions that sends \(F_2^2 - \{e\}\) to \(1,2\) are equivalent to each other and the rest of the functions are equivalent to each other.
+<div class ="lemma">
+Equivalence relation defined above is an equivalent relation, equivalent relation just means that elements that are related together form a partition of \(Y^X\).
+</div>
+<div class = "proof">
+It is know that to show that a relation is an equivalence relation, it needs to be shown that each elements is related to themselves, if a relates to b then b relates to a and if a relates to b and b relates to c then a relates to c.
+<ol>
+	<li> \(f_1 \sim_{ee} f_1 \)</li>
+	<li> \(f_1 \sim_{gh} f_2 \Rightarrow f_2 \sim_{g^{-1}h^{-1}} f_1 \)</li>
+	<li> \(f_1 \sim_{gh} f_2 \wedge f_2 \sim_{jk} f_3 \Rightarrow f_1 \sim_{gj,hk} f_3\)</li>
+</ol>
+So this proves the claim.
+</div>
+
+<div class = "theorem">
+(theorem 5.2) Generalized PET(weighted):
+</div>
+
+
+</body>
+
+
+
+
+</html>

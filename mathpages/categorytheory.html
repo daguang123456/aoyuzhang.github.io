@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <head>
+  	<title></title>
+  	<link rel="stylesheet" href="../styles.css">
+          <link rel="stylesheet" href="tensorntut.css">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+   <meta charset="utf-8">
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+
+    <style>
+  .theorem {
+      display: block;
+      margin: 12px 0;
+      font-style: italic;
+  }
+  .theorem:before {
+      content: "Theorem.";
+      font-weight: bold;
+      font-style: normal;
+  }
+  .lemma {
+      display: block;
+      margin: 12px 0;
+      font-style: italic;
+  }
+  .lemma:before {
+      content: "Lemma.";
+      font-weight: bold;
+      font-style: normal;
+  }
+  .proof {
+      display: block;
+      margin: 12px 0;
+      font-style: normal;
+  }
+  .proof:before {
+      content: "Proof.";
+      font-style: italic;
+  }
+  .proof:after {
+      content: "\25FC";
+      float:right;
+  }
+  .definition {
+      display: block;
+      margin: 12px 0;
+      font-style: normal;
+  }
+  .definition:before {
+      content: "Definition.";
+      font-weight: bold;
+      font-style: normal;
+  }
+  #mynetwork1 {
+    width: 500px;
+    height: 300px;
+    /*border: 1px solid lightgray;*/
+    margin: 0 auto;
+  }
+  .table1{
+    width: 500px;
+    height: 380px;
+    /*border: 1px solid lightgray;*/
+    margin: 0 auto;
+  }
+
+
+  </style>
+  <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/vis-graph3d@latest/dist/vis-graph3d.min.js"></script>
+    </head>
+  </head>
+
+<body>
+<h2><a href = "../pdffiles/cattheo.pdf">Category theory</a></h2>
+Ok category theory!!! woooo super cool right??? damnnn you say, holy shit this is fuking cool1!!!!! yeah bring more baby yeah!
+<br>
+ok relax bruh
+We start with an example,
+<ol>
+  <li>
+so we let \(1\) denote the set with one element, then \(1\) has the property:
+For all sets \(X\), there exists a unique map from \(X\) to \(1\).
+Ok this property is called "universal" because they state how the object being described related to the entire universe in which it lives(in this case the universe is all sets).</li>
+<li> The ring \(\mathbb{Z}\) has the property that given any other ring \(R\), there is a unique homomorphism from \(\mathbb{Z}\) to \(\mathbb{R}\).</li>
+
+So here we go, this is like a universal property of the ring \(\mathbb{Z}\). We can state it in the following lemma:
+<div class ="lemma">
+Let \(A\) be a ring such that for all ring \(R\), there exists a unique homomorphism
+\[ A \to R\]
+then \(A \cong \mathbb{Z}\)
+</div>
+<div class="proof">
+  There is a unique homomorphism from \(A\) to \(\mathbb{Z}\) cause \(\mathbb{Z}\) is initial, same from \(\mathbb{Z}\) to \(A\). And by uniqueness of homomorphism because of universal property of begin initial,
+  the two homomorphism are inverse of each other and so they are isomorphism! yesssssss there we go!
+</div>
+
+OKkkk we hav anota example,
+say u have basis \(\{v_1,v_2,...,v_n\}\) for a vector sapian \(V\) ok, and then u hav anota vector sapian \(W\), then given an injective map i from \([n] \to \{v_1,...,v_n\}\),
+and a map f from \([n]\) to \(W\), there is a unique linear map f' from \(V\) to \(W\) s.t \(i \circ f' = f\).
+<br>
+yet another example,
+SO we are given set \(S\) and we can put a discrete topology on it to get \(D(S)\). We denote the identity map from \(S\) to \(D\(S)\) by \(i\). Then for all topological space \(X\), and function from \(S\) to \(X\),  there is a unique continous function
+ \(f'\) from \(D(S)\) to \(X\) such that \(i \circ f' = f\).
+ <br>
+ Yet another example,
+ We have vector space \(U,V\), then there is a vector space T, and bilinear map \(b : U \times V \to T\) such that for any vector space \(W\) and bilinear map \(f\) from \(U \times V\) to \(W\), there is a unique linear map \(f'\) from \(T\) to \(W\) such that
+ \[b \circ f' = f\]
+ <br>
+ yet another example:
+ let \( f:G \to H\) be a homomorphism of groups,
+
+ <div class = "exec">
+   \( \textbf{0.10}\), Let \(S\) be a set, The indiscrete topological space \(I(S)\) is the space whose set of points is \(S\) and whose only open subsets are \(\emptyset\) and \(S\) itself. Imitating Example \(0.5\),
+    find a universal property satisfied by the space \(I(S)\).
+  </div>
+  <div class = "sol">
+   Given any topological space \(X\) and any map \(f\) from \(X\) to \(S\), then \(f\) is continous.
+</div>
+
+Ok fine let's start with the definition of Category:
+
+<div class = "definition">
+A \(\textbf{category}\) \(\mathscr{A}\) consists of:
+<ul>
+  <li> a collection \(ob(\mathscr{A})\) of objects</li>
+  <li> for two object \(A,B \in ob(\mathscr{A})\), a collection \(\mathscr{A}(A,B)\) of maps called morphisms from \(A\) to \(B\),</li>
+  <li>for each \(A, B, C \in ob(\mathscr{A})\), a function
+    \[ \mathscr{A}(B,C) \times \mathscr{A}(A,B) \to \mathscr{A}(A,C) \]
+    that sends \((g,f) \to g \circ f\), that is called \(\textbf{composition}\).</li>
+    <li>For each \(A \in ob(\mathscr{A}) \), there is an element \(1_A\) of \(\mathscr{A}(A,A)\) that is called identity on \(A\)</li>
+  </ul>
+  that satisfies:
+  <ul>
+    <li>  for each \(f \in \mathscr{A}(A,B), g \in \mathscr{A}(B,C), h \in \mathscr{A}(C,D)\) we have \((h \circ g) \circ f = h \circ (g \circ f) \)</li>
+    <li> for each \(f \in \mathscr{A}(A,B) \), we have \(f \circ 1_A = f = 1_B \circ f \).</li>
+  </ul>
+  If \( f \in \mathscr{A}(A,B)\) then we call \(A\) \(\textbf{domain}\) of \(f\) and \(B\) the \(\textbf{codomain}\) of \(f\).
+
+</div>
+
+A example of category is the category of group \(\textbf{Grp}\) with morphisms the group homomorphisms.
+<div class ="definition">
+A map \(f : A \to B\) in a category \(\mathscr{A}\) is an \(\textbf{isomorphism}\) if there exists a map \(g: B \to A \) such that \(gf =1_A\) and \(fg = 1_B\).
+we call \(g\) the \(\textbf{inverse}\) of \(f\) and write \(g = f^{-1}\). If there is isomorphism from \(A\) to \(B\), we say \(A, B\) are \(\textbf{isomorphic}\).
+</div>
+For example, in the category of group, the isomorphism between two object is exactly the group isomorphism.
+<div class ="definition">
+A \(\textbf{discrete}\) category is a category consisting of objects with their identity maps and no other morphism between objects.
+</div>
+
+<div class = "definition">
+Every category \(\mathscr{A}\) has an \(\textbf{opposite}\) or \(\textbf{dual}\) category that is denoted by \(\mathscr{A}^{op}\), that is defined by reversing the arrow representing morphism between objects.
+</div>
+
+<div class ="definition">
+Given categories \(\mathscr{A}, \mathscr{B}\), the \(\textbf{product category} \) is denoted by \(\mathscr{A} \times \mathscr{B}\) and is defined as:
+<ul>
+  <li> \(ob(\mathscr{A} \times \mathscr{B}) = ob(\mathscr{A}) \times ob(\mathscr{B}) \)</li>
+  <li> \((\mathscr{A} \times \mathscr{B})((A,B),(A',B')) = \mathscr{A}(A,A') \times \mathscr{B}(B,B')\)</li>
+</ul>
+</div>
+
+<div class ="definition">
+Let \(\mathscr{A}, \mathscr{B}\) be categories. A \(\textbf{functor}\) \(F : \mathscr{A} \to \mathscr{B}\) consists of
+<ul>
+  <li> a function : \(ob(\mathscr{A}) \to ob(\mathscr{B}) \) written as \(A \to F(A)\)</li>
+  <li>for each \(A,A' \in \mathscr{A}, a function \(\mathscr{A}(A,A') \to \mathscr{B}(F(A),F(A')) written as \(f \to F(f)\) that satisfy:
+  <ul>
+    <li> \(F(f' \circ f) = F(f') \circ F(f) \) whenever \(f\) is an arrwo from \(A\) to \(A'\) and \(f'\) is an arrow from \(A'\) to \(A''\).  </li>
+  <li> F(1_A)=1_{F(A)} </li>
+</ul>
+
+  </li>
+</ul>
+</div>
+
+</body>
+
+
+
+
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>糖果(Candy)</h2>
+    行中有\(N\)个孩子。每个孩子都有一个评分值。
+    <br>
+    我们正在为符合以下要求的这些孩子提供糖果：
+    <ul>
+      <li>每个孩子必须至少吃一个糖果</li>
+      <li>评分较高的孩子比邻居得到的糖果更多。</li>
+    </ul>
+    我们必须给的最低糖果是多少？
+
+    <br>
+    There are \(N\) children standing in a line. Each child is assigned a rating value.
+    <br>
+    We are giving candies to these children subjected to the following requirements:
+    <ul>
+        <li>Each child must have at least one candy.</li>
+        <li>Children with a higher rating get more candies than their neighbors.</li>
+    </ul>
+    What is the minimum candies we must give?
+    <br>
+    例:
+    <div class ="table1">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+      </style>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">输入：</th>
+          <th class="tg-fv28">1,2,2</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">输出:</td>
+          <td class="tg-fv28">4</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">说明:</td>
+          <td class="tg-fv28">我们可以分别为第一个，第二个和第三个孩子分配1，2，1个糖果。
+             第三个孩子因为满足上述两个条件而获得了1个糖果。</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    Example:
+    <div>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">Input:</th>
+          <th class="tg-fv28">1,2,2</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">Output:</td>
+          <td class="tg-fv28">4</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">Explanation:</td>
+          <td class="tg-fv28">We can allocate to the first, second and third child with \(1, 2, 1\) candies respectively.<br>
+             The third child gets \(1\) candy because it satisfies the above two conditions.</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <hr>
+    <label for="tagFoodt">请输入排成一行的孩子的评分值:(Please enter the rating values of the children that are standing in the row)</label><br>
+    <input type="text" id = "tagIntegerSequence" class="numbersonly" value="2"><br>
+    <input type="Button" onclick="computeResult()" value="分发糖果(Distributes Candies)" /> <br>
+
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+    <script>
+      var inputSequenceString ;
+      var inputNumbersList = [];
+      var resultList = [];
+
+      function transformStringListToIntegerList(aStringList){
+        var theCorrepondingIntegerList = []; //声明一个变量，该变量包含一个空列表，该空列表将用于存储转换后的整数列表(Declare a variable that holds an empty list that will be used to store the transformed integer list.)
+        for(var index = 0 ; index < aStringList.length ; index++){ //通过使用for循环，我们遍历字符串列表中的所有元素，并对每个元素进行转换(By sing a for loop, we iterate over all elements in the list of string and perform the transformation to each of the elments)
+          theCorrepondingIntegerList.push(parseFloat(aStringList[index])); // 将字符串元素转换为整数元素，然后将结果附加到指定的整数列表中(transform the string element to an integer element and append the result into the designated integer list)
+        }
+        return theCorrepondingIntegerList;
+      }
+
+      function computeResult(){
+        var inputSequenceString = document.getElementById("tagIntegerSequence").value;
+        if(inputSequenceString.match('[^-, 0-9]')){
+            document.getElementById("tagMessage").innerHTML= "错误：输入的字符串只需要包含逗号或数字或负号(error: the input string needs to contain only commas or digits or negative sign)";
+            return -1;
+        }
+        var inputNumbersStringList = inputSequenceString.split(",");
+        inputNumbersList = transformStringListToIntegerList(inputNumbersStringList);
+        console.log(inputNumbersList);
+
+        resultList = [];
+        for(var i =0 ; i < inputNumbersList.length ; i++){
+          resultList.push(1);
+        }
+        console.log(resultList);
+        if(resultList.length === 1){
+          displayResult();
+        }
+        else{
+          for (var i = 1 ; i < resultList.length ; i++){
+            if(inputNumbersList[i] > inputNumbersList[i-1]){
+              resultList[i] = resultList[i-1]+1;
+            }
+          }
+          for(var j = resultList.length - 2; j > -1 ;  j--){
+            if(inputNumbersList[j] > inputNumbersList[i+1]){
+              resultList[i] = Math.max(resultList[i+1]+1, resultList[i]);
+            }
+          }
+          console.log(resultList);
+          displayResult();
+        }
+      }
+      function displayResult(){
+        clearTable("tagOutput")
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("我们向孩子们分发糖果的方法如下：(We distribute the candies to the children as follow)"));
+        var longestSequenceStr = "["+resultList[0];
+        var minimalValue = resultList[0];
+        var kidRank = "["+inputNumbersList[0];
+        for(var i = 1; i < resultList.length; i++){
+          minimalValue = minimalValue+resultList[i];
+          longestSequenceStr = longestSequenceStr + "," + resultList[i];
+          kidRank = kidRank + "," + inputNumbersList[i];
+        }
+        longestSequenceStr = longestSequenceStr +"]";//globalMaxLength
+        kidRank = kidRank +"]";
+        resultBody.appendChild(createDescriptionRow("分发糖果给孩子们的方式是(The way to distribute of the candies to the children is)",longestSequenceStr));
+        resultBody.appendChild(createDescriptionRow("孩子的评分值是(Rating values of the children is )",kidRank));
+        resultBody.appendChild(createDescriptionRow("所需的最小糖果数量为(Minimum number of candy needed is )",minimalValue));
+        resultTbl.append(resultBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>

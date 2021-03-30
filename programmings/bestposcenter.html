@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	  <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+      .chart{
+        width: 1000px;
+        height: 500px;
+        border: 1px solid lightgray;
+        margin: 0 auto;
+        background-color: coral;
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>服务中心的最佳位置(Best Position for a Service Centre)</h2>
+    一家送货公司希望在新城市建立新的服务中心。该公司在2D地图上知道该城市所有客户的位置，并希望以这样的位置建造新的中心：到所有客户的欧几里德距离的总和最小。
+    给定一个数组位置，其中\(positions [i] = [xi，yi]\)是第\(i\)个客户在地图上的位置，则将欧几里德距离的最小总和返回给所有客户。
+    换句话说，我们需要选择服务中心的位置\([xcentre，y​​centre]\)，以便最小化以下公式：
+    \[\sum_{i=0}^{n-1} \sqrt{(x_{centre} -x_i)^2+(y_{centre}-y_i)^2}\]
+    <br>
+    A delivery company wants to build a new service centre in a new city. The company knows the positions of all the customers in this city on a 2D-Map and wants to build the new centre in a position such that the sum of the euclidean distances to all customers is minimum.
+    Given an array positions where \(positions[i] = [xi, yi]\) is the position of the ith customer on the map, return the minimum sum of the euclidean distances to all customers.
+    In other words, you need to choose the position of the service centre \([xcentre, ycentre]\) such that the following formula is minimized:
+    \[\sum_{i=0}^{n-1} \sqrt{(x_{centre} -x_i)^2+(y_{centre}-y_i)^2}\]
+    <hr>
+
+    例:
+    <div class ="table1">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+      </style>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">输入：</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28"><img src="../images/house.jpg"></td>
+          <th class="tg-fv28">:顾客位置 = [[0,1],[1,0],[1,2],[2,1]]</th>
+        </tr>
+        <tr>
+          <td class="tg-fv28">输出:</td>
+          <td class="tg-fv28">4.0</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">说明:</td>
+          <td class="tg-fv28">如图所示，您可以看到选择[xcentre，y​​centre] = [1，1]<br>将使与每个客户的距离= 1，所有距离的总和为4，<br>这是我们可以实现的最小距离。</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    Example:
+    <div>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">Input:</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28"><img src="../images/house222.jpg"></td>
+          <th class="tg-fv28">positions = [[1,1],[3,3]]</th>
+        </tr>
+        <tr>
+          <td class="tg-fv28">Output:</td>
+          <td class="tg-fv28">2.82843</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">Explanation:</td>
+          <td class="tg-fv28">The minimum possible sum of distances<br> = sqrt(2) + sqrt(2) = 2.82843</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <hr>
+
+    <label for="tagXCoordinate">客户位置的x坐标:(x-coordinate of the customer position)</label><br>
+    <input type="number" step ="0.01" id = "tagXCoordinate" class="numbersonly" value="2"><br>
+    <label for="tagYCoordinate">客户位置的y坐标:(y-coordinate of the customer position)</label><br>
+    <input type="number" step ="0.01" id = "tagYCoordinate" class="numbersonly" value="2"><br>
+
+    <input type="Button" onclick="addTree()" value="添加客户(Add customer)" />
+<!--     <input type="Button" onclick="removeTree()" value="删除点(remove Point)" /> <br> -->
+    <div class = "chart">
+      <canvas id="myChart"></canvas>
+    </div>
+    <input type="Button" onclick="findMaxPointLine()" value="找最佳点（Find Best point)" /> <br>
+    <br>
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+
+
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+    <br>
+    提示(hint):<br>
+    梯度下降。(Gradient Decent.)
+
+    <script>
+      var datas = new Set(); // use to store data points
+      datas.add({x: 2, y: 3});
+      datas.add({x: 2, y: 4});
+      datas.add({x: 3, y: 5});
+      datas.add({x: 4, y: 6});
+      datas.add({x: 7, y: 8});
+      var resultt;
+      var ctx = document.getElementById('myChart').getContext('2d');
+
+      function createDataPointFromSet(){
+        var result = [];
+        for (let item of datas){
+          result.push(item);
+        }
+        return result;
+      }
+
+     function drawGraph(){
+        var scatterChart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [
+                {
+                  label: '点的坐标(Coordinate Of points)',
+                  data: createDataPointFromSet(),
+                  backgroundColor: "yellow",
+                  pointRadius: 4
+                }
+                // {
+                //   type: 'line',
+                //   label: '在线上的点(Points on the max line)',
+                //   data: theMaxLinePoints,
+                //   fill: true,
+                //   backgroundColor: "blue",
+                //   borderColor: "blue",
+                //   borderWidth: 2,
+                //   pointRadius: 7
+                // }
+                ]
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        type: 'linear',
+                        position: 'bottom'
+                    }]
+                }
+            }
+        });
+      }
+
+      function addTree(){
+        var tempXCoordinate = parseFloat(document.getElementById("tagXCoordinate").value);
+        var tempYCoordinate = parseFloat(document.getElementById("tagYCoordinate").value);
+        if(!(isNaN(tempXCoordinate) || isNaN(tempYCoordinate))){
+          datas.add({x: tempXCoordinate, y: tempYCoordinate});
+        }
+        //console.log(datas);
+        //findMaxPointLine()
+        drawGraph();
+      }
+      function computeDx(p, dataArray){
+        var result = 0;
+        //console.log(dataArray);
+
+        for(var i = 0 ; i< dataArray.length ; i++){
+          var temp1 = Math.pow(dataArray[i].x-p.x,2.0);
+          var temp2 = Math.pow(dataArray[i].y-p.y,2.0);
+          var temp5 = temp1+temp2;
+
+          console.log("temp1 "+temp1);
+          console.log("temp2 "+temp2);
+          console.log("temp3 "*temp5);
+          //result = result + Math.pow(Math.pow(dataArray[i].x-p.x,2) + Math.pow(dataArray[i].y-p.y,2),-1/2)*(p.x-dataArray[i].x);
+        }
+        //console.log(result);
+        return result;
+      }
+      function computeSumDistance(p,dataArray){
+        var result = 0;
+        for(var i = 0 ; i< dataArray.length ; i++){
+          result = result + Math.sqrt(Math.pow(dataArray[i].x-p.x,2) + Math.pow(dataArray[i].y-p.y,2));
+        }
+        console.log(result);
+        return result;
+      }
+
+      function findMaxPointLine(){
+        resultt=0;
+        dataArray = Array.from(datas);
+        console.log(dataArray);
+        //computeSumDistance({x:2,y:3},dataArray);
+        computeDx({x:2,y:3},dataArray);
+
+
+      }
+
+      function displayResult(){
+        clearTable("tagOutput")
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("结果如下(The result is as follow)"));
+        resultBody.appendChild(createDescriptionRow("在一条线上的最多点数为(Maximum number of points lying on same line is)",resultt));
+        var pointsString = "";
+        for(var i =0 ;i < theMaxLinePoints.length ; i++){
+          pointsString = pointsString+ "("+theMaxLinePoints[i].x+","+ theMaxLinePoints[i].y+") ";
+        }
+        resultBody.appendChild(createDescriptionRow("在线上的点是(The points on the line is)",pointsString));
+        resultTbl.append(resultBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>

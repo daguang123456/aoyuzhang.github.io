@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="../styles.css">
+        <link rel="stylesheet" href="tensorntut.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ <meta charset="utf-8">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+
+#mynetwork1 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork2 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork3 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork4 {
+  width: 600px;
+  height: 400px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork5 {
+  width: 600px;
+  height: 400px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork6 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork7 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork8 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork9 {
+  width: 700px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork10 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork11 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork12 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+#mynetwork13 {
+  width: 500px;
+  height: 300px;
+  /*border: 1px solid lightgray;*/
+  margin: 0 auto;
+}
+
+</style>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  </head>
+
+<body>
+<h2> Exam review</h2>
+We'll talk about function \(f: \mathbb{N} \to \mathbb{R}^{\geq 0} \).
+<div class="definition">
+Given functions \(f,g\), we have \(f \in O(G)\) if :
+\[ \exists n_0 \in \mathbb{N}, c_0 \in \mathbb{R}^{>0}, n \geq n_0 \Rightarrow f(n) \leq c_0 g(n) \]
+</div>
+
+<div class="definition">
+A function \(f: \mathbb{N} \to \mathbb{R}^{\geq 0} \) is \(\textbf{eventually no-decreasing}\)(ver 1) if :
+\[\exists n_0 \in \mathbb{N} \text{ s.t } n \geq n_0 \Rightarrow f(n+1) \geq f(n) \]
+</div>
+Example:
+\(f(x)=2\) is eventually no decreasing.
+
+<div class="definition">
+A function \(f: \mathbb{N} \to \mathbb{R}^{\geq 0} \) is \(\textbf{eventually no-decreasing}\)(ver 2) if :
+\[\exists n_0 \in \mathbb{N} s.t m \geq n \geq n_0 \Rightarrow f(m) \geq f(n) \]
+</div>
+
+<div class="lemma">
+The above two definition of eventually no decreasing is equivalent to each other
+</div>
+<div class="proof">
+Suppose version 1 of the definition and \(m \geq n \geq n_0\). Then \(f(m) \geq f(m-1) \geq...\geq f(n)\).
+<br>
+Suppose the version 2 of the definition, then we just take \(m:= n+1\).
+</div>
+
+<div class="definition">
+Given \(b \in \mathbb{N}^{\geq 2}\), a function \(f\) is b-\(\textbf{smooth}\) if it is eventually no decreasing and
+\[ \exists n_0 \in \mathbb{N}, c_b \in \mathbb{R}^{>0} \text{ s.t } n \geq n_0 \Rightarrow f(bn) \leq c_b f(n)\]
+
+\(f\) is \(\textbf{smooth}\) if it is \(b\)-smooth for all \(b \in \mathbb{N}^{\geq2}\).
+</div>
+
+<div class="definition">
+Given \(b \in \mathbb{N}^{ \geq 2}\), \(f\) is b-\(\textbf{smooth}\) if it is eventually non decreasing and
+\[ f_b \in O(f)\]
+Here, \(f_b(n) := f(bn)\)
+</div>
+
+<div class="lemma">
+A function \(f\) is smooth if and only if it is b-smooth for some \(b \in \mathbb{N}^{\geq 2}\)
+</div>
+<div class="proof">
+Suppose \(f\) is smooth then it is b-smooth by definition.
+<br>
+Suppose \(f\) is b-smooth for some \(b \in \mathbb{N}^{\geq 2}\), then
+\(\exists n_0 \in \mathbb{N}, c_b \in \mathbb{R}^{>0} \text{ s.t } n \geq n_0 \Rightarrow f(bn) \leq c_bf(n)\).
+Given some \(b \neq d \in \mathbb{N}^{\geq 2}\), then we have that for \( n \geq n_0\):
+\[f(an) = f( b^{\log_b a} n) \leq f(b^{\lceil \log_b a \rceil}n) \leq (c_b)^{\lceil \log_b a \rceil}f(n) = c'f(n)\]
+</div>
+For example,
+\(x^2\) is smooth because it is eventually no decreasing and it is 2-smooth as \((2x)^2 \leq 4x^2\). Therefore, it is smooth.
+<br>
+\(lg(n)\) is smooth because it is eventually no decreasing and it is 2-smooth as \(lg(bn)=ln(n)(1+\frac{lg(b)}{lg(n)}) \leq 2lg(n)\) if \(n \geq b\).
+<br>
+\(3^n\) is not smooth as \(3^{bn}=3^n(3^n)^{b-1} \) and \((3^n)^{b-1}\) grows arbitrary large with increase of \(n\).
+</body>
+
+<div class="definition">
+We say that function \(g\) is in big O of \(f\) restricted to \(P\), \(g \in O(f|P)\) if
+\[ \exists n_o \in \mathbb{N} , c \in \mathbb{R}^{>0} \text{ s.t } P \ni n \geq n_0 \Rightarrow g(n) \leq cf(n) \]
+</div>
+
+we denote by \(P_b\) the set \(\{b^k| k \in \mathbb{N}\}\)
+<div class="lemma">
+let \(f,t\) be functions such that \(t\) is eventually no decreasing and \(f\) is b-smooth then:
+\[ t \in O(f|P_b) \Rightarrow t \in O(f)\].
+</div>
+<div class="proof">
+
+Let \(n_0\) be such that \(n \geq n_0 \Rightarrow t(n+1) \geq t(n)\)
+<br>
+Let \(n_1 \in \mathbb{N}, c_b \in \mathbb{R}^{ \geq 0}\) be such that \(n \geq n_1 \Rightarrow f(bn) \leq c_bf(n)\)
+<br>
+Let \(n_2 \in \mathbb{N}, c_0 \in \mathbb{R}^{ \geq 0}\)  be such that \(b^m=n \geq n_2 \Rightarrow t(n) \leq c_0f(n) \)
+</div>
+Then for \( n \geq \max{n_0,n_1,n_2}\):
+\[t(n) < t(bn) = t(b b^{\lfloor \log_b n \rfloor}) \leq  c_0f(b b^{\lfloor \log_b n \rfloor}) \leq c_0c_bf(b^{\lfloor \log_b n \rfloor}) \leq c_0c_bf(n)\]
+
+<hr>
+<h2>Recurrence</h2>
+Consider the recurrence \(T(n) = 3T(\lfloor \frac{n}{2} \rfloor)+n\) and \(n > 0, T(0)=0\).
+Suppose that \(n= 2^k, k \in \mathbb{N}\, k \geq 1\). we have:
+\[T(2^k) = 3T(2^{k-1})+2^k, T(2^0)=1\]
+
+If we expand this out , we get :
+\[T(n) = 3^k + n \sum_{j=0}^{k-1}(\frac{3}{2})^j = 3^k-2^{k+1}\frac{2^k-3^k}{2^k}=3^{k+1}-2^{k+1}\]
+substituting \(n=2^k\) to get :
+\[T(n) = 3^{1+lg(n)} - 2^{1+lg(n)} = 3^{1+lg(n)}-2n\]
+
+We are interested in is the complexity of \(T\). We have shown that \(T(n) \in \Theta(3n^{lg(3)}-2n| n =2^k)\),
+if we show that \(3n^{lg(3)}-2n\) is smooth and \(T(n)\) is eventualy no decreasing, then \(T(n) \in \Theta(3n^{lg(3)}-2n)\).
+
+
+<hr>
+<h2>Complexity theory</h2>
+
+There are computational problems that takes a lot of time to compute even with the best available algorithm and the fasterst computer in the world.
+In complexity theory, we try to define what it means for a problem to be hard.
+It is a new subject as it is hardly very long ago that the concept of hardness of a computational problem has been formalized.
+The big idea is that if we know a problem P is hard and we can somehow transform problem P into another problem Q,
+then problem Q must be at least as hard as problem P.
+This is because if we can solve Q, then we can translate a solution to Q to a solution to P.
+So we try to classify and group together problems that are of similar difficulty using this idea of reduction.
+
+
+
+<div class="definition">
+A \(\textbf{conjunctive normal form }\) is a boolean function that is the form of conjunction of disjunction of literals.
+</div>
+For example,
+\( (x_1 \vee x_2 \vee x_3) \wedge (\bar{x_1} \vee x_2 \vee x_4) \wedge (x_1 \vee x_4)\) is in conjunctive normal form.
+
+<div class="definition">
+A boolean function \(f\) is called \(\textbf{satisfiable}\) if there is an assignment of boolean value to the variables of the function such that the function evaluates to true(\(1\)).
+</div>
+For example, \( (x_1 \vee x_2 \vee x_3) \wedge (\bar{x_1} \vee x_2 \vee x_4) \wedge (x_1 \vee x_4)\) is satisfyable as we can make the cuntion evaluate to true by setting \(x_1=true, x_2=true\).
+<div class="definition">
+A \(3-\textbf{SAT}\) problem asks if there is an assignment of truth values to a conjunctive normal form, where each clause contains 3 literals, that satisfy the CNF.
+</div>
+
+<div class="definition">
+An \(\textbf{Independent Set problem}\) asks if there is an independent set of size \(k\) in a graph.
+</div>
+
+<div class="definition">
+A \(\textbf{polynomial reduction}\) from problem A to problem B is a reduction of problem A, using polynomial amount of time with respect to size of problem A, to problem B.
+The reduction means a transfomation of problems so that if we solve problem B then we can translate the solution to a solution of problem A.
+If problem A is reducible to problem B,  we write \(A \leq_q B\).
+</div>
+
+<div class="lemma">
+\(3SAT \leq_p\) Independent Set
+</div>
+<div class="proof">
+Say we have a 3SAT problem,
+for example, \( (x_1 \vee x_2 \vee x_3) \wedge (\bar{x_1} \vee x_2 \vee x_4)\)
+We want to transform it into an instance of Independence Set problem.
+
+For our example, we build the following graph for the example problem.
+
+<div id="mynetwork1"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "1x1" },
+    { id: 2, label: "1x2" },
+    { id: 3, label: "1x3" },
+    { id: 4, label: "2x1b" },
+    { id: 5, label: "2x2" },
+		{ id: 6, label: "2x4" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 3, to: 2 },
+    { from: 3, to: 1 },
+    { from: 4, to: 5 },
+    { from: 5, to: 6 },
+    { from: 4, to: 6 },
+		{ from: 1, to: 4 },
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork1");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+What we did was to construct a clique for each clause where vertices in the clique represent the variables in the clause.
+Then we also connect vertex representing the variable and the vertex representing the negation of that variable.
+An independent set in this graph will select a vertex in each clique and will not select two vertices representing both a variable and its negation.
+If we set those variable choosen be the independent set to 1, we satisfy the 3-SAT problem.
+And for arbitrary 3-SAT problem, we do the same thing.
+</div>
+
+<div class="definition">
+A problem is in the set of \(\textbf{NP}\) problem, if when given a solution to the problem, we can verify the solution in polynomial time.
+</div>
+
+<div class="definition">
+A problem \(A\) is said to be \(\textbf{NP-complete}\) if given any NP problem X, then \(X \leq_q P\).
+</div>
+
+<div class="lemma">
+the 3-SAT problem is NP-complete
+</div>
+<div class="definition">
+the set of problems that can be solved using a polynomial amount of time with respect to the size of the input is called \(\textbf{P}\).
+</div>
+You get $1,000,000 reward if you can prove that the set P is the set NP
+<div class="definition">
+A \(\textbf{set cover}\) problem is : Given a set \(S\) and a collection \(F \subset 2^S\) of subsets in \(S\) such that \(\cup_{X \in F}X=S \),
+We want to know if there is a collection of \(k\) subsets in \(F\) whose union is \(S\).
+</div>
+
+<div class="definition">
+A \(\textbf{vertex cover}\) problem asks: Given a graph, is there a set of \(k\) vertices in the graph such that
+every edge in the graph is incident to at least one vertex in the set.
+</div>
+
+<div class="lemma">
+vertex cover problem can be reduced to set cover problem
+</div>
+<div class="proof">
+Given an instance of vertex cover problem, for example:
+
+<div id="mynetwork2"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "1x1" },
+    { id: 2, label: "1x2" },
+    { id: 3, label: "1x3" },
+    { id: 4, label: "2x1b" },
+    { id: 5, label: "2x2" },
+		{ id: 6, label: "2x4" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 3, to: 2 },
+    { from: 3, to: 1 },
+    { from: 4, to: 5 },
+    { from: 5, to: 6 },
+    { from: 4, to: 6 },
+		{ from: 1, to: 4 },
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork2");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+We create an instance of set cover problem as follow:, We make a set \(S =E(G)\).
+For our exmaple, \(S= \{(1x_2,1x_3),(1x_3,1x_1),(1x_1,1x_2),(1x_1,2x_1b),(2x_2,2x_1b),(2x_2,2x_4),(2x_4,2x_1b)\}\).
+Then we construct a collection of subsets by making a subset for each vertex where it contains all edges incident to that vertex.
+IN our example we make 6 subsets. Now a sulution to the set cover problem is a solution to the vertex colver problem.
+</div>
+
+<div class="definition">
+The 3-\(\textbf{Dimensional Matching Problem}\) ask the following:
+We are given three disjoint sets \(X,Y,X\) each of size \(n\) and a subset of their Cartesian product:
+\(T \subset X \times Y \times Z\). We would like to know, if there is a set of \(n\) triples in \(T\) so that each element of \(X \cup Y \cup Z\) is contained in exactly one of these triples?
+</div>
+
+<div class ="lemma">
+3-dimensional matching problem is np-complete
+</div>
+<!-- <div class="proof">
+We'll give a reduction from 3-SAT to 3-Dimentional matching. This will show that 3 Dimentional matching is as hard as 3-SAT and so must be NP-Complete
+So consider an instance of 3-SAT,
+</div> -->
+
+<div class="definition">
+A \(\textbf{n-Coloring problem}\) is the problem of determining weather a graph is n-colorable
+</div>
+<div class="lemma">
+3-coloring problem is NP-complete
+</div>
+<div class="proof">
+We'll reduce 3-SAT to 3-Coloring.
+Given an instance of a 3-SAT problem with variables \(x_1,...,x_n\) and terms \(C_1,...,C_k\).
+Consider our example: \( (x_1 \vee x_2 \vee x_3) \wedge (\bar{x_1} \vee x_2 \vee x_4)\).
+We create nodes \(n_i, \bar{n_i}\) for each variable \(x_i\) and we create three nodes \(T,F,B\) to represent True, False and Base.
+We joint \(n_i, \bar{n_i}\) and each of them to \(B\). We joint \(T,F,B\).
+The result looks like:
+
+<div id="mynetwork3"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "T" },
+    { id: 2, label: "F" },
+    { id: 3, label: "B" },
+    { id: 4, label: "x1" },
+    { id: 5, label: "x1b" },
+		{ id: 6, label: "x2" },
+		{ id: 7, label: "x2b" },
+		{ id: 8, label: "x3" },
+		{ id: 9, label: "x3b" },
+		{ id: 10, label: "x4" },
+		{ id: 11, label: "x4b" }
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 3, to: 2 },
+    { from: 3, to: 1 },
+
+    { from: 4, to: 5 },
+    { from: 5, to: 3 },
+    { from: 4, to: 3 },
+
+		{ from: 6, to: 7 },
+		{ from: 7, to: 3 },
+		{ from: 6, to: 3 },
+
+		{ from: 8, to: 9 },
+		{ from: 9, to: 3 },
+		{ from: 8, to: 3 },
+
+		{ from: 10, to: 11 },
+		{ from: 11, to: 3 },
+		{ from: 10, to: 3 }
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork3");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+intuitively, the variable \(x_i\) gets assign true if in a 3 coloring of the above constructed graph, the node \(x_i\) has the same color as node \(T\).
+Now, for each term say \((x_1 \vee x_2 \vee x_3)\), we can create a graph that attach to  the above constructed graph nodes \(\{bl,br,ml,mr,mm,u\}\):
+
+<div id="mynetwork4"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "T" },
+    { id: 2, label: "F" },
+    // { id: 3, label: "B" },
+    { id: 4, label: "x1" },
+
+		{ id: 6, label: "x2" },
+
+		{ id: 8, label: "x3" },
+
+		{ id: 9, label: "bl" },
+		{ id: 10, label: "br" },
+		{ id: 11, label: "ml" },
+		{ id: 12, label: "mm" },
+		{ id: 13, label: "mr" },
+		{ id: 14, label: "u"}
+
+
+
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    // { from: 1, to: 2 },
+    // { from: 3, to: 2 },
+    // { from: 3, to: 1 },
+
+		//
+    // { from: 4, to: 3 },
+		// { from: 6, to: 3 },
+		// { from: 8, to: 3 },
+
+		{ from: 1, to: 9 },
+		{ from: 1, to: 10 },
+		{ from: 1, to: 11 },
+		{ from: 1, to: 12 },
+		{ from: 2, to: 13 },
+		{ from: 4, to: 9 },
+		{ from: 8, to: 10 },
+		{ from: 6, to: 12 },
+		{ from: 11, to: 14 },
+		{ from: 12, to: 14},
+		{ from: 13, to: 14 },
+		{ from: 9, to: 11 },
+		{ from: 10, to: 13}
+
+
+
+
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork4");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+Here a term is true iff and only if the above graph is 3-colorable.
+So now we just add the same construction to all terms and we have reduced 3-SAT to 3-coloring.
+</div>
+
+
+
+</html>

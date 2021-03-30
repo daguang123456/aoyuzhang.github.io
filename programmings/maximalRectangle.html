@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>最大矩形(Maximal Rectangle)</h2>
+    给定 \(m \times n\) 二进制矩阵，其中填充了0和1，找到仅包含1的最大矩形并返回其面积。
+    <br>
+    <br>
+    Given a \(m \times n\) binary matrix filled with 0's and 1's, find the largest rectangle containing only 1's and return its area.
+    <br>
+    例:
+    <div class ="table1">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+      </style>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">输入：</th>
+          <th class="tg-fv28">matrix = [[1,0,1,0,0],[1,0,1,1,1],[1,1,1,1,1],[1,0,0,1,0]]<Br><img src="../images/maximalGrid.jpg"></img><br>
+          </th>
+        </tr>
+        <tr>
+
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">输出:</td>
+          <td class="tg-fv28">6</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">说明:</td>
+          <td class="tg-fv28">上图显示了最大的矩形。</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    Example:
+    <div>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">Input:</th>
+          <th class="tg-fv28">matrix = []</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">Output:</td>
+          <td class="tg-fv28">0</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">Explanation:</td>
+          <td class="tg-fv28">The input matrix is empty.</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <hr>
+    <label for="tagLength">矩阵长多少:(what is the length of the matrix)</label><br>
+    <input type="text" id = "tagLength" class="numbersonly" value="5"><br>
+    <label for="tagWidth">矩阵宽是多少:(what is the width of the matrix)</label><br>
+    <input type="number" id = "tagWidth" class="numbersonly" value="5"><br>
+    <input type="Button" onclick="createGrid()" value="创建网格(Create grid)" /> <br>
+
+    <div>
+      <table id="gridInput">
+      </table>
+    </div><br>
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+    <script>
+      var gridHeight;
+      var gridWidth;
+
+      function createGrid(){
+        clearTable("gridInput");
+      }
+      function getGridSize(){
+        gridHeight = document.getElementById("tagLength");
+        gridWidth = document.getElementById("tagWidth");
+        if(isNaN(gridHeight)){
+          document.getElementById("msg").innerHTML= "error: number of period entered is not a number.";
+          return false;
+        }
+        else if(nPeriod <= 0){
+          document.getElementById("msg").innerHTML= "error: number of periods needs to be positive.";
+          return false;
+        }
+        else if(!(Number.isInteger(nPeriod))){
+          document.getElementById("msg").innerHTML= "error: number of periods entered needs to be an Integer.";
+          return false;
+        }
+      }
+      function transformStringListToIntegerList(aStringList){
+        var theCorrepondingIntegerList = []; //声明一个变量，该变量包含一个空列表，该空列表将用于存储转换后的整数列表(Declare a variable that holds an empty list that will be used to store the transformed integer list.)
+        for(var index = 0 ; index < aStringList.length ; index++){ //通过使用for循环，我们遍历字符串列表中的所有元素，并对每个元素进行转换(By sing a for loop, we iterate over all elements in the list of string and perform the transformation to each of the elments)
+          theCorrepondingIntegerList.push(parseFloat(aStringList[index])); // 将字符串元素转换为整数元素，然后将结果附加到指定的整数列表中(transform the string element to an integer element and append the result into the designated integer list)
+        }
+        return theCorrepondingIntegerList;
+      }
+      function computeResult(){
+        var inputSequenceString = document.getElementById("tagCoins").value;
+        if(inputSequenceString.match('[^,. 0-9]')){
+            document.getElementById("tagMessage").innerHTML= "错误：输入的硬币的价值的格式是错的(error: Invalid coin value input string";
+            return -1;
+        }
+        var inputNumbersStringList = inputSequenceString.split(",");
+        inputNumbersList = transformStringListToIntegerList(inputNumbersStringList);
+
+        totalMoney = parseFloat(document.getElementById("tagTotalCoin").value);
+        if(isNaN(totalMoney)){ //If number of food entered is not a number, display an an explainatory error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的总金额不是数字(error: the money entered is not a number)"; // Put the error message inside the msg element in HTML.
+          return false;
+        }
+        if(totalMoney < 0 ){ //If the number of type of food or the number of type of nutrients entered is a negetive number, display an error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的总金额数必须非负(error: the money entered needs to be no negative)";
+          return false;
+        }
+
+        //console.log(inputNumbersList);
+				console.log(inputNumbersList);
+        console.log(totalMoney);
+      }
+      function displayResult(){
+        clearTable("tagOutput")
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("我们向孩子们分发糖果的方法如下：(We distribute the candies to the children as follow)"));
+        var longestSequenceStr = "["+resultList[0];
+        var minimalValue = resultList[0];
+        var kidRank = "["+inputNumbersList[0];
+        for(var i = 1; i < resultList.length; i++){
+          minimalValue = minimalValue+resultList[i];
+          longestSequenceStr = longestSequenceStr + "," + resultList[i];
+          kidRank = kidRank + "," + inputNumbersList[i];
+        }
+        longestSequenceStr = longestSequenceStr +"]";//globalMaxLength
+        kidRank = kidRank +"]";
+        resultBody.appendChild(createDescriptionRow("分发糖果给孩子们的方式是(The way to distribute of the candies to the children is)",longestSequenceStr));
+        resultBody.appendChild(createDescriptionRow("孩子的评分值是(Rating values of the children is )",kidRank));
+        resultBody.appendChild(createDescriptionRow("所需的最小糖果数量为(Minimum number of candy needed is )",minimalValue));
+        resultTbl.append(resultBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>
+
+<!-- <!DOCTYPE>
+<html>
+<body>
+
+	<?php
+	echo "my first php script!";
+	^>
+
+</body>
+</html> -->

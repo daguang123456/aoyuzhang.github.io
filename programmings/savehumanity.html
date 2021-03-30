@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>拯救人类(Save Humanity)</h2>
+    哦！！人类再次陷入困境。
+    这次，这是一种致命的疾病，其传播速度前所未有。
+    这个分钟的需要是设置有效的病毒检测程序。
+    您是中央医院的负责人，您需要找到一种快速可靠的方法来检测病毒DNA在患者体内的足迹。
+    患者和病毒的DNA由大写字母组成。
+    由于收集的数据是原始数据，因此可能会有一些错误。
+    您将需要在患者DNA中找到与病毒DNA完全匹配或具有最多一个错配（即，最多在一个位置上有差异）的所有子串。
+    例如，“ AA”和“ AA”匹配，“ AC”和“ AA”匹配，而“ ACC”和“ GAG”不匹配。
+    <br><br>
+    Oh!! Mankind is in trouble again.
+    This time, it's a deadly disease spreading at a rate never seen before.
+    The need of the hour is to set up efficient virus detectors.
+    You are the lead at Central Hospital and you need to find a fast and reliable way to detect the footprints of the virus DNA in that of the patient.
+    The DNA of the patient as well as of the virus consists of uppercase letters(A,G,C,T).
+    Since the collected data is raw, there may be some errors.
+    You will need to find all substrings in the patient DNA that either exactly match the virus DNA or have at most one mismatch, i.e., a difference in at most one location.
+    For example, "AA" and "AA" are matching, "AC" and "AA" are matching, while "ACC" and "GAG" are not.
+    <hr>
+    例:
+    <div class ="table1">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+      </style>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">输入：</th>
+          <th class="tg-fv28">患者DNA=ACCAC 病毒DNA=CA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">输出:</td>
+          <td class="tg-fv28">2 3</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">说明:</td>
+          <td class="tg-fv28">从第二个和第三个字开始的患者DNA子字符串为“ CA”和“ CA”，它们与病毒DNA字符串“ CA”匹配。</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    Example:
+    <div>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">Input:</th>
+          <th class="tg-fv28">patient DNA=CAGAGA virus DNA=GAG</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">Output:</td>
+          <td class="tg-fv28">1,3</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">Explanation:</td>
+          <td class="tg-fv28">The substrings of patient DNA starting at indices 1 and 3 are "CAG" and "GAG" <br>
+            and they are matching with the string which is "GAG". </td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <hr>
+    <label for="tag=tagPDNA">患者DNA(patientDNA)(use Letter A,G,C,T)</label><br>
+    <input type="text" id = "tagPDNA" class="numbersonly" value="AGCTGTGTACGCAAT"><br>
+    <label for="tag=tagVDNA">病毒DNA(virusDNA)(use Letter A,G,C,T)</label><br>
+    <input type="text" id = "tagVDNA" class="numbersonly" value="ATG"><br>
+    <input type="Button" onclick="computeResult()" value="找到相似之处(Find Similarities)" /> <br>
+
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+		<div>
+			<table id="tagSeq">
+			</table>
+
+		</div><br>
+
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+    <script>
+			var pString;
+			var vString;
+			var resultt = 0;
+      var choices = [];
+
+      function computeResult(){
+        resultt = 0;
+        choices = [];
+				pString = "";
+				vString = "";
+				//numberOfDays = 0
+				document.getElementById("tagMessage").innerHTML= "";
+				pString =  document.getElementById("tagPDNA").value;
+				if ( pString.match('[^ AGCT]') ){
+					document.getElementById("tagMessage").innerHTML= "错误：患者DNA格式无效(error: invalid patient DNA format)"; // Put the error message inside the msg element in HTML.
+					return false;
+				}
+				vString =  document.getElementById("tagVDNA").value;
+				if ( vString.match('[^ AGCT]') ){
+					document.getElementById("tagMessage").innerHTML= "错误：病毒DNA格式无效(error: invalid virus DNA format)"; // Put the error message inside the msg element in HTML.
+					return false;
+				}
+				console.log(pString);
+				console.log(vString);
+
+				for(var i = 0 ; i <= pString.length-vString.length ; i++){
+					var nDiff = 0;
+					for(var j = i; j< i+vString.length ; j++){
+						if(pString.charAt(j) != vString.charAt(j-i)){
+							nDiff++;
+							if(nDiff >=2){
+								break;
+							}
+						}
+					}
+					if(nDiff<2){
+						choices.push(i);
+					}
+				}
+				for(var i =0; i< choices.length ; i++){
+					choices[i] =choices[i]+1;
+				}
+        displayResult();
+        return 1;
+      }
+      function displayResult(){
+        clearTable("tagOutput");
+				clearTable("tagSeq");
+				var seqTable = document.getElementById("tagSeq");
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("结果如下(The result is as follow)"));
+				var desc1 = "从患者DNA的以下位置开始时匹配(A match when starting at the following positions of patient DNA)";
+				resultBody.appendChild(createDescriptionRow(desc1,choices));
+				console.log("hello");
+        resultTbl.append(resultBody);
+
+				var seqBody = document.createElement("tbody");
+				var aRow = document.createElement("tr");
+				var indexSet = new Set(choices);
+				console.log(indexSet);
+				for(var i = 0; i< pString.length ; i++){
+					var nameCell = document.createElement("td");
+					var nameCellTextNode = document.createTextNode(pString.charAt(i)+"");
+					nameCell.appendChild(nameCellTextNode);
+					if(indexSet.has(i+1)){
+						nameCell.style.backgroundColor = "green";
+					}
+					aRow.appendChild(nameCell);
+					console.log(aRow);
+				}
+				seqBody.appendChild(aRow);
+				seqTable.append(seqBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>

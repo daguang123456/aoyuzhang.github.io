@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+<head>
+  <title>Graph 3D demo</title>
+  <script type="text/javascript" src="https://unpkg.com/vis-graph3d@latest/dist/vis-graph3d.min.js"></script>
+  <script type="text/javascript">
+    var data = null;
+    var graph = null;
+
+    function custom(x, y) {
+      return (Math.sin(x/50) * Math.cos(y/50) * 50 + 50);
+    }
+
+    // Called when the Visualization API is loaded.
+    function drawVisualization() {
+      // Create and populate a data table.
+      data = new vis.DataSet();
+      // create some nice looking data with sin/cos
+      var counter = 0;
+      var steps = 50;  // number of datapoints will be steps*steps
+      var axisMax = 314;
+      var axisStep = axisMax / steps;
+      for (var x = 0; x < axisMax; x+=axisStep) {
+        for (var y = 0; y < axisMax; y+=axisStep) {
+          var value = custom(x,y);
+          data.add({id:counter++,x:x,y:y,z:value,style:value});
+        }
+      }
+
+      // specify options
+      var options = {
+        width:  '600px',
+        height: '600px',
+        style: 'surface',
+        showPerspective: true,
+        showGrid: true,
+        showShadow: false,
+        keepAspectRatio: true,
+        verticalRatio: 0.5
+      };
+
+      // Instantiate our graph object.
+      var container = document.getElementById('mygraph');
+      graph = new vis.Graph3d(container, data, options);
+    }
+  </script>
+</head>
+<body onload="drawVisualization();">
+<div id="mygraph"></div>
+</body>
+</html>
+
+
+
+
+
+
+<!-- <div id="mynetwork1"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "A" },
+    { id: 2, label: "B" },
+    { id: 3, label: "C" },
+    { id: 4, label: "D" },
+    { id: 5, label: "E" },
+    { id: 6, label: "F" },
+    { id: 7, label: "G" },
+    { id: 8, label: "H" },
+    { id: 9, label: "I" },
+    { id: 10, label: "G" },
+    { id: 11, label: "K" },
+    { id: 12, label: "L" },
+    { id: 13, label: "M" },
+    { id: 14, label: "N" },
+    { id: 15, label: "O" },
+    { id: 16, label: "P" },
+    { id: 17, label: "Q" },
+    { id: 18, label: "R" },
+    { id: 19, label: "S" },
+    { id: 20, label: "T" },
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 1, to: 3 },
+    { from: 3, to: 4 },
+    { from: 4, to: 5 },
+    { from: 9, to: 3 },
+    { from: 9, to: 20 },
+    { from: 20, to: 19 },
+    { from: 19, to: 4 },
+    { from: 19, to: 18 },
+    { from: 18, to: 17 },
+    { from: 17, to: 5 },
+    { from: 13, to: 18 },
+    { from: 13, to: 15 },
+    { from: 15, to: 16 },
+    { from: 16, to: 17 },
+    { from: 12, to: 20 },
+    { from: 12, to: 13 },
+    { from: 10, to: 11 },
+    { from: 11, to: 12 },
+    { from: 11, to: 14 },
+    { from: 14, to: 15 },
+    { from: 9, to: 10 },
+    { from: 10, to: 6 },
+    { from: 6, to: 8 },
+    { from: 8, to: 14 },
+    { from: 7, to: 8 },
+    { from: 7, to: 16 },
+    { from: 1, to: 6 },
+    { from: 7, to: 2 },
+    { from: 2, to: 5 },
+
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork1");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script> -->
+
+
+<!-- <div id="mynetwork2"></div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    { id: 1, label: "A_SE" },
+    { id: 2, label: "B" },
+    { id: 3, label: "C" },
+    { id: 4, label: "D" },
+    { id: 5, label: "E_SE" },
+    { id: 6, label: "F" },
+    { id: 7, label: "G"},
+    { id: 8, label: "H_SE" },
+    { id: 9, label: "I_SE" },
+    { id: 10, label: "G" },
+    { id: 11, label: "K_SE" },
+    { id: 12, label: "L" },
+    { id: 13, label: "M_SE" },
+    { id: 14, label: "N" },
+    { id: 15, label: "O" },
+    { id: 16, label: "P_SE" },
+    { id: 17, label: "Q" },
+    { id: 18, label: "R" },
+    { id: 19, label: "S_SE" },
+    { id: 20, label: "T" },
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1, to: 2 },
+    { from: 1, to: 3 },
+    { from: 3, to: 4 },
+    { from: 4, to: 5 },
+    { from: 9, to: 3 },
+    { from: 9, to: 20 },
+    { from: 20, to: 19 },
+    { from: 19, to: 4 },
+    { from: 19, to: 18 },
+    { from: 18, to: 17 },
+    { from: 17, to: 5 },
+    { from: 13, to: 18 },
+    { from: 13, to: 15 },
+    { from: 15, to: 16 },
+    { from: 16, to: 17 },
+    { from: 12, to: 20 },
+    { from: 12, to: 13 },
+    { from: 10, to: 11 },
+    { from: 11, to: 12 },
+    { from: 11, to: 14 },
+    { from: 14, to: 15 },
+    { from: 9, to: 10 },
+    { from: 10, to: 6 },
+    { from: 6, to: 8 },
+    { from: 8, to: 14 },
+    { from: 7, to: 8 },
+    { from: 7, to: 16 },
+    { from: 1, to: 6 },
+    { from: 7, to: 2 },
+    { from: 2, to: 5 },
+
+    { from: 9, to: 11},
+    { from: 8, to: 1},
+    { from: 11, to:13},
+    { from: 8, to: 16},
+    { from: 9, to: 19},
+    { from: 1, to: 5},
+    { from: 11, to: 8},
+    { from : 9, to: 1},
+    { from: 8, to: 16},
+    { from: 19, to: 13},
+    { from: 19, to: 5},
+    { from: 13, to: 16},
+    { from: 16, to: 5}
+
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork2");
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script> -->

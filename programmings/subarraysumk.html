@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>总和至少为\(K\)的最短子数组(Shortest Subarray with Sum at Least K)</h2>
+    返回A的总和至少为K的最短，非空，连续子数组的长度。 如果没有总和至少为K的非空子数组，则返回\(-1\).
+    <br>
+    Return the length of the shortest, non-empty, contiguous subarray of an array \(A\) with sum at least \(K\).
+    If there is no non-empty subarray with sum at least \(K\), return \(-1\).
+    <hr>
+    例:
+    <div class ="table1">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+      </style>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">输入：</th>
+          <th class="tg-fv28">A= [1], k=1</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">输出:</td>
+          <td class="tg-fv28">1</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    Example:
+    <div>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">Input:</th>
+          <th class="tg-fv28">A=[1,2], k = 4</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">Output:</td>
+          <td class="tg-fv28">-1</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+
+    <script>
+      var poisonTime = 0;
+      var numberOfBucket = 0;
+      var timeAllowed = 0;
+      var result = 0;
+
+      /**
+        *
+       */
+      function computeResult(){
+        timeAllowed  = parseFloat(document.getElementById("tagTime").value);
+        numberOfBucket = parseFloat(document.getElementById("tagBucketNumber").value);
+        poisonTime = parseFloat(document.getElementById("tagPoinsonTime").value);
+
+        if(isNaN(poisonTime)){ //If number of food entered is not a number, display an an explainatory error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的毒有效时间不是数字(error: the poison effective time entered is not a number)"; // Put the error message inside the msg element in HTML.
+          return false;
+        }
+        if(isNaN(numberOfBucket)){ //If the number of animal entered by the user is not a number, display an error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的水桶数量不是数字(error: the number of buckets entered is not a number)";
+          return false;
+        }
+        if(isNaN(timeAllowed)){ //If the number of animal entered by the user is not a number, display an error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的允许时间不是数字(error: the allowed time entered is not a number)";
+          return false;
+        }
+        if(timeAllowed <= 0 || numberOfBucket <=0 || poisonTime<= 0){ //If the number of type of food or the number of type of nutrients entered is a negetive number, display an error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的所有条目都必须为正(error: all entries entered needs to be positive)";
+          return false;
+        }
+        if(!(Number.isInteger(numberOfBucket)) || !(Number.isInteger(timeAllowed)) || !(Number.isInteger(poisonTime))){
+          document.getElementById("tagMessage").innerHTML= "错误：所有条目都必须是整数(error: all entries need to be an Integer)";
+          return false;
+        }
+
+        var numberOfSubperiods = Math.floor(timeAllowed / poisonTime)+1;
+        var mult = numberOfSubperiods;
+        if(numberOfBucket === 1){
+          result = 0;
+          displayResult();
+          return 1;
+        }
+        result =1;
+        while(numberOfBucket > mult){
+          mult = mult * numberOfSubperiods;
+          result++
+        }
+        //console.log(result);
+        displayResult();
+        return 1;
+
+
+      }
+      function displayResult(){
+        clearTable("tagOutput")
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("结果如下(The result is as follow)"));
+        resultBody.appendChild(createDescriptionRow("最少需要的卡地亚的数量是(The minimum number of 卡地亚s needed is)",result));
+        resultTbl.append(resultBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>

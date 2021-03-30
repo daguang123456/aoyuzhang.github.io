@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	  <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+      .chart{
+        width: 1000px;
+        height: 500px;
+        border: 1px solid lightgray;
+        margin: 0 auto;
+        background-color: coral;
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>一条线上的最大点数(Max Points on a Line)</h2>
+    给定2D平面上的n个点，求出躺在同一条直线上的最多点数。
+    <br>
+    Given n points on a 2D plane, find the maximum number of points that lie on the same straight line.
+    <hr>
+    <label for="tagXCoordinate">点的x-坐标:(x-coordinate of the point)</label><br>
+    <input type="number" step ="0.01" id = "tagXCoordinate" class="numbersonly" value="2"><br>
+    <label for="tagYCoordinate">点的y-坐标:(y-coordinate of the point)</label><br>
+    <input type="number" step ="0.01" id = "tagYCoordinate" class="numbersonly" value="2"><br>
+
+    <input type="Button" onclick="addTree()" value="添加点(Add Point)" />
+<!--     <input type="Button" onclick="removeTree()" value="删除点(remove Point)" /> <br> -->
+    <div class = "chart">
+      <canvas id="myChart"></canvas>
+    </div>
+    <!-- <input type="Button" onclick="findMaxPointLine()" value="找有最多点的线（Find Max points line)" /> <br> -->
+    <br>
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+
+
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+    <br>
+    提示(hint):<br>
+    如果从两点到第三点的斜率相同，则两点与第三点位于同一条线上。(two point lie on the same line as the third point if the slop form the two point to the third point is the same.)
+
+    <script>
+      var datas = new Set(); // use to store data points
+      // datas.add({x: 2, y: 3});
+      // datas.add({x: 2, y: 4});
+      // datas.add({x: 3, y: 5});
+      // datas.add({x: 4, y: 6});
+      // datas.add({x: 7, y: 8});
+      var resultt;
+      var theMaxLinePoints = [];
+      var lineVertices = [];
+
+      var ctx = document.getElementById('myChart').getContext('2d');
+
+      function createDataPointFromSet(){
+        var result = [];
+        for (let item of datas){
+          result.push(item);
+        }
+        return result;
+      }
+
+      function drawGraph(){
+        var scatterChart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [
+                {
+                  label: '点的坐标(Coordinate Of points)',
+                  data: createDataPointFromSet(),
+                  backgroundColor: "yellow",
+                  pointRadius: 4
+                },
+                {
+                  type: 'line',
+                  label: '在线上的点(Points on the max line)',
+                  data: theMaxLinePoints,
+                  fill: true,
+                  backgroundColor: "blue",
+                  borderColor: "blue",
+                  borderWidth: 2,
+                  pointRadius: 7
+                }]
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        type: 'linear',
+                        position: 'bottom'
+                    }]
+                }
+            }
+        });
+      }
+
+
+
+      function addTree(){
+        var tempXCoordinate = parseFloat(document.getElementById("tagXCoordinate").value);
+        var tempYCoordinate = parseFloat(document.getElementById("tagYCoordinate").value);
+        if(!(isNaN(tempXCoordinate) || isNaN(tempYCoordinate))){
+          datas.add({x: tempXCoordinate, y: tempYCoordinate});
+        }
+        console.log(datas);
+        findMaxPointLine()
+        //drawGraph();
+      }
+
+      // function removeTree(){
+      //   var tempXCoordinate = document.getElementById("tagXCoordinate").value;
+      //   var tempYCoordinate = document.getElementById("tagYCoordinate").value;
+      //   console.log(datas.has({x: tempXCoordinate, y: tempYCoordinate}));
+      //   if(datas.has({x: tempXCoordinate, y: tempYCoordinate})){
+      //     datas.delete({x: tempXCoordinate, y: tempYCoordinate});
+
+      //   }
+      //   console.log(datas);
+      //   drawGraph();
+      // }
+
+      // var inputSequenceString ; //声明一个变量，该变量用于存储用户输入的输入字符串(Declare a variable used to store the input string entered by the user)
+      // var inputNumbersList = []; //声明一个变量以存储程序要使用的整数列表(declare a variavle to store the list of integers to be used by the program)
+      // var inputIntegerSet;
+      // var globalMaxLength = 0; //声明一个变量以存储迄今为止该算法找到的最长序列长度(Declare a variable to store the longest sequence length found by the algorithm so far)
+      // var localMaxLength = 0; //声明一个变量以存储算法正在分析的序列长度 (Declare a variable to store the sequence length that is being analysed by the algorithm )
+      // var initialNumberInMaxLengthSequence = 0;
+
+      // function transformStringListToIntegerList(aStringList){
+      //   var theCorrepondingIntegerList = []; //声明一个变量，该变量包含一个空列表，该空列表将用于存储转换后的整数列表(Declare a variable that holds an empty list that will be used to store the transformed integer list.)
+      //   for(var index = 0 ; index < aStringList.length ; index++){ //通过使用for循环，我们遍历字符串列表中的所有元素，并对每个元素进行转换(By sing a for loop, we iterate over all elements in the list of string and perform the transformation to each of the elments)
+      //     theCorrepondingIntegerList.push(parseFloat(aStringList[index])); // 将字符串元素转换为整数元素，然后将结果附加到指定的整数列表中(transform the string element to an integer element and append the result into the designated integer list)
+      //   }
+      //   return theCorrepondingIntegerList;
+      // }
+      /**
+        *
+       */
+      function findMaxPointLine(){
+        resultt=0;
+        theMaxLinePoints = [];
+        tempMaxLinePoints = [];
+        lineVertices =[];
+        var slopPointsDict = {};
+        console.log("inFunc");
+
+        var dataArray = Array.from(datas);
+        for(var i = 0 ; i< dataArray.length-1 ; i++){
+          slopPointsDict = {};
+          for(var j = i+1; j< dataArray.length; j++){
+            console.log("inloop");
+            if(dataArray[i].x ===dataArray[j].x){
+              if(99999999 in slopPointsDict){
+                slopPointsDict[99999999].push(dataArray[j]);
+              }
+              else{
+                slopPointsDict[99999999]= [dataArray[j]];
+              }
+            }
+            else{
+              var slp = (dataArray[j].y - dataArray[i].y) / (dataArray[j].x - dataArray[i].x);
+              if(slp in slopPointsDict){
+                slopPointsDict[slp].push(dataArray[j]);
+              }
+              else{
+                slopPointsDict[slp]= [dataArray[j]];
+              }
+            }
+          }
+          var maxKey = Object.keys(slopPointsDict).reduce(function(a, b){ return slopPointsDict[a].length > slopPointsDict[b].length ? a : b });
+          //console.log("max slope is"+maxKey);
+          if(tempMaxLinePoints.length < slopPointsDict[maxKey].length+1){
+            tempMaxLinePoints = copyArray(slopPointsDict[maxKey]);
+            //console.log(dataArray[i]);
+            tempMaxLinePoints.push(copyPoint(dataArray[i]));
+          }
+        }
+        //console.log(tempMaxLinePoints);
+        theMaxLinePoints = copyArray(tempMaxLinePoints);
+        //console.log()
+        resultt = tempMaxLinePoints.length;
+        linePoints();
+        console.log(lineVertices);
+        drawGraph();
+        displayResult();
+      }
+      function linePoints(){
+        // lineVertices.push({x: theMaxLinePoints[0].x, y: theMaxLinePoints[0].y});
+        // lineVertices.push({x: theMaxLinePoints[1].x, y: theMaxLinePoints[1].y});
+        lineVertices.push({x: 2, y: 3});
+        lineVertices.push({x: 4, y: 5});
+        console.log(lineVertices);
+      }
+
+      function copyPoint(a){
+        return {x: a.x, y: a.y};
+      }
+      function copyArray(a){
+        var result = [];
+        for(var i = 0 ; i< a.length; i++){
+          result.push(copyPoint(a[i]));
+        }
+        return result;
+      }
+      function displayResult(){
+        clearTable("tagOutput")
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+        resultBody.appendChild(createTitleRow("结果如下(The result is as follow)"));
+        resultBody.appendChild(createDescriptionRow("在一条线上的最多点数为(Maximum number of points lying on same line is)",resultt));
+        var pointsString = "";
+        for(var i =0 ;i < theMaxLinePoints.length ; i++){
+          pointsString = pointsString+ "("+theMaxLinePoints[i].x+","+ theMaxLinePoints[i].y+") ";
+        }
+        resultBody.appendChild(createDescriptionRow("在线上的点是(The points on the line is)",pointsString));
+        resultTbl.append(resultBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>

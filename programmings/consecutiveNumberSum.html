@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="../styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+		<meta charset="utf-8">
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async
+		          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+		</script>
+	    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+
+		<style>
+			table, td {
+				background-color: coral;
+				border: 1px solid black;
+			}
+
+      .table1{
+
+      }
+		</style>
+
+	</head>
+
+	<body>
+		<h2>连续数字总和(Consecutive Numbers Sum)</h2>
+    给定一个正整数\(N\)，我们可以用几种方法将其写为连续的正整数之和？
+
+    <br>
+    Given a positive integer \(N\), how many ways can we write it as a sum of consecutive positive integers?
+    <br>
+    例:
+    <div class ="table1">
+      <style type="text/css">
+      .tg  {border-collapse:collapse;border-spacing:0;}
+      .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+      .tg .tg-fv28{background-color: coral;border-color:#fe0000;text-align:left;vertical-align:top}
+      </style>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">输入：</th>
+          <th class="tg-fv28">5</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">输出:</td>
+          <td class="tg-fv28">2</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">说明:</td>
+          <td class="tg-fv28">5=5=2+3</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    Example:
+    <div>
+      <table class="tg">
+      <thead>
+        <tr>
+          <th class="tg-fv28">Input:</th>
+          <th class="tg-fv28">9</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-fv28">Output:</td>
+          <td class="tg-fv28">3</td>
+        </tr>
+        <tr>
+          <td class="tg-fv28">Explanation:</td>
+          <td class="tg-fv28">9=9=4+5=2+3+4</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <hr>
+    <label for="tagCoins">N的值是:(what is N)</label><br>
+    <input type="number" id = "tagN" class="numbersonly" value="9"><br>
+    <input type="Button" onclick="computeResult()" value="计算(Compute)" /> <br>
+
+    <div>
+      <table id="tagOutput">
+      </table>
+    </div><br>
+
+    <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+
+暗示(hint):<br>
+    \(k+(k+1)+(k+2)+...+(k+m-1)=N \iff km+\frac{m(m-1)}{2} =N \)
+    
+
+    <script>
+      var resultt;
+			var coinNeeded=[];
+      var totalMoney = 0;
+
+      function computeResult(){
+	      resultt = 0;
+				coinNeeded=[];
+	      totalMoney = 0;
+
+        totalMoney = parseFloat(document.getElementById("tagN").value);
+        if(isNaN(totalMoney)){ //If number of food entered is not a number, display an an explainatory error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的N的值是不是数字(error: N entered is not a number)"; // Put the error message inside the msg element in HTML.
+          return false;
+        }
+        if(totalMoney < 0 ){ //If the number of type of food or the number of type of nutrients entered is a negetive number, display an error message.
+          document.getElementById("tagMessage").innerHTML= "错误：输入的N的值是必须非负(error: N needs to be no negative)";
+          return false;
+        }
+				if(!(Number.isInteger(totalMoney))){
+					document.getElementById("msg").innerHTML= "error: N的值是必须为整数(N needs to be an Integer).";
+					return false;
+				}
+        for(var i =1 ; i < Math.sqrt(3*totalMoney);i++){
+          var temp = totalMoney - (i*(i-1)/2);
+          var temp2 = temp/i;
+          if(Number.isInteger(temp2)){
+            coinNeeded.push(temp2);
+          }
+        }
+        resultt = coinNeeded.length;
+        displayResult();
+      }
+      function displayResult(){
+        clearTable("tagOutput")
+        var resultTbl = document.getElementById("tagOutput");
+        var resultBody =  document.createElement("tbody");
+
+        resultBody.appendChild(createTitleRow("结果如下：(The result is as follow)"));
+        resultBody.appendChild(createDescriptionRow("求和到N的方法数为(Number of ways to sum to N is)",resultt));
+        resultBody.appendChild(createDescriptionRow("如下开始做连续正整数和(stat the sum from the following numbers)",coinNeeded));
+        resultTbl.append(resultBody);
+      }
+      function createDescriptionRow(label,description){
+        var constraintRow = document.createElement("tr");
+        constraintRow.appendChild(makecell(label));
+        constraintRow.appendChild(makecell(description));
+        return constraintRow;
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function clearTable(idstr){
+        var makovTable = document.getElementById(idstr);
+        while(makovTable.rows.length > 0) {
+          makovTable.deleteRow(0);
+        }
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
+
+    </script>
+
+	</body>
+</html>
