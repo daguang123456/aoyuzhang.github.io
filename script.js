@@ -101,7 +101,7 @@ function showFormElements(oForm) {
 
 function showFormData(oForm) {
   var msg = "The data that you entered for the form with 'name' attribute='" + oForm.name + "': \n";
- 
+
   for (i = 0; i < oForm.length, oForm.elements[i].getAttribute("type") !== 'button'; i++) {
     msg += oForm.elements[i].tagName + " with 'name' attribute='" + oForm.elements[i].name + "' and data: ";
     if(oForm.elements[i].value == null || oForm.elements[i].value == '') {
@@ -119,7 +119,7 @@ function showElementsForTargetForm(targetForm, element_type) {
   var msg = "Form with 'name' attribute='" + targetForm.name + "'";
   var str = '\n';
   for (i = 0; i < targetForm.length; i++) {
-  if(targetForm.elements[i].tagName == element_type) {  
+  if(targetForm.elements[i].tagName == element_type) {
     cnt ++;
     str += "\nThe " + element_type + " element with 'name' attribute='" + targetForm.elements[i].name + "'\n";
   }
@@ -144,8 +144,9 @@ function showElementsForTargetFormNumber(oForm) {
   var targetFormNumber = oForm.elements["form_number"].value;
   var element_type = oForm.elements["element_type"].value;
   var targetForm = document.forms[targetFormNumber];
+}
 
-  showElementsForTargetForm(targetForm, element_type);
+showElementsForTargetForm(targetForm, element_type);
 
 function showElements(oForm) {
   str = "Form Elements of form " + oForm.name + ": \n"
@@ -153,13 +154,3 @@ function showElements(oForm) {
       str += oForm.elements[i].name + "\n"
   alert(str)
 }
-
-
-
-
-
-
-
-
-
-
