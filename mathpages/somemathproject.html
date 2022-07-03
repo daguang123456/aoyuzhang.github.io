@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="../styles.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Mono&display=swap" rel="stylesheet">
+ 	<meta charset="utf-8">
+  	<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  	<script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  	</script>
+	<script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+  	<style>
+		table, td {
+			border: 1px solid black;
+			background-color: coral;
+		}
+
+		#graphB{
+		  width: 700px;
+		  height: 700px;
+		  border: 1px solid lightgray;
+		  margin: 0 auto;
+		  background-color: coral;
+		}
+    #graphA{
+      width: 700px;
+      height: 700px;
+      border: 1px solid lightgray;
+      margin: 0 auto;
+      background-color: coral;
+    }
+    #graphC{
+      width: 700px;
+      height: 700px;
+      border: 1px solid lightgray;
+      margin: 0 auto;
+      background-color: coral;
+    }
+    #graphD{
+      width: 700px;
+      height: 700px;
+      border: 1px solid lightgray;
+      margin: 0 auto;
+      background-color: coral;
+    }
+    #graphE{
+      width: 700px;
+      height: 700px;
+      border: 1px solid lightgray;
+      margin: 0 auto;
+      background-color: coral;
+    }
+    #graphF{
+      width: 700px;
+      height: 700px;
+      border: 1px solid lightgray;
+      margin: 0 auto;
+      background-color: coral;
+    }
+	</style>
+	<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+
+<body>
+	<h4>图生成器(Graph Generator)</h4>
+
+  <table class="tg">
+    <tbody>
+      <tr>
+        <td class="tg-fv28"><input type="checkbox" name="group" value="gA"> Graph A</td>
+        <td class="tg-fv28"><input type="checkbox" name="group" value="gB">Graph B</td>
+        <td class="tg-fv28"><input type="checkbox" name="group" value="gC"> Graph C</td>
+        <td class="tg-fv28"><input type="checkbox" name="group" value="gD">Graph D</td>
+      </tr>
+      <tr>
+        <td><label for="tagN">N</label></td>
+        <td><input id = "tagN" type="number" onclick="" value="Ciclic Graph H(n)"/></td>
+        <td><label for="tagM">M</label></td>
+        <td><input id = "tagM" type="number" onclick="" value="Ciclic Graph H(n)" /></td>
+      </tr>
+      <tr>
+        <td class="tg-fv28">
+          <input type="Button" onclick="" value="Ciclic Graph H(n)" />
+        </td>
+        <td class = "tg-fv28">
+          <input type="Button" onclick="" value="Complete Graph K(n)" />
+        </td>
+        <td>
+          <input type="Button" onclick="" value="Hypercube Graph C(n)" />
+        </td>
+        <td>
+          <input type="Button" onclick="" value="Friendship graphs F(n)" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input type="Button" onclick="" value="Star Graph S(n)" />
+        </td>
+        <td>
+          <input type="Button" onclick="" value="Wheel Graph W(n)" />
+        </td>
+        <td>
+          <input type="Button" onclick="" value="Complete Bipartite Graph B(n,m)" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <br>
+
+  <table class="tg">
+    <tbody>
+      <tr>
+        <td class="tg-fv28">Cayley图形生成器(Gayley Graph Builder)(Graph A)</td>
+        <td class="tg-fv28">无向图生成器(An Undirected Graph Builder)(Graph B)</td>
+      </tr>
+      <tr>
+        <td class="tg-fv28">
+          <label for="tagGenerators">Generators</label>
+          <input type="text" id = "tagGenerators" class="numbersonly" value="a,b"><br>
+          <label for="tagRelators">Relators</label>
+          <input type="text" id = "tagRelators" class="numbersonly" value="aba'b',b^2"><br>
+          <input type="Button" onclick="" value="Create Graph" /> <br>
+        </td>
+        <td class="tg-fv28">
+          <label for="tagGBNodeA">End Vertex A</label>
+          <input type="text" id = "tagGBNodeA" class="numbersonly" value="a,b"><br>
+          <label for="tagGBNodeB">End Vertex B</label>
+          <input type="number" id = "tagGBNodeB" class="numbersonly" value="138.35"><br>
+          <input type="Button" onclick="" value="Create Graph" /> <br>
+        </td>
+      </tr>
+      <tr>
+        <td>无向图生成器(An Undirected Graph Builder)(Graph C)</td>
+        <td>有向图生成器(An Directed Graph Builder)(Graph D)</td>
+      </tr>
+      <tr>
+        <td class="tg-fv28">
+          <label for="tagGCNodeA">End Vertex A</label>
+          <input type="text" id = "tagGBNodeA" class="numbersonly" value="a,b"><br>
+          <label for="tagGCNodeB">End Vertex B</label>
+          <input type="number" id = "tagGBNodeB" class="numbersonly" value="138.35"><br>
+          <input type="Button" onclick="" value="Create Graph" />
+          <input type="Button" onclick="" value="Reset" />
+          <input type="Button" onclick="" value="Delete Selected" />
+        </td>
+        <td class="tg-fv28">
+          <label for="tagGDNodeA">End Vertex A</label>
+          <input type="text" id = "tagGBNodeA" class="numbersonly" value="a,b"><br>
+          <label for="tagGDNodeB">End Vertex B</label>
+          <input type="number" id = "tagGBNodeB" class="numbersonly" value="138.35"><br>
+          <input type="Button" onclick="" value="Create Graph" /> <br>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+	<!-- <p>Please Select a Group</p>
+	<input type="radio" name="group" value="zp"> \(Z_p\)<br>
+	<input type="radio" name="group" value="zptok"> \(\prod_p Z_p\)	<br>
+	<input type="radio" name="group" value="sn"> \(S_n\)	<br>
+	<input type="radio" name="group" value="free"> Free Group	<br>
+	<input type="Button" onclick="getRadioValue()" value="Create Form" /> <br>
+	<hr> -->
+	<!-- <div>
+		<table id="grpForm">
+		</table>
+	</div> -->
+	<p> Message: <span id = "msg"></span></p><br>
+	<hr>
+  <table class="tg">
+    <tbody>
+      <tr>
+        <td class="tg-fv28">Graph A</td>
+        <td class="tg-fv28">Graph B</td>
+      </tr>
+      <tr>
+        <td class="tg-fv28">  <div id="graphA"></div> </td>
+        <td class = "tg-fv28"><div id="graphB"></div> </td>
+      </tr>
+      <tr>
+        <td class="tg-fv28">Graph C</td>
+        <td class="tg-fv28">Graph D</td>
+      </tr>
+      <tr>
+        <td class="tg-fv28">  <div id="graphC"></div></td>
+        <td class = "tg-fv28"><div id="graphD"></div> </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!--
+  <input type="radio" name="group" value="zp"> \(Z_p\)<br>
+	<input type="radio" name="group" value="zptok"> \(\prod_p Z_p\)	<br>
+	<input type="radio" name="group" value="sn"> \(S_n\)	<br>
+	<input type="radio" name="group" value="free"> Free Group	<br>
+	<input type="Button" onclick="getRadioValue()" value="Create Form" /> <br> -->
+  <br>
+  <div>
+  <table class="tg">
+    <tbody>
+      <tr>
+        <td class="tg-fv28"><input type="checkbox" name="group" value="gA"> Graph A</td>
+        <td class="tg-fv28"><input type="checkbox" name="group" value="gB">Graph B</td>
+        <td class="tg-fv28"><input type="checkbox" name="group" value="gC"> Graph C</td>
+        <td class="tg-fv28"><input type="checkbox" name="group" value="gD">Graph D</td>
+        <td class="tg-fv28"><input type="text" name="group" value="leftRight">Order</td>
+      </tr>
+      <tr>
+        <td class="tg-fv28">
+          <input type="Button" onclick="" value="Tensor Product" />
+        </td>
+        <td class = "tg-fv28">
+          <input type="Button" onclick="" value="Cartesian Product" />
+        </td>
+        <td>
+          <input type="Button" onclick="" value="Stong Product" />
+        </td>
+        <td>
+          <input type="Button" onclick="" value="Lexicographical Product" />
+        </td>
+        <td>
+          <input type="Button" onclick="" value="Exponential Graph" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<br>
+
+<table class="tg">
+  <tbody>
+    <tr>
+      <td class="tg-fv28">Graph E</td>
+      <td class="tg-fv28">Graph F</td>
+    </tr>
+    <tr>
+      <td class="tg-fv28">  <div id="graphE"></div></td>
+      <td class = "tg-fv28"><div id="graphF"></div> </td>
+    </tr>
+  </tbody>
+</table>
+
+
+	<script>
+
+  class ANetwork {
+    constructor(divName) {
+      this.divName = divName;
+      this.namesValueDict = {};
+      this.nodeIdSet = new Set();
+      this.nodeNamesSet = new Set();
+      this.namesIdDict = {};
+      this.idNamesDict = {};
+      // create an array with nodes
+      this.nodeSet = new Set();
+      this.nodes = new vis.DataSet([]);
+      // create an array with edges
+      this.edgesSet = new Set();
+      this.edges = new vis.DataSet([]);
+      // create a network
+      this.container = document.getElementById(divName);
+      this.data = {
+        nodes: this.nodes,
+        edges: this.edges,
+      };
+      this.options = {};
+      this.network = new vis.Network(this.container, this.data, this.options);
+    }
+    displayAgain(){
+      this.container = document.getElementById(this.divName);
+      this.data = {
+        nodes: this.nodes,
+        edges: this.edges,
+      };
+      this.options = {};
+      this.network = new vis.Network(this.container, this.data, this.options);
+    }
+    addNode(theLabel, profit){ // this method assume the label to be added dosen't exist in the network yet
+      var tempId = Math.floor(Math.random() * MAXIMUM_PROJECT);
+      while(this.nodeIdSet.has(tempId)){
+        tempId = Math.floor(Math.random() * MAXIMUM_PROJECT);
+      }
+      var nodeDisplayLabel = theLabel +":"+ profit;
+      var tempNode = { id: tempId, label: nodeDisplayLabel };
+      this.nodes.add(tempNode);
+      this.network.stabilize();
+      this.nodeIdSet.add(tempId);
+      this.nodeSet.add(tempNode);
+      this.namesIdDict[theLabel] = tempId;
+      this.idNamesDict[tempId] = theLabel;
+      this.namesValueDict[theLabel] = profit;
+      this.nodeNamesSet.add(theLabel);
+    }
+    removeNode(nodeId){
+      // this.nodes.remove({ id: nodeId });
+      // this.nodeIdSet.delete(nodeId);
+      // this.nodeNamesSet
+      // this.namesIdDict = {};
+      // this.idNamesDict = {};
+
+    }
+    removeEdge(edgeId){
+      this.edges.remove({id: edgeId})
+    }
+    addEdge(sLabel, dLabel){
+      var tempEdge = { from: this.namesIdDict[sLabel], to: this.namesIdDict[dLabel], arrows: "to", label: "To be done after"};
+      // console.log(getEdgeBetweenProjectNodes(projectNamesIdDict[sLabel],projectNamesIdDict[dLabel]));
+      this.edges.add(tempEdge);
+      this.edgesSet.add(tempEdge)
+    }
+    addLabelledEdge(sLabel, dLabel, capacity, flow, color){ // ann nodes needs to be preset before adding the edge
+      var tempEdge = { from: this.namesIdDict[sLabel], to: this.namesIdDict[dLabel], arrows: "to", label: ""+flow+"/"+capacity, color: color};
+      // console.log(getEdgeBetweenProjectNodes(projectNamesIdDict[sLabel],projectNamesIdDict[dLabel]));
+      this.edges.add(tempEdge);
+      this.edgesSet.add(tempEdge);
+
+    }
+    addResidueEdge(sLabel, dLabel, theLabel, color){ // ann nodes needs to be preset before adding the edge
+      //console.log(theLabel);
+      var tempEdge = { from: this.namesIdDict[sLabel], to: this.namesIdDict[dLabel], arrows: "to", label: theLabel+"", color: color};
+      // console.log(getEdgeBetweenProjectNodes(projectNamesIdDict[sLabel],projectNamesIdDict[dLabel]));
+      this.edges.add(tempEdge);
+      this.edgesSet.add(tempEdge);
+    }
+    getEdgeBetweenNodes(node1_id,node2_id) {
+      return this.edges.get().filter(function (edge) {
+        return (edge.from === node1_id && edge.to === node2_id );
+      });
+    }
+    getEdgesOfNode(nodeId) {
+      return this.edges.get().filter(function (edge) {
+        return edge.from === nodeId || edge.to === nodeId;
+      });
+    }
+    getNodeByName(theName){
+      return this.nodes.get(this.namesIdDict[theName]);
+    }
+    reset(){
+      this.namesValueDict = {};
+      this.nodeIdSet = new Set();
+      this.nodeNamesSet = new Set();
+      this.namesIdDict = {};
+      this.idNamesDict = {};
+      // create an array with nodes
+      this.nodeSet = new Set();
+      this.nodes = new vis.DataSet([]);
+      // create an array with edges
+      this.edgesSet = new Set();
+      this.edges = new vis.DataSet([]);
+      // create a network
+      this.data = {
+        nodes: this.nodes,
+        edges: this.edges,
+      };
+      this.options = {};
+      //this.network = new vis.Network(this.container, this.data, this.options);
+      if (this.network != null) {
+        this.network.destroy();
+        this.network = new vis.Network(this.container, this.data, this.options);
+      }
+    }
+  }
+
+
+
+
+
+	</script>
+</body>
+
+</html>
