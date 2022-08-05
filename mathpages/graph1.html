@@ -151,7 +151,9 @@
         <div class="col-sm-8">
           <div class="container" id="mynetwork"></div>
           <button type="button" class="btn btn-primary" onclick="deleteselectednode()">Delete selected node</button>
-          <button type="button" class="btn btn-primary" onclick="deleteselectededge()">Delete selected edge</button>  
+          <button type="button" class="btn btn-primary" onclick="deleteselectededge()">Delete selected edge</button>
+          <button type="button" class="btn btn-primary" onclick="subdivideselectededge()">Subdivide edge</button>
+          <button type="button" class="btn btn-primary" onclick="contractselectededge()">Contract edge</button>  
         </div>
         <div class="col-sm-4">
           <div id="graphproperties"> 
@@ -195,14 +197,14 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>Degree of Vertex</td>
-                  <td id ="degofvertex"></td>
-                  <td></td>
-                  <td></td>
+                  <td>Selected Vertex</td>
+                  <td id="selectedvertexlabel"></td>
+                  <td>Selected Edge</td>
+                  <td id ="selectededgelabel"></td>
                 </tr>
                 <tr>
-                  <td></td>
-                  <td></td>
+                  <td>Degree of Vertex</td>
+                  <td id ="degofvertex"></td>
                   <td></td>
                   <td></td>
                 </tr>
@@ -333,7 +335,9 @@
         <div class="col-sm-8">
           <div class="container" id="n2mynetwork"></div>
           <button type="button" class="btn btn-primary" onclick="n2deleteselectednode()">Delete selected node</button>
-          <button type="button" class="btn btn-primary" onclick="n2deleteselectededge()">Delete selected edge</button>  
+          <button type="button" class="btn btn-primary" onclick="n2deleteselectededge()">Delete selected edge</button>
+          <button type="button" class="btn btn-primary" onclick="n2subdivideselectededge()">Subdivide edge</button>
+          <button type="button" class="btn btn-primary" onclick="n2contractselectededge()">Contract edge</button>    
         </div>
         <div class="col-sm-4">
           <div id="n2graphproperties"> 
@@ -377,14 +381,14 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>Degree of Vertex</td>
-                  <td id ="n2degofvertex"></td>
-                  <td></td>
-                  <td></td>
+                  <td>Selected Vertex</td>
+                  <td id="n2selectedvertexlabel"></td>
+                  <td>Selected Edge</td>
+                  <td id ="n2selectededgelabel"></td>
                 </tr>
                 <tr>
-                  <td></td>
-                  <td></td>
+                  <td>Degree of Vertex</td>
+                  <td id ="n2degofvertex"></td>
                   <td></td>
                   <td></td>
                 </tr>
@@ -403,7 +407,7 @@
     </div>
 
     <div class="container text-center">
-      <h2>Graph Combinations</h2>
+      <h2>Graph Operations</h2>
       <div class="row">
         <div class="col-sm-4">
           Selecting graph G<br>
@@ -423,10 +427,34 @@
           <button type="button" class="btn btn-primary" onclick="generateexponentialgraph()">Compute exponential graph G^H</button>
         </div>
       </div>
+        <div class="row">
+        <div class="col-sm-8">
+          Selecting graph G<br>
+          <input type="radio" id="lineGG1" name="lineGSelect" value="g1">
+          <label for="lineGG1">Graph #1</label><br>
+          <input type="radio" id="lineGG2" name="lineGSelect" value="g2">
+          <label for="lineGG2">Graph #2</label><br>
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="generatelinegraph()">Compute G's line graph</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-8">
+          Selecting graph G<br>
+          <input type="radio" id="complementGG1" name="complementGSelect" value="g1">
+          <label for="complementGG1">Graph #1</label><br>
+          <input type="radio" id="complementGG2" name="complementGSelect" value="g2">
+          <label for="complementGG2">Graph #2</label><br>
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="generatecomplementgraph()">Compute G's complement graph</button>
+        </div>
+      </div>
       <div class="container" id="combmynetwork"></div>
       <p> 讯息:(Message) <span id = "combtagMessage"></span></p><br>
-
     </div>
+
 
   
 
@@ -586,6 +614,69 @@
           } 
           return -1;
         }
+        getcomplementgraph(){
+          var tempgraph = new Graph([]);
+          for(let i = 0; i< this.graphlist.length ; i++){
+            tempgraph.addvertextograph(this.graphlist[i].label);
+          }
+          for(let i = 0; i< this.graphlist.length ; i++){
+            for(let j = 0; j< this.graphlist.length; j++){
+              // check if edge is present
+              var edgepresent = false;
+              for(let k = 0; k< this.graphlist[i].adjacentnodeslist.length; k++){
+                if(this.graphlist[i].adjacentnodeslist[k].label == this.graphlist[j].label){
+                  edgepresent = true;
+                }
+              }
+              if(!edgepresent && i != j){
+                tempgraph.graphlist[i].adjacentnodeslist.push(tempgraph.graphlist[j]);
+              }
+            }
+          }
+          tempgraph.computegraphproperties();
+          return tempgraph;
+        }
+        getlinegraph(){
+          var tempgraph = new Graph([]);
+          for(let i = 0 ; i< this.graphlist.length; i++){ // iterate over all nodes in graph
+            // add vertices
+            for(let j = 0; j< this.graphlist[i].adjacentnodeslist.length; j++){
+              var nodeexist = tempgraph.getnodeusingname(this.graphlist[i].label+","+this.graphlist[i].adjacentnodeslist[j].label);
+              var nodeexistreversed = tempgraph.getnodeusingname(this.graphlist[i].adjacentnodeslist[j].label+","+this.graphlist[i].label);
+              // if node not added
+              if(nodeexist == null && nodeexistreversed == null){
+                tempgraph.addvertextograph(this.graphlist[i].label+","+this.graphlist[i].adjacentnodeslist[j].label);
+              }
+            }
+            // add edges
+            for(let j = 0; j< this.graphlist[i].adjacentnodeslist.length-1; j++){
+              var nodeexist = tempgraph.getnodeusingname(this.graphlist[i].label+","+this.graphlist[i].adjacentnodeslist[j].label);
+              var nodeexistreversed = tempgraph.getnodeusingname(this.graphlist[i].adjacentnodeslist[j].label+","+this.graphlist[i].label);
+              for(let k =j+1; k< this.graphlist[i].adjacentnodeslist.length; k++){
+                var node2exist = tempgraph.getnodeusingname(this.graphlist[i].label+","+this.graphlist[i].adjacentnodeslist[k].label);
+                var node2existreversed = tempgraph.getnodeusingname(this.graphlist[i].adjacentnodeslist[k].label+","+this.graphlist[i].label);
+                if(nodeexist != null){
+                  if(node2exist != null){
+                    tempgraph.addedgetograph(nodeexist.label,node2exist.label);
+                  }
+                  else{
+                    tempgraph.addedgetograph(nodeexist.label,node2existreversed.label);
+                  }
+                }
+                else{
+                  if(node2exist != null){
+                    tempgraph.addedgetograph(nodeexistreversed.label,node2exist.label);
+                  }
+                  else{
+                    tempgraph.addedgetograph(nodeexistreversed.label,node2existreversed.label);
+                  }
+                }
+              }
+            }
+          }
+          tempgraph.computegraphproperties();
+          return tempgraph;
+        }
         /*
         *
         */
@@ -596,7 +687,9 @@
             this.graphlist.push(tempNode);
             idgenerator = idgenerator +1;
             this.computegraphproperties();
+            return tempNode;
           }
+          return nodeingraph;
         }
         addedgetograph(slabel, dlabel){
           // check if the nodes is already in graph
@@ -693,6 +786,63 @@
           this.graphlist = [];
           this.computegraphproperties();
         }
+        subdivideedgebyfromtoids(fromid, toid){
+          //Code to check fromid and to id form an edge
+          //pass
+          //get index of node from the node ids
+          var fromindex = this.getnodeindexusingid(fromid);
+          var toindex = this.getnodeindexusingid(toid);
+          //generate new label for new node
+          var templabel = this.graphlist.length;
+          while(this.getnodeusingname(templabel+"") != null){
+            templabel = templabel + 1;
+          }
+          //create new node
+          var newnode = this.addvertextograph(templabel +"");
+          //delete edge
+          for(let i = 0 ; i < this.graphlist[fromindex].adjacentnodeslist.length; i++){
+            if(this.graphlist[fromindex].adjacentnodeslist[i].id == toid){
+              this.graphlist[fromindex].adjacentnodeslist.splice(i,1);
+              this.graphlist[fromindex].adjacentnodeslist.push(newnode);
+              break;
+            }
+          }
+          for(let i = 0 ; i < this.graphlist[toindex].adjacentnodeslist.length; i++){
+            if(this.graphlist[toindex].adjacentnodeslist[i].id == fromid){
+              this.graphlist[toindex].adjacentnodeslist.splice(i,1);
+              this.graphlist[toindex].adjacentnodeslist.push(newnode);
+              break;
+            }
+          }
+          newnode.adjacentnodeslist.push(this.graphlist[fromindex]);
+          newnode.adjacentnodeslist.push(this.graphlist[toindex]);
+          this.computegraphproperties();
+        }
+        contractedgebyfromtoids(fromid, toid){
+          // code to check if from and to ids form an edge
+          // pass
+          var fromindex = this.getnodeindexusingid(fromid);
+          var toindex = this.getnodeindexusingid(toid);
+          var newlabel = this.graphlist[fromindex].label+","+this.graphlist[toindex].label;
+          var newnode = this.addvertextograph(newlabel +"");
+          for (let i = 0 ; i < this.graphlist[fromindex].adjacentnodeslist.length; i++){
+            if(this.graphlist[fromindex].adjacentnodeslist[i].id != toid){
+              this.graphlist[fromindex].adjacentnodeslist[i].adjacentnodeslist.push(newnode);
+              newnode.adjacentnodeslist.push(this.graphlist[fromindex].adjacentnodeslist[i]);
+            }
+          }
+          for (let i = 0 ; i < this.graphlist[toindex].adjacentnodeslist.length; i++){
+            if(this.graphlist[toindex].adjacentnodeslist[i].id !=  fromid){
+              this.graphlist[toindex].adjacentnodeslist[i].adjacentnodeslist.push(newnode);
+              newnode.adjacentnodeslist.push(this.graphlist[toindex].adjacentnodeslist[i]);
+            }
+          }
+          this.graphlist.splice(fromindex,1);
+          toindex = this.getnodeindexusingid(toid);
+          this.graphlist.splice(toindex,1);
+          this.computegraphproperties();
+        }
+
         becomecompletegraph(nnode){
           this.resetthegraph();
           for (let i = 0; i < nnode; i++) {
@@ -896,8 +1046,8 @@
       var n2graphstructureselectededgefromid; 
       var n2graphstructureselectededgetoid;
 
-      var combinedgraphstructure = new Graph([]);
-      
+      var combgraphstructure = new Graph([]);
+
 
 
 
@@ -970,11 +1120,13 @@
                 if(canvasname=="mynetwork"){
                   var degreemessage = thegraph.getnodeusingid(id).adjacentnodeslist.length+"";
                   document.getElementById("degofvertex").innerHTML= degreemessage;
+                  document.getElementById("selectedvertexlabel").innerHTML= thegraph.getnodeusingid(id).label+"";
                   graphstructureselectednodeid = id; // selected node's id in graph 1
                 }
                 if(canvasname=="n2mynetwork"){
                   var degreemessage = thegraph.getnodeusingid(id).adjacentnodeslist.length+"";
                   document.getElementById("n2degofvertex").innerHTML= degreemessage;
+                  document.getElementById("n2selectedvertexlabel").innerHTML= thegraph.getnodeusingid(id).label+"";
                   n2graphstructureselectednodeid = id; // selected node's id in graph 1
                 }
 
@@ -987,14 +1139,13 @@
                 if(canvasname=="mynetwork"){
                   graphstructureselectededgefromid = edges.get(id).from;
                   graphstructureselectededgetoid = edges.get(id).to;
-                  // console.log(edges.get(id).nodecolor);
-                  // nodes.get(graphstructureselectededgefromid)
+                  document.getElementById("selectededgelabel").innerHTML= "("+thegraph.getnodeusingid(graphstructureselectededgefromid).label+","+thegraph.getnodeusingid(graphstructureselectededgetoid).label+")";
+                  console.log(thegraph.getnodeusingid(graphstructureselectededgefromid).label);
                 }
                 if(canvasname=="n2mynetwork"){
                   n2graphstructureselectededgefromid = edges.get(id).from;
                   n2graphstructureselectededgetoid = edges.get(id).to;
-                  // console.log(edges.get(id).nodecolor);
-                  // nodes.get(graphstructureselectededgefromid)
+                  document.getElementById("n2selectededgelabel").innerHTML= "("+thegraph.getnodeusingid(n2graphstructureselectededgefromid).label+","+thegraph.getnodeusingid(n2graphstructureselectededgetoid).label+")";
                 }
               }
             }
@@ -1137,6 +1288,14 @@
         graphstructure.becomerandomtree(nnode);
         updateGraph("mynetwork",graphstructure);
       }
+      function subdivideselectededge(){
+        graphstructure.subdivideedgebyfromtoids(graphstructureselectededgefromid,graphstructureselectededgetoid); 
+        updateGraph("mynetwork",graphstructure);
+      }
+      function contractselectededge(){
+        graphstructure.contractedgebyfromtoids(graphstructureselectededgefromid,graphstructureselectededgetoid); 
+        updateGraph("mynetwork",graphstructure);
+      }
 
 
    
@@ -1251,6 +1410,14 @@
         n2graphstructure.becomerandomtree(nnode);
         updateGraph("n2mynetwork",n2graphstructure);
       }
+      function n2subdivideselectededge(){
+        n2graphstructure.subdivideedgebyfromtoids(n2graphstructureselectededgefromid,n2graphstructureselectededgetoid); 
+        updateGraph("n2mynetwork",n2graphstructure);
+      }
+      function n2contractselectededge(){
+        n2graphstructure.contractedgebyfromtoids(n2graphstructureselectededgefromid,n2graphstructureselectededgetoid); 
+        updateGraph("n2mynetwork",n2graphstructure);
+      }
 
 
 
@@ -1259,7 +1426,6 @@
        * Methods for combine graph (combmynetwork)
        * 
        * **************************************************************************************/
-      var combnodesArray = []
       function generateexponentialgraph(){
         // get input from user
         var gselect = document.getElementsByName('expGSelect');
@@ -1276,9 +1442,41 @@
                 hselect_value = hselect[i].value;
             }
         }
-
-
         console.log(hselect_value);
+      }
+
+      function generatelinegraph(){
+        var gselect = document.getElementsByName('lineGSelect');
+        var gselect_value;
+        for(var i = 0; i < gselect.length; i++){
+            if(gselect[i].checked){
+                gselect_value = gselect[i].value;
+            }
+        }
+        if(gselect_value =="g1"){
+          combgraphstructure =  graphstructure.getlinegraph();
+        }
+        else{
+          combgraphstructure =  n2graphstructure.getlinegraph();
+        }
+        updateGraph("combmynetwork", combgraphstructure);
+      }
+
+      function generatecomplementgraph(){
+        var gselect = document.getElementsByName('complementGSelect');
+        var gselect_value;
+        for(var i = 0; i < gselect.length; i++){
+            if(gselect[i].checked){
+                gselect_value = gselect[i].value;
+            }
+        }
+        if(gselect_value =="g1"){
+          combgraphstructure =  graphstructure.getcomplementgraph();
+        }
+        else{
+          combgraphstructure =  n2graphstructure.getcomplementgraph();
+        }
+        updateGraph("combmynetwork", combgraphstructure);
       }
 
 
