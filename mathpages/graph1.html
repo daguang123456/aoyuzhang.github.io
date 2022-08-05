@@ -254,6 +254,24 @@
         </div>
       </div>
       <div class="row">
+        <div class="col-sm-8">
+          <label for="n2pathnvertices" >Number of Vertices:</label>
+          <input type="number" step="1" id="n2pathnvertices" name="n2pathnvertices">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="n2generatepath()">Generate Path Graph</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-8">
+          <label for="n2starnvertices" >Number of Vertices:</label>
+          <input type="number" step="1" id="n2starnvertices" name="n2starnvertices">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="n2generatestar()">Generate Star Graph</button>
+        </div>
+      </div>
+      <div class="row">
         <div class="col-sm-4">
           <label for="n2turannnode" >Number of Nodes:</label>
           <input type="number" step="1" id="n2turannnode" name="n2turannnode">
@@ -263,13 +281,126 @@
           <input type="number" step="1" id="n2turannparts" name="n2turannparts">
         </div>
         <div class="col-sm-4">
-          <button type="button" class="btn btn-primary" onclick="n2createturan()">Create Turan Graph</button>
+          <button type="button" class="btn btn-primary" onclick="n2createturan()">Generate Turan Graph</button>
         </div>
       </div>
-      <div class="container" id="n2mynetwork"></div>
+      <div class="row">
+        <div class="col-sm-4">
+          <label for="n2completebipartitennodea" >Number of nodes in partition A:</label>
+          <input type="number" step="1" id="n2completebipartitennodea" name="n2completebipartitennodea">
+        </div>
+        <div class="col-sm-4">
+          <label for="n2completebipartitennodeb" >Number of nodes in partition B:</label>
+          <input type="number" step="1" id="n2completebipartitennodeb" name="n2completebipartitennodeb">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="n2createcompletebipartite()">Generate complete bipartite graph</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <label for="n2gridnrows" >Number of rows:</label>
+          <input type="number" step="1" id="n2gridnrows" name="n2gridnrows">
+        </div>
+        <div class="col-sm-4">
+          <label for="n2gridncolumns" >Number of columns:</label>
+          <input type="number" step="1" id="n2gridncolumns" name="n2gridncolumns">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="n2creategridgraph()">Generate grid graph</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-8">
+          <label for="n2cyclicnnode" >Number of vertices:</label>
+          <input type="number" step="1" id="n2cyclicnnode" name="n2cyclicnnode">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="n2createcyclicgraph()">Generate cyclic graph</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-8">
+          <label for="n2randomtreennode" >Number of vertices:</label>
+          <input type="number" step="1" id="n2randomtreennode" name="n2randomtreennode">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="n2createrandomtree()">Generate random tree</button>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-sm-8">
+          <div class="container" id="n2mynetwork"></div>
+          <button type="button" class="btn btn-primary" onclick="n2deleteselectednode()">Delete selected node</button>
+          <button type="button" class="btn btn-primary" onclick="n2deleteselectededge()">Delete selected edge</button>  
+        </div>
+        <div class="col-sm-4">
+          <div id="n2graphproperties"> 
+            <table class= "table table-striped-columns">
+              <thead>
+                <tr>
+                  <b>Global properties</b>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Maximum Degree</td>
+                  <td id="n2maximumdegree"></td>
+                  <td>Minimum Degree</td>
+                  <td id="n2minimumdegree"></td>
+                </tr>
+                <tr>
+                  <td>Average Degree</td>
+                  <td id="n2averagedegree"></td>
+                  <td>Bipartite</td>
+                  <td id="n2isbipartite"></td>
+                </tr>
+                <tr>
+                  <td title="Tree with all degree odd." >Is basic odd graph</td>
+                  <td id="n2isbasicodd"></td>
+                  <td>f_i(G)</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td title="Vertex partition so that induced subgraph has all degree odd.">Has Good Partition</td>
+                  <td id = "n2hasgoodpartition"></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table><table class= "table table-striped-columns">
+              <thead>
+                <tr>
+                  <b>Inspection Properties</b>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Degree of Vertex</td>
+                  <td id ="n2degofvertex"></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
       <p> 讯息:(Message) <span id = "n2tagMessage"></span></p><br>
     </div>
-
 
     <div class="container text-center">
       <h2>Graph Combinations</h2>
@@ -760,6 +891,15 @@
       var graphstructureselectededgefromid; 
       var graphstructureselectededgetoid;
 
+      var n2graphstructure = new Graph([]); // Graph #1
+      var n2graphstructureselectednodeid; // selected node's id in graph 1
+      var n2graphstructureselectededgefromid; 
+      var n2graphstructureselectededgetoid;
+
+      var combinedgraphstructure = new Graph([]);
+      
+
+
 
       function startNetwork() {
         //create network1
@@ -832,6 +972,12 @@
                   document.getElementById("degofvertex").innerHTML= degreemessage;
                   graphstructureselectednodeid = id; // selected node's id in graph 1
                 }
+                if(canvasname=="n2mynetwork"){
+                  var degreemessage = thegraph.getnodeusingid(id).adjacentnodeslist.length+"";
+                  document.getElementById("n2degofvertex").innerHTML= degreemessage;
+                  n2graphstructureselectednodeid = id; // selected node's id in graph 1
+                }
+
               },
             },
           },
@@ -841,6 +987,14 @@
                 if(canvasname=="mynetwork"){
                   graphstructureselectededgefromid = edges.get(id).from;
                   graphstructureselectededgetoid = edges.get(id).to;
+                  // console.log(edges.get(id).nodecolor);
+                  // nodes.get(graphstructureselectededgefromid)
+                }
+                if(canvasname=="n2mynetwork"){
+                  n2graphstructureselectededgefromid = edges.get(id).from;
+                  n2graphstructureselectededgetoid = edges.get(id).to;
+                  // console.log(edges.get(id).nodecolor);
+                  // nodes.get(graphstructureselectededgefromid)
                 }
               }
             }
@@ -856,6 +1010,14 @@
           document.getElementById("isbasicodd").innerHTML= thegraph.isbasicodd+"";
           document.getElementById("isbipartite").innerHTML= thegraph.isbipartite +"";
           document.getElementById("hasgoodpartition").innerHTML= thegraph.hasgoodpartition +"";
+        }
+        if(canvasname=="n2mynetwork"){
+          document.getElementById("n2maximumdegree").innerHTML= thegraph.maxdegree+"";
+          document.getElementById("n2minimumdegree").innerHTML= thegraph.mindegree+"";
+          document.getElementById("n2averagedegree").innerHTML= thegraph.averagedegree+"";
+          document.getElementById("n2isbasicodd").innerHTML= thegraph.isbasicodd+"";
+          document.getElementById("n2isbipartite").innerHTML= thegraph.isbipartite +"";
+          document.getElementById("n2hasgoodpartition").innerHTML= thegraph.hasgoodpartition +"";
         }
       }
 
@@ -983,8 +1145,6 @@
        * Methods for graph 2(n2mynetwork)
        * 
        * **************************************************************************************/
-      //"n2mynetwork"
-      var n2graphstructure = new Graph([]);
       function n2addNode() {
         nodelabel = document.getElementById("n2nname").value;
         n2graphstructure.addvertextograph(nodelabel);
@@ -994,14 +1154,15 @@
         //get input from user 
         var srcLabel = document.getElementById("n2edgenname1").value;
         var destLabel = document.getElementById("n2edgenname2").value;
-        if (srcLabel == "" || destLabel == "" || srcLabel == destLabel ){
+        if (srcLabel == null || destLabel == null || srcLabel == destLabel ){
           document.getElementById("n2tagMessage").innerHTML= "nodes should have label and Source can't be the same as destination";
+          return false;
         }
         n2graphstructure.addedgetograph(srcLabel, destLabel);
         // update vis network
         updateGraph("n2mynetwork",n2graphstructure);
+        
       }
-
       function n2generatecomplete(){
         var nnode = parseInt(document.getElementById("n2completenvertices").value);
         if(isNaN(nnode)){ 
@@ -1026,6 +1187,71 @@
         n2graphstructure.becometurangraph(nnode, nparts)
         updateGraph("n2mynetwork",n2graphstructure);
       }
+      function n2generatepath(){
+        var nnode = parseInt(document.getElementById("n2pathnvertices").value);
+        if(isNaN(nnode)){ 
+          document.getElementById("n2tagMessage").innerHTML= "number of node must be integer";
+          return false;
+        }
+        n2graphstructure.becomepathgraph(nnode);
+        updateGraph("n2mynetwork",n2graphstructure);
+      }
+      function n2generatestar(){
+        var nnode = parseInt(document.getElementById("n2starnvertices").value);
+        if(isNaN(nnode)){ 
+          document.getElementById("n2tagMessage").innerHTML= "number of node must be integer";
+          return false;
+        }
+        n2graphstructure.becomestargraph(nnode);
+        updateGraph("n2mynetwork",n2graphstructure);
+      }
+      function n2createcompletebipartite(){
+        var nnodea = parseInt(document.getElementById("n2completebipartitennodea").value);
+        var nnodeb = parseInt(document.getElementById("n2completebipartitennodeb").value);
+        if(isNaN(nnodea) || isNaN(nnodeb)){ 
+          document.getElementById("n2tagMessage").innerHTML= "number of nodes must be integer";
+          return false;
+        }
+        n2graphstructure.becomecompletebipartitegraph(nnodea, nnodeb);
+        updateGraph("n2mynetwork",n2graphstructure);
+      }
+      function n2creategridgraph(){
+        var nnoder = parseInt(document.getElementById("gridnrows").value);
+        var nnodec = parseInt(document.getElementById("gridncolumns").value);
+        if(isNaN(nnoder) || isNaN(nnodec)){ 
+          document.getElementById("tagMessage").innerHTML= "number rows and columns must be integer";
+          return false;
+        }
+        graphstructure.becomegridgraph(nnoder, nnodec);
+        updateGraph("mynetwork",graphstructure);
+      }
+      function n2deleteselectednode(){
+        n2graphstructure.deletevertexbyid(n2graphstructureselectednodeid); // selected node's id in graph 1
+        updateGraph("n2mynetwork",n2graphstructure);
+      }
+      function n2deleteselectededge(){
+        n2graphstructure.deleteedgebyfromtoids(n2graphstructureselectededgefromid,n2graphstructureselectededgetoid); // selected node's id in graph 1
+        updateGraph("n2mynetwork",n2graphstructure);
+      }
+      function n2createcyclicgraph(){
+        var nnode = parseInt(document.getElementById("n2cyclicnnode").value);
+        if(isNaN(nnode)){ 
+          document.getElementById("n2tagMessage").innerHTML= "number of node must be integer";
+          return false;
+        }
+        n2graphstructure.becomecyclicgraph(nnode);
+        updateGraph("n2mynetwork",n2graphstructure);
+      }
+      function n2createrandomtree(){
+        var nnode = parseInt(document.getElementById("n2randomtreennode").value);
+        if(isNaN(nnode)){ 
+          document.getElementById("n2tagMessage").innerHTML= "number of node must be integer";
+          return false;
+        }
+        n2graphstructure.becomerandomtree(nnode);
+        updateGraph("n2mynetwork",n2graphstructure);
+      }
+
 
 
       /*****************************************************************************************
