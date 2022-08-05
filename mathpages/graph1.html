@@ -1,213 +1,1073 @@
 <!doctype html>
 <html>
-<head>
-  <title>Graph 3D demo</title>
-  <script type="text/javascript" src="https://unpkg.com/vis-graph3d@latest/dist/vis-graph3d.min.js"></script>
-  <script type="text/javascript">
-    var data = null;
-    var graph = null;
+  <head>
+    <title>   Graph Software </title>
+    <meta charset="utf-8">
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-    function custom(x, y) {
-      return (Math.sin(x/50) * Math.cos(y/50) * 50 + 50);
-    }
+    <!-- vistwork -->
+    <script type="text/javascript" src="https://unpkg.com/vis-data@latest/peer/umd/vis-data.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-network@latest/peer/umd/vis-network.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/vis-network/styles/vis-network.min.css" />
 
-    // Called when the Visualization API is loaded.
-    function drawVisualization() {
-      // Create and populate a data table.
-      data = new vis.DataSet();
-      // create some nice looking data with sin/cos
-      var counter = 0;
-      var steps = 50;  // number of datapoints will be steps*steps
-      var axisMax = 314;
-      var axisStep = axisMax / steps;
-      for (var x = 0; x < axisMax; x+=axisStep) {
-        for (var y = 0; y < axisMax; y+=axisStep) {
-          var value = custom(x,y);
-          data.add({id:counter++,x:x,y:y,z:value,style:value});
+    <!-- page speccifc css-->
+    <style type="text/css">
+      #mynetwork {
+        width: 600px;
+        height: 400px;
+        border: 2px solid lightgray;
+      }
+      #n2mynetwork {
+        width: 600px;
+        height: 400px;
+        border: 2px solid lightgray;
+      }
+      #combmynetwork {
+        width: 600px;
+        height: 400px;
+        border: 2px solid lightgray;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2>Graph software using Visnetwork</h2>
+
+    <p>Create a simple network with some nodes and edges.</p>
+
+    <div class="container text-center">
+      <h2>Graph #1</h2>
+      <div class="row">
+        <div class="col-sm-8">
+          <label for="nname" >Node Label:</label>
+          <input type="text" id="nname" name="node_label">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="addNode()">Add Node</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <label for="edgenname1" >Node1 Label:</label>
+          <input type="text" id="edgenname1" name="edge_node_label1">
+        </div>
+        <div class="col-sm-4">
+          <label for="edgenname2" >Node2 Label:</label>
+          <input type="text" id="edgenname2" name="edge_node_label2">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="addEdge()">Add Edge</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-8">
+          <label for="completenvertices" >Number of Vertices:</label>
+          <input type="number" step="1" id="completenvertices" name="completenvertices">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="generatecomplete()">Generate Complete Graph</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-8">
+          <label for="pathnvertices" >Number of Vertices:</label>
+          <input type="number" step="1" id="pathnvertices" name="pathnvertices">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="generatepath()">Generate Path Graph</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-8">
+          <label for="starnvertices" >Number of Vertices:</label>
+          <input type="number" step="1" id="starnvertices" name="starnvertices">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="generatestar()">Generate Star Graph</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <label for="turannnode" >Number of Nodes:</label>
+          <input type="number" step="1" id="turannnode" name="turannnode">
+        </div>
+        <div class="col-sm-4">
+          <label for="turannparts" >Number of parts:</label>
+          <input type="number" step="1" id="turannparts" name="turannparts">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="createturan()">Generate Turan Graph</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <label for="completebipartitennodea" >Number of nodes in partition A:</label>
+          <input type="number" step="1" id="completebipartitennodea" name="completebipartitennodea">
+        </div>
+        <div class="col-sm-4">
+          <label for="completebipartitennodeb" >Number of nodes in partition B:</label>
+          <input type="number" step="1" id="completebipartitennodeb" name="completebipartitennodeb">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="createcompletebipartite()">Generate complete bipartite graph</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <label for="gridnrows" >Number of rows:</label>
+          <input type="number" step="1" id="gridnrows" name="gridnrows">
+        </div>
+        <div class="col-sm-4">
+          <label for="gridncolumns" >Number of columns:</label>
+          <input type="number" step="1" id="gridncolumns" name="gridncolumns">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="creategridgraph()">Generate grid graph</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-8">
+          <label for="cyclicnnode" >Number of vertices:</label>
+          <input type="number" step="1" id="cyclicnnode" name="cyclicnnode">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="createcyclicgraph()">Generate cyclic graph</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-8">
+          <label for="randomtreennode" >Number of vertices:</label>
+          <input type="number" step="1" id="randomtreennode" name="randomtreennode">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="createrandomtree()">Generate random tree</button>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-sm-8">
+          <div class="container" id="mynetwork"></div>
+          <button type="button" class="btn btn-primary" onclick="deleteselectednode()">Delete selected node</button>
+          <button type="button" class="btn btn-primary" onclick="deleteselectededge()">Delete selected edge</button>  
+        </div>
+        <div class="col-sm-4">
+          <div id="graphproperties"> 
+            <table class= "table table-striped-columns">
+              <thead>
+                <tr>
+                  <b>Global properties</b>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Maximum Degree</td>
+                  <td id="maximumdegree"></td>
+                  <td>Minimum Degree</td>
+                  <td id="minimumdegree"></td>
+                </tr>
+                <tr>
+                  <td>Average Degree</td>
+                  <td id="averagedegree"></td>
+                  <td>Bipartite</td>
+                  <td id="isbipartite"></td>
+                </tr>
+                <tr>
+                  <td title="Tree with all degree odd." >Is basic odd graph</td>
+                  <td id="isbasicodd"></td>
+                  <td>f_i(G)</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td title="Vertex partition so that induced subgraph has all degree odd.">Has Good Partition</td>
+                  <td id = "hasgoodpartition"></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table><table class= "table table-striped-columns">
+              <thead>
+                <tr>
+                  <b>Inspection Properties</b>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Degree of Vertex</td>
+                  <td id ="degofvertex"></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <p> 讯息:(Message) <span id = "tagMessage"></span></p><br>
+    </div>
+
+    <div class="container text-center">
+      <h2>Graph #2</h2>
+      <div class="row">
+        <div class="col-sm-8">
+          <label for="n2nname" >Node Label:</label>
+          <input type="text" id="n2nname" name="n2node_label">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="n2addNode()">Add Node</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <label for="n2edgenname1" >Node1 Label:</label>
+          <input type="text" id="n2edgenname1" name="n2edge_node_label1">
+        </div>
+        <div class="col-sm-4">
+          <label for="n2edgenname2" >Node2 Label:</label>
+          <input type="text" id="n2edgenname2" name="n2edge_node_label2">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="n2addEdge()">Add Edge</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-8">
+          <label for="n2completenvertices" >Number of Vertices:</label>
+          <input type="number" step="1" id="n2completenvertices" name="n2completenvertices">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="n2generatecomplete()">Generate Complete Graph</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <label for="n2turannnode" >Number of Nodes:</label>
+          <input type="number" step="1" id="n2turannnode" name="n2turannnode">
+        </div>
+        <div class="col-sm-4">
+          <label for="n2turannparts" >Number of parts:</label>
+          <input type="number" step="1" id="n2turannparts" name="n2turannparts">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="n2createturan()">Create Turan Graph</button>
+        </div>
+      </div>
+      <div class="container" id="n2mynetwork"></div>
+      <p> 讯息:(Message) <span id = "n2tagMessage"></span></p><br>
+    </div>
+
+
+    <div class="container text-center">
+      <h2>Graph Combinations</h2>
+      <div class="row">
+        <div class="col-sm-4">
+          Selecting graph G<br>
+          <input type="radio" id="expGG1" name="expGSelect" value="g1">
+          <label for="expGG1">Graph #1</label><br>
+          <input type="radio" id="expGG2" name="expGSelect" value="g2">
+          <label for="expGG2">Graph #2</label><br>
+        </div>
+        <div class="col-sm-4">
+          Selecting Graph H<br>
+          <input type="radio" id="expHG1" name="expHSelect" value="g1">
+          <label for="expHG1">Graph #1</label><br>
+          <input type="radio" id="expHG2" name="expHSelect" value="g2">
+          <label for="expHG2">Graph #2</label><br>
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="generateexponentialgraph()">Compute exponential graph G^H</button>
+        </div>
+      </div>
+      <div class="container" id="combmynetwork"></div>
+      <p> 讯息:(Message) <span id = "combtagMessage"></span></p><br>
+
+    </div>
+
+  
+
+
+    <script type="text/javascript">
+      /*****************************************************************************************
+       * 
+       * Graph Class Definition
+       * 
+       * **************************************************************************************/
+      var idgenerator = 1; // used to assign unique id to graph vertices
+
+      class Node {
+        constructor(label, id,color,adjacentnodeslist) {
+          this.label = label;
+          this.id = id;
+          this.color = color;
+          this.adjacentnodeslist = adjacentnodeslist;
         }
       }
 
-      // specify options
-      var options = {
-        width:  '600px',
-        height: '600px',
-        style: 'surface',
-        showPerspective: true,
-        showGrid: true,
-        showShadow: false,
-        keepAspectRatio: true,
-        verticalRatio: 0.5
-      };
+      class Graph{
+        constructor(glist){
+          this.graphlist = glist;
+          this.computegraphproperties();
+        }
+        computegraphproperties(){
+          this.maxdegree = this.getmaxdegree();
+          this.mindegree = this.getmindegree();
+          this.averagedegree = this.getaveragedegree();
+          this.isbasicodd = this.computeisgraphbasicoddgraph();
+          this.isbipartite = this.computeisgraphbipartite();
+          this.hasgoodpartition = this.computegraphhasgoodpartition();
+        }
+        computegraphhasgoodpartition(){
+          var visited = new Array(this.graphlist.length);
+          var numberofvisited = 0;
+          for(let i = 0; i < this.graphlist.length; i++){
+            visited[i]=-1;
+          }
+          for(let i = 0; i< this.graphlist.length ; i++){
+            if(visited[i] != -1){
+              if(numberofvisited % 2 == 1){
+                return false;
+              }
+              continue
+            }
+            var queue = [];
+            queue.push(i)
+            visited[i] = 1;
+            numberofvisited = numberofvisited+ 1;
+            while (queue.length != 0){
+              var u = queue.shift();
+              for(let j = 0; j < this.graphlist[u].adjacentnodeslist.length; j++){
+                var tempindex  = this.getnodeindexusingid(this.graphlist[u].adjacentnodeslist[j].id);
+                if(visited[tempindex] == -1){
+                  visited[tempindex] = 1
+                  queue.push(tempindex);
+                  numberofvisited = numberofvisited +1;
+                }
+              }
+            }
+          }
+          return true;
+        }
+        computeisgraphbipartite(){
+          var nodecolor = new Array(this.graphlist.length);
+          for(let i = 0; i < this.graphlist.length; i++) {
+            nodecolor[i] = -1
+          }
+          for (let i = 0; i < this.graphlist.length; i++) {
+            if(nodecolor[i] != -1){
+              continue;
+            }
+            var queue = [];
+            nodecolor[i] = 0;
+            queue.push(i);
 
-      // Instantiate our graph object.
-      var container = document.getElementById('mygraph');
-      graph = new vis.Graph3d(container, data, options);
-    }
-  </script>
-</head>
-<body onload="drawVisualization();">
-<div id="mygraph"></div>
-</body>
+            while(queue.length != 0){
+              var u = queue.shift();
+              for(let j = 0; j < this.graphlist[u].adjacentnodeslist.length; j++){
+                var tempindex  = this.getnodeindexusingid(this.graphlist[u].adjacentnodeslist[j].id);
+                if(nodecolor[tempindex] == -1){
+                  nodecolor[tempindex] = 1- nodecolor[u]
+                  queue.push(tempindex);
+
+                }
+                else if(nodecolor[u] == nodecolor[tempindex]){
+                  return false;
+                }
+              }
+            }
+          }
+          return true;
+        }
+        computeisgraphbasicoddgraph(){
+          var sumdegree = 0
+          for (let i = 0; i < this.graphlist.length; i++) {
+            if(this.graphlist[i].adjacentnodeslist.length % 2 ==0){
+              return false;
+            }
+            sumdegree =  sumdegree + this.graphlist[i].adjacentnodeslist.length;
+          }
+          if(sumdegree /2 == this.graphlist.length -1){
+            return true;
+          }
+          else{
+            return false;
+          }
+        }
+        getmaxdegree(){
+          var maxd = 0;        
+          for (let i = 0; i < this.graphlist.length; i++) {
+            if(this.graphlist[i].adjacentnodeslist.length > maxd){
+              maxd = this.graphlist[i].adjacentnodeslist.length;
+            }
+          } 
+          return maxd;
+        }
+        getmindegree(){
+          var mind = 100000;        
+          for (let i = 0; i < this.graphlist.length; i++) {
+            if(this.graphlist[i].adjacentnodeslist.length < mind){
+              mind = this.graphlist[i].adjacentnodeslist.length;
+            }
+          } 
+          return mind;
+        }
+        getaveragedegree(){
+          var degreesum = 0.0 
+          for (let i = 0; i < this.graphlist.length; i++) {
+            degreesum = degreesum + this.graphlist[i].adjacentnodeslist.length;
+          } 
+          return degreesum / this.graphlist.length;
+        }
+        getnodeusingname(nodename){
+          for (let i = 0; i < this.graphlist.length; i++) {
+            if(this.graphlist[i].label == nodename){
+              return this.graphlist[i];
+            }
+          } 
+          return null;
+        }
+        getnodeusingid(nodeid){
+          for (let i = 0; i < this.graphlist.length; i++) {
+            if(this.graphlist[i].id == nodeid){
+              return this.graphlist[i];
+            }
+          } 
+          return null;
+        }
+        getnodeindexusingid(nodeid){
+          for (let i = 0; i < this.graphlist.length; i++) {
+            if(this.graphlist[i].id == nodeid){
+              return i;
+            }
+          } 
+          return -1;
+        }
+        /*
+        *
+        */
+        addvertextograph(vertexname){
+          var nodeingraph = this.getnodeusingname(vertexname);
+          if(nodeingraph == null){
+            var tempNode = new Node(vertexname, idgenerator, null,[]);
+            this.graphlist.push(tempNode);
+            idgenerator = idgenerator +1;
+            this.computegraphproperties();
+          }
+        }
+        addedgetograph(slabel, dlabel){
+          // check if the nodes is already in graph
+          var srcingraph = this.getnodeusingname(slabel);
+          var destingraph = this.getnodeusingname(dlabel);
+
+          // updating the nodesArray
+          if(srcingraph === null && destingraph === null){ // if both node are not present in graph create both
+            console.log("null null");
+            var tempnode1 = new Node(slabel, idgenerator, null, []);
+            idgenerator = idgenerator +1;
+            var tempnode2 = new Node(dlabel, idgenerator, null, []);
+            idgenerator = idgenerator +1;
+            tempnode2.adjacentnodeslist.push(tempnode1);
+            tempnode1.adjacentnodeslist.push(tempnode2);
+            this.graphlist.push(tempnode1);
+            this.graphlist.push(tempnode2);
+          }
+          else if(srcingraph === null){
+            console.log("no null null");
+            var tempnode1 = new Node(slabel, idgenerator, null,[destingraph]);
+            idgenerator = idgenerator +1;
+            destingraph.adjacentnodeslist.push(tempnode1);
+            this.graphlist.push(tempnode1);
+          }
+          else if(destingraph === null){
+            console.log("null nonull");
+            var tempnode1 = new Node(dlabel, idgenerator, null,[srcingraph]);
+            idgenerator = idgenerator +1;
+            srcingraph.adjacentnodeslist.push(tempnode1);
+            this.graphlist.push(tempnode1);
+          }
+          else{
+            console.log("nonull null");
+            // check if edge already present
+            for(let i = 0; i< srcingraph.adjacentnodeslist.length; i++){
+              if(srcingraph.adjacentnodeslist[i].label == destingraph.label){
+                return false;
+              }
+            }
+            srcingraph.adjacentnodeslist.push(destingraph);
+            destingraph.adjacentnodeslist.push(srcingraph);
+          }
+          this.computegraphproperties();
+        }
+        deletevertexbyid(nodeid){
+          var nodeindex = -1;
+          for(let i =0; i< this.graphlist.length; i++){
+            if(this.graphlist[i].id == nodeid){
+              nodeindex = i;
+              break;
+            }
+          }
+          for(let i = 0; i< this.graphlist[nodeindex].adjacentnodeslist.length; i++){
+            for(let j = 0; j < this.graphlist[i].adjacentnodeslist.length; j++){
+              if(this.graphlist[nodeindex].adjacentnodeslist[i].adjacentnodeslist[j].id == nodeid){
+                this.graphlist[nodeindex].adjacentnodeslist[i].adjacentnodeslist.splice(j,1);
+                break;
+              }
+            }
+          }
+          this.graphlist.splice(nodeindex,1);
+          this.computegraphproperties();
+        }
+        deleteedgebyfromtoids(fromid, toid){
+          var fromindex = -1;
+          var toindex = -1;
+          for(let i =0; i< this.graphlist.length; i++){
+            if(this.graphlist[i].id == fromid){
+              fromindex = i;
+            }
+            if(this.graphlist[i].id == toid){
+              toindex = i;
+            }
+            if(fromindex != -1 && toindex != -1){
+              break;
+            }
+          }
+          for(let i = 0; i< this.graphlist[fromindex].adjacentnodeslist.length ; i++){
+            if(this.graphlist[fromindex].adjacentnodeslist[i].id == toid){
+              this.graphlist[fromindex].adjacentnodeslist.splice(i,1);
+              break;
+            }
+          }
+          for(let i = 0; i< this.graphlist[toindex].adjacentnodeslist.length ; i++){
+            if(this.graphlist[toindex].adjacentnodeslist[i].id == fromid){
+              this.graphlist[toindex].adjacentnodeslist.splice(i,1);
+              break;
+            }
+          }
+          this.computegraphproperties();
+        }
+        resetthegraph(){
+          this.graphlist = [];
+          this.computegraphproperties();
+        }
+        becomecompletegraph(nnode){
+          this.resetthegraph();
+          for (let i = 0; i < nnode; i++) {
+            this.addvertextograph(i+"");
+          }
+          for (let i = 0; i < nnode; i++) {
+            for (let j = 0; j < nnode; j++){
+              if (j != i){
+                this.graphlist[i].adjacentnodeslist.push(this.graphlist[j]);
+              }
+            }
+          }
+          this.computegraphproperties();
+        }
+        becomepathgraph(nnode){
+          this.resetthegraph();
+          for (let i = 0; i < nnode; i++) {
+            this.addvertextograph(i+"");
+          }
+          for (let i = 0; i < nnode-1; i++) {
+            this.graphlist[i].adjacentnodeslist.push(this.graphlist[i+1]);
+            this.graphlist[i+1].adjacentnodeslist.push(this.graphlist[i]);
+          }
+          this.computegraphproperties();
+        }
+        becomestargraph(nnode){
+          this.resetthegraph();
+          for (let i = 0; i < nnode; i++) {
+            this.addvertextograph(i+"");
+          }
+          for (let i = 1; i < nnode; i++) {
+            this.graphlist[i].adjacentnodeslist.push(this.graphlist[0]);
+            this.graphlist[0].adjacentnodeslist.push(this.graphlist[i]);
+          }
+          this.computegraphproperties();
+        }
+        becometurangraph(nnode, nparts){
+          var nmodr = nnode % nparts;
+          var nbyr = Math.floor(nnode/nparts);
+          this.resetthegraph();  // reset graph
+          // create nodes
+          for (let i = 0; i < nnode; i++) {
+            this.addvertextograph(i+"");
+          }
+          // create edges
+          for (let i = 0; i < nnode; i++) {
+            for (let j = 0; j < nnode; j++){
+              if(i < nmodr*(nbyr+1)){ // in parts with larger number of nodes
+                if(Math.floor(j/(nbyr+1)) != Math.floor(i/(nbyr+1))){
+                  this.graphlist[i].adjacentnodeslist.push(this.graphlist[j]);
+                }
+              }
+              else{
+                if( Math.floor((i-(nmodr*(nbyr+1)))/nbyr) != Math.floor((j-(nmodr*(nbyr+1)))/nbyr)){
+                  this.graphlist[i].adjacentnodeslist.push(this.graphlist[j]);
+                }
+              }
+            }
+          }
+          this.computegraphproperties();
+        }
+        becomecompletebipartitegraph(nnodea, nnodeb){
+          var sumofnode = nnodea + nnodeb ; 
+          this.resetthegraph();  // reset graph
+          // create nodes
+          for (let i = 0; i < sumofnode; i++) {
+            this.addvertextograph(i+"");
+          }
+          // create edges
+          for (let i = 0; i < sumofnode; i++) {
+            for (let j = i; j < sumofnode; j++){
+              if((i<nnodea && j>=nnodea) || (i>=nnodea && j<nnodea)){
+                this.graphlist[i].adjacentnodeslist.push(this.graphlist[j]);
+                this.graphlist[j].adjacentnodeslist.push(this.graphlist[i]);
+              }
+            }
+          }
+          this.computegraphproperties();
+        }
+        becomegridgraph(nr, nc){
+          var nnode = nr*nc ; 
+          this.resetthegraph();  // reset graph
+          // create nodes
+          for (let i = 0; i < nnode; i++) {
+            this.addvertextograph(i+"");
+          }
+          // create edges
+          for(let i = 0; i<nnode;i++){
+            if(i-1 >= 0 && (i-1)%nc != nc-1){
+              this.graphlist[i].adjacentnodeslist.push(this.graphlist[i-1]);
+            }
+            if(i+1 < nnode && ((i+1) % nc !=0)){
+              this.graphlist[i].adjacentnodeslist.push(this.graphlist[i+1]);
+            }
+            if(i+nc < nnode){
+              this.graphlist[i].adjacentnodeslist.push(this.graphlist[i+nc]);
+            }
+            if(i-nc >= 0 ){
+              this.graphlist[i].adjacentnodeslist.push(this.graphlist[i-nc]);
+            }
+          }
+          this.computegraphproperties();
+        }
+        becomecyclicgraph(nnode){
+          this.resetthegraph();  // reset graph
+          // create nodes
+          for (let i = 0; i < nnode; i++) {
+            this.addvertextograph(i+"");
+          }
+          for(let i = 0; i< nnode; i++){
+            this.graphlist[i].adjacentnodeslist.push(this.graphlist[(i+nnode+1)%nnode]);
+            this.graphlist[i].adjacentnodeslist.push(this.graphlist[(i+nnode-1)%nnode]);
+          }
+          this.computegraphproperties();
+        }
+        becomerandomtree(nnode){
+          this.resetthegraph();  // reset graph
+          // if less than 3 nodes
+          if(nnode <= 2){
+            this.becomepathgraph(nnode);
+          }
+          else{
+            for (let i = 0; i < nnode; i++) {
+              this.addvertextograph(i+"");
+            }
+            var pufersequence = new Array(nnode - 2);
+            for(let i = 0; i < nnode-2; i++){
+              pufersequence[i] = Math.floor((Math.random() * nnode));;
+            }
+            var degreearray = new Array(nnode);
+            for(let i = 0 ; i< nnode; i++){
+              degreearray[i] = 1;
+            }
+            for(let i = 0; i< pufersequence.length ; i++){
+              degreearray[pufersequence[i]] = degreearray[pufersequence[i]] + 1;
+            }
+            for (let i = 0; i < pufersequence.length; i++) {
+              var tempnode = -1;
+              for(let j = 0; j< nnode; j++){
+                if(degreearray[j] == 1){
+                  tempnode = j;
+                  break;
+                }
+              }
+              this.graphlist[pufersequence[i]].adjacentnodeslist.push(this.graphlist[tempnode]);
+              this.graphlist[tempnode].adjacentnodeslist.push(this.graphlist[pufersequence[i]]);
+              degreearray[pufersequence[i]] = degreearray[pufersequence[i]] - 1;
+              degreearray[tempnode] = degreearray[tempnode] - 1;
+            }
+            console.log(degreearray);
+            var temp1 = -1;
+            var temp2 = -1;
+            for(let i = 0; i< degreearray.length; i++){
+              if(degreearray[i] == 1 && temp1 == -1){
+                temp1 = i;
+              }
+              else if(degreearray[i] == 1){
+                temp2 = i;
+              }
+              if(temp1 != -1 && temp2 != -1){
+                break;
+              }
+            }
+            console.log(temp1);
+            this.graphlist[temp1].adjacentnodeslist.push(this.graphlist[temp2]);
+            this.graphlist[temp2].adjacentnodeslist.push(this.graphlist[temp1]);
+          }
+          this.computegraphproperties();
+        }
+      }
+
+      // testing case
+      // ggg = []
+      // for (let i = 0; i < 3; i++){
+      //   var tempn = new Node(i, i, null, []);
+      //   ggg.push(tempn);
+      // }        
+      // for (let i = 0; i < 3; i++) {
+      //   for (let j = 0; j < 3; j++){
+      //     if (j != i && i!=0){
+      //       ggg[i].adjacentnodeslist.push(ggg[j]);
+      //     }
+      //   }
+      // }
+      // gg = new Graph(ggg)
+      // console.log(gg.averagedegree);
+
+
+      /*****************************************************************************************
+       * 
+       * Global methods
+       * 
+       * **************************************************************************************/
+      var graphstructure = new Graph([]); // Graph #1
+      var graphstructureselectednodeid; // selected node's id in graph 1
+      var graphstructureselectededgefromid; 
+      var graphstructureselectededgetoid;
+
+
+      function startNetwork() {
+        //create network1
+        nodes = new vis.DataSet([]);
+        edges = new vis.DataSet([]);
+        
+        var container = document.getElementById("mynetwork");
+        var data = {
+          nodes: nodes,
+          edges: edges,
+        };
+        var options = {};
+        network = new vis.Network(container, data, options);
+
+        // create network 2
+        n2nodes = new vis.DataSet([]);
+        n2edges = new vis.DataSet([]);
+        var n2container = document.getElementById("n2mynetwork");
+        var n2data = {
+          nodes: n2nodes,
+          edges: n2edges,
+        };
+        var n2options = {};
+        n2network = new vis.Network(n2container, n2data, n2options);
+      }
+
+      function updateGraph(canvasname, thegraph){
+        // update graph object with new node list
+        // update the nodes
+        var tempnodes = []
+        for (let i = 0; i < thegraph.graphlist.length; i++) {
+          tempnodes.push({id: thegraph.graphlist[i].id, label: thegraph.graphlist[i].label})
+        } 
+        //update the edges
+        var tempedges = []
+        for (let i = 0; i < thegraph.graphlist.length; i++) {
+          for (let j = 0; j < thegraph.graphlist[i].adjacentnodeslist.length; j++){
+            tempedge = {from: thegraph.graphlist[i].id, to: thegraph.graphlist[i].adjacentnodeslist[j].id}
+            var hasoppositeedge = false;
+            var hasedge = false;
+            for (let k = 0; k < tempedges.length; k++){
+              if (JSON.stringify({from: thegraph.graphlist[i].adjacentnodeslist[j].id, to: thegraph.graphlist[i].id }) === JSON.stringify(tempedges[k])){
+                hasoppositeedge = true;
+              }
+              if (JSON.stringify(tempedge) === JSON.stringify(tempedges[k])){
+                hasedge = true;
+              }
+            }
+            if (!hasoppositeedge && !hasedge){
+              tempedges.push(tempedge);
+            }
+          }
+        } 
+        console.log(tempedges);
+
+        // create the network in vis network
+        nodes = new vis.DataSet(tempnodes);
+        edges = new vis.DataSet(tempedges);
+        var container = document.getElementById(canvasname);
+        var data = {
+          nodes: nodes,
+          edges: edges,
+        };
+        var options = {
+          nodes: {
+            chosen: {
+              node: function(values, id, selected, hovering) {
+                if(canvasname=="mynetwork"){
+                  var degreemessage = thegraph.getnodeusingid(id).adjacentnodeslist.length+"";
+                  document.getElementById("degofvertex").innerHTML= degreemessage;
+                  graphstructureselectednodeid = id; // selected node's id in graph 1
+                }
+              },
+            },
+          },
+          edges:{
+            chosen:{
+              edge:  function(values, id, selected, hovering) {
+                if(canvasname=="mynetwork"){
+                  graphstructureselectededgefromid = edges.get(id).from;
+                  graphstructureselectededgetoid = edges.get(id).to;
+                }
+              }
+            }
+          }
+        };
+        network = new vis.Network(container, data, options);
+
+        // graph attributes display
+        if(canvasname=="mynetwork"){
+          document.getElementById("maximumdegree").innerHTML= thegraph.maxdegree+"";
+          document.getElementById("minimumdegree").innerHTML= thegraph.mindegree+"";
+          document.getElementById("averagedegree").innerHTML= thegraph.averagedegree+"";
+          document.getElementById("isbasicodd").innerHTML= thegraph.isbasicodd+"";
+          document.getElementById("isbipartite").innerHTML= thegraph.isbipartite +"";
+          document.getElementById("hasgoodpartition").innerHTML= thegraph.hasgoodpartition +"";
+        }
+      }
+
+
+
+
+
+
+      /*****************************************************************************************
+       * 
+       * Methods for graph 1(mynetwork)
+       * 
+       * **************************************************************************************/
+      function addNode() {
+        nodelabel = document.getElementById("nname").value;
+        graphstructure.addvertextograph(nodelabel);
+        updateGraph("mynetwork",graphstructure);
+      }
+      function addEdge(){
+        //get input from user 
+        var srcLabel = document.getElementById("edgenname1").value;
+        var destLabel = document.getElementById("edgenname2").value;
+        if (srcLabel == null || destLabel == null || srcLabel == destLabel ){
+          document.getElementById("tagMessage").innerHTML= "nodes should have label and Source can't be the same as destination";
+          return false;
+        }
+        graphstructure.addedgetograph(srcLabel, destLabel);
+        // update vis network
+        updateGraph("mynetwork",graphstructure);
+        
+      }
+      function generatecomplete(){
+        var nnode = parseInt(document.getElementById("completenvertices").value);
+        if(isNaN(nnode)){ 
+          document.getElementById("tagMessage").innerHTML= "number of node must be integer";
+          return false;
+        }
+        graphstructure.becomecompletegraph(nnode);
+        updateGraph("mynetwork",graphstructure);
+      }
+
+      function createturan(){
+        var nnode = parseInt(document.getElementById("turannnode").value);
+        var nparts = parseInt(document.getElementById("turannparts").value);
+        if(isNaN(nnode) || isNaN(nparts)){ 
+          document.getElementById("tagMessage").innerHTML= "number of node and number of parts must be integer";
+          return false;
+        }
+        if(nparts > nnode){
+          document.getElementById("tagMessage").innerHTML= "Number of parts too large.";
+          return false;
+        }
+        graphstructure.becometurangraph(nnode, nparts)
+        updateGraph("mynetwork",graphstructure);
+      }
+      function generatepath(){
+        var nnode = parseInt(document.getElementById("pathnvertices").value);
+        if(isNaN(nnode)){ 
+          document.getElementById("tagMessage").innerHTML= "number of node must be integer";
+          return false;
+        }
+        graphstructure.becomepathgraph(nnode);
+        updateGraph("mynetwork",graphstructure);
+      }
+      function generatestar(){
+        var nnode = parseInt(document.getElementById("starnvertices").value);
+        if(isNaN(nnode)){ 
+          document.getElementById("tagMessage").innerHTML= "number of node must be integer";
+          return false;
+        }
+        graphstructure.becomestargraph(nnode);
+        updateGraph("mynetwork",graphstructure);
+      }
+      function createcompletebipartite(){
+        var nnodea = parseInt(document.getElementById("completebipartitennodea").value);
+        var nnodeb = parseInt(document.getElementById("completebipartitennodeb").value);
+        if(isNaN(nnodea) || isNaN(nnodeb)){ 
+          document.getElementById("tagMessage").innerHTML= "number of nodes must be integer";
+          return false;
+        }
+        graphstructure.becomecompletebipartitegraph(nnodea, nnodeb);
+        updateGraph("mynetwork",graphstructure);
+      }
+      function creategridgraph(){
+        var nnoder = parseInt(document.getElementById("gridnrows").value);
+        var nnodec = parseInt(document.getElementById("gridncolumns").value);
+        if(isNaN(nnoder) || isNaN(nnodec)){ 
+          document.getElementById("tagMessage").innerHTML= "number rows and columns must be integer";
+          return false;
+        }
+        graphstructure.becomegridgraph(nnoder, nnodec);
+        updateGraph("mynetwork",graphstructure);
+      }
+      function deleteselectednode(){
+        graphstructure.deletevertexbyid(graphstructureselectednodeid); // selected node's id in graph 1
+        updateGraph("mynetwork",graphstructure);
+      }
+      function deleteselectededge(){
+        graphstructure.deleteedgebyfromtoids(graphstructureselectededgefromid,graphstructureselectededgetoid); // selected node's id in graph 1
+        updateGraph("mynetwork",graphstructure);
+      }
+      function createcyclicgraph(){
+        var nnode = parseInt(document.getElementById("cyclicnnode").value);
+        if(isNaN(nnode)){ 
+          document.getElementById("tagMessage").innerHTML= "number of node must be integer";
+          return false;
+        }
+        graphstructure.becomecyclicgraph(nnode);
+        updateGraph("mynetwork",graphstructure);
+      }
+      function createrandomtree(){
+        var nnode = parseInt(document.getElementById("randomtreennode").value);
+        if(isNaN(nnode)){ 
+          document.getElementById("tagMessage").innerHTML= "number of node must be integer";
+          return false;
+        }
+        graphstructure.becomerandomtree(nnode);
+        updateGraph("mynetwork",graphstructure);
+      }
+
+
+   
+      /*****************************************************************************************
+       * 
+       * Methods for graph 2(n2mynetwork)
+       * 
+       * **************************************************************************************/
+      //"n2mynetwork"
+      var n2graphstructure = new Graph([]);
+      function n2addNode() {
+        nodelabel = document.getElementById("n2nname").value;
+        n2graphstructure.addvertextograph(nodelabel);
+        updateGraph("n2mynetwork",n2graphstructure);
+      }
+      function n2addEdge(){
+        //get input from user 
+        var srcLabel = document.getElementById("n2edgenname1").value;
+        var destLabel = document.getElementById("n2edgenname2").value;
+        if (srcLabel == "" || destLabel == "" || srcLabel == destLabel ){
+          document.getElementById("n2tagMessage").innerHTML= "nodes should have label and Source can't be the same as destination";
+        }
+        n2graphstructure.addedgetograph(srcLabel, destLabel);
+        // update vis network
+        updateGraph("n2mynetwork",n2graphstructure);
+      }
+
+      function n2generatecomplete(){
+        var nnode = parseInt(document.getElementById("n2completenvertices").value);
+        if(isNaN(nnode)){ 
+          document.getElementById("n2tagMessage").innerHTML= "number of node must be integer";
+          return false;
+        }
+        n2graphstructure.becomecompletegraph(nnode);
+        updateGraph("n2mynetwork",n2graphstructure);
+      }
+
+      function n2createturan(){
+        var nnode = parseInt(document.getElementById("n2turannnode").value);
+        var nparts = parseInt(document.getElementById("n2turannparts").value);
+        if(isNaN(nnode) || isNaN(nparts)){ 
+          document.getElementById("n2tagMessage").innerHTML= "number of node and number of parts must be integer";
+          return false;
+        }
+        if(nparts > nnode){
+          document.getElementById("n2tagMessage").innerHTML= "Number of parts too large.";
+          return false;
+        }
+        n2graphstructure.becometurangraph(nnode, nparts)
+        updateGraph("n2mynetwork",n2graphstructure);
+      }
+
+
+      /*****************************************************************************************
+       * 
+       * Methods for combine graph (combmynetwork)
+       * 
+       * **************************************************************************************/
+      var combnodesArray = []
+      function generateexponentialgraph(){
+        // get input from user
+        var gselect = document.getElementsByName('expGSelect');
+        var gselect_value;
+        for(var i = 0; i < gselect.length; i++){
+            if(gselect[i].checked){
+                gselect_value = gselect[i].value;
+            }
+        }
+        var hselect = document.getElementsByName('expHSelect');
+        var hselect_value;
+        for(var i = 0; i < hselect.length; i++){
+            if(hselect[i].checked){
+                hselect_value = hselect[i].value;
+            }
+        }
+
+
+        console.log(hselect_value);
+      }
+
+
+
+      // Methods to manupulate graph
+      startNetwork()
+
+      // todo
+      // 1) update the code so that compatible to graph class
+      // 2) fix edge no label problem
+      // fix graph cbnation html
+
+    </script>
+  </body>
+
 </html>
 
 
-
-
-
-
-<!-- <div id="mynetwork1"></div>
-<script type="text/javascript">
-  // create an array with nodes
-  var nodes = new vis.DataSet([
-    { id: 1, label: "A" },
-    { id: 2, label: "B" },
-    { id: 3, label: "C" },
-    { id: 4, label: "D" },
-    { id: 5, label: "E" },
-    { id: 6, label: "F" },
-    { id: 7, label: "G" },
-    { id: 8, label: "H" },
-    { id: 9, label: "I" },
-    { id: 10, label: "G" },
-    { id: 11, label: "K" },
-    { id: 12, label: "L" },
-    { id: 13, label: "M" },
-    { id: 14, label: "N" },
-    { id: 15, label: "O" },
-    { id: 16, label: "P" },
-    { id: 17, label: "Q" },
-    { id: 18, label: "R" },
-    { id: 19, label: "S" },
-    { id: 20, label: "T" },
-  ]);
-
-  // create an array with edges
-  var edges = new vis.DataSet([
-    { from: 1, to: 2 },
-    { from: 1, to: 3 },
-    { from: 3, to: 4 },
-    { from: 4, to: 5 },
-    { from: 9, to: 3 },
-    { from: 9, to: 20 },
-    { from: 20, to: 19 },
-    { from: 19, to: 4 },
-    { from: 19, to: 18 },
-    { from: 18, to: 17 },
-    { from: 17, to: 5 },
-    { from: 13, to: 18 },
-    { from: 13, to: 15 },
-    { from: 15, to: 16 },
-    { from: 16, to: 17 },
-    { from: 12, to: 20 },
-    { from: 12, to: 13 },
-    { from: 10, to: 11 },
-    { from: 11, to: 12 },
-    { from: 11, to: 14 },
-    { from: 14, to: 15 },
-    { from: 9, to: 10 },
-    { from: 10, to: 6 },
-    { from: 6, to: 8 },
-    { from: 8, to: 14 },
-    { from: 7, to: 8 },
-    { from: 7, to: 16 },
-    { from: 1, to: 6 },
-    { from: 7, to: 2 },
-    { from: 2, to: 5 },
-
-  ]);
-
-  // create a network
-  var container = document.getElementById("mynetwork1");
-  var data = {
-    nodes: nodes,
-    edges: edges
-  };
-  var options = {};
-  var network = new vis.Network(container, data, options);
-</script> -->
-
-
-<!-- <div id="mynetwork2"></div>
-<script type="text/javascript">
-  // create an array with nodes
-  var nodes = new vis.DataSet([
-    { id: 1, label: "A_SE" },
-    { id: 2, label: "B" },
-    { id: 3, label: "C" },
-    { id: 4, label: "D" },
-    { id: 5, label: "E_SE" },
-    { id: 6, label: "F" },
-    { id: 7, label: "G"},
-    { id: 8, label: "H_SE" },
-    { id: 9, label: "I_SE" },
-    { id: 10, label: "G" },
-    { id: 11, label: "K_SE" },
-    { id: 12, label: "L" },
-    { id: 13, label: "M_SE" },
-    { id: 14, label: "N" },
-    { id: 15, label: "O" },
-    { id: 16, label: "P_SE" },
-    { id: 17, label: "Q" },
-    { id: 18, label: "R" },
-    { id: 19, label: "S_SE" },
-    { id: 20, label: "T" },
-  ]);
-
-  // create an array with edges
-  var edges = new vis.DataSet([
-    { from: 1, to: 2 },
-    { from: 1, to: 3 },
-    { from: 3, to: 4 },
-    { from: 4, to: 5 },
-    { from: 9, to: 3 },
-    { from: 9, to: 20 },
-    { from: 20, to: 19 },
-    { from: 19, to: 4 },
-    { from: 19, to: 18 },
-    { from: 18, to: 17 },
-    { from: 17, to: 5 },
-    { from: 13, to: 18 },
-    { from: 13, to: 15 },
-    { from: 15, to: 16 },
-    { from: 16, to: 17 },
-    { from: 12, to: 20 },
-    { from: 12, to: 13 },
-    { from: 10, to: 11 },
-    { from: 11, to: 12 },
-    { from: 11, to: 14 },
-    { from: 14, to: 15 },
-    { from: 9, to: 10 },
-    { from: 10, to: 6 },
-    { from: 6, to: 8 },
-    { from: 8, to: 14 },
-    { from: 7, to: 8 },
-    { from: 7, to: 16 },
-    { from: 1, to: 6 },
-    { from: 7, to: 2 },
-    { from: 2, to: 5 },
-
-    { from: 9, to: 11},
-    { from: 8, to: 1},
-    { from: 11, to:13},
-    { from: 8, to: 16},
-    { from: 9, to: 19},
-    { from: 1, to: 5},
-    { from: 11, to: 8},
-    { from : 9, to: 1},
-    { from: 8, to: 16},
-    { from: 19, to: 13},
-    { from: 19, to: 5},
-    { from: 13, to: 16},
-    { from: 16, to: 5}
-
-  ]);
-
-  // create a network
-  var container = document.getElementById("mynetwork2");
-  var data = {
-    nodes: nodes,
-    edges: edges
-  };
-  var options = {};
-  var network = new vis.Network(container, data, options);
-</script> -->
