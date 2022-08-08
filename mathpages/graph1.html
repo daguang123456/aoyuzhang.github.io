@@ -188,8 +188,15 @@
                   <td></td>
                   <td></td>
                 </tr>
+                <tr>
+                  <td title="">Has Hamiltonian Path</td>
+                  <td id = "hashamiltonianpath"></td>
+                  <td>A hamiltonian path</td>
+                  <td id = "ahamiltonianpath"></td>
+                </tr>
               </tbody>
-            </table><table class= "table table-striped-columns">
+            </table>
+            <table class= "table table-striped-columns">
               <thead>
                 <tr>
                   <b>Inspection Properties</b>
@@ -368,6 +375,12 @@
                   <td></td>
                   <td></td>
                 </tr>
+                <tr>
+                  <td title="">Has Hamiltonian Path</td>
+                  <td id = "n2hashamiltonianpath"></td>
+                  <td>A hamiltonian path</td>
+                  <td id = "n2ahamiltonianpath"></td>
+                </tr>
               </tbody>
             </table>
             <table class= "table table-striped-columns">
@@ -396,6 +409,8 @@
                   <td></td>
                 </tr>
               </tbody>
+            </table>
+            <table id="n2adjacentmatrixtableid">
             </table>
           </div>
         </div>
@@ -508,9 +523,52 @@
       <div class="row">
         <div class="col-sm-8">
           <div class="container" id="combmynetwork"></div>
+          <button type="button" class="btn btn-primary" onclick="combdeleteselectednode()">Delete selected node</button>
+          <button type="button" class="btn btn-primary" onclick="combdeleteselectededge()">Delete selected edge</button>
+          <button type="button" class="btn btn-primary" onclick="combsubdivideselectededge()">Subdivide edge</button>
+          <button type="button" class="btn btn-primary" onclick="combcontractselectededge()">Contract edge</button> 
         </div>
         <div class="col-sm-4">
-         <table class= "table table-striped-columns">
+          <table class= "table table-striped-columns">
+            <thead>
+              <tr>
+                <b>Global properties</b>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Maximum Degree</td>
+                <td id="combmaximumdegree"></td>
+                <td>Minimum Degree</td>
+                <td id="combminimumdegree"></td>
+              </tr>
+              <tr>
+                <td>Average Degree</td>
+                <td id="combaveragedegree"></td>
+                <td>Bipartite</td>
+                <td id="combisbipartite"></td>
+              </tr>
+              <tr>
+                <td title="Tree with all degree odd." >Is basic odd graph</td>
+                <td id="combisbasicodd"></td>
+                <td>f_i(G)</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td title="Vertex partition so that induced subgraph has all degree odd.">Has Good Partition</td>
+                <td id = "combhasgoodpartition"></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td title="">Has Hamiltonian Path</td>
+                <td id = "combhashamiltonianpath"></td>
+                <td>A hamiltonian path</td>
+                <td id = "combahamiltonianpath"></td>
+              </tr>
+            </tbody>
+          </table>
+          <table class= "table table-striped-columns">
             <thead>
               <tr>
                 <b>Inspection Properties</b>
@@ -536,6 +594,8 @@
                 <td></td>
               </tr>
             </tbody>
+          </table>
+          <table id="combadjacentmatrixtableid">
           </table>
         </div>
       </div>
@@ -573,7 +633,7 @@
           this.id = id;
           this.color = color;
           this.adjacentnodeslist = adjacentnodeslist;
-          this.functionasdict = fonctionasdict
+          this.functionasdict = fonctionasdict;
         }
         isvadjacent(vlabel){
           for(let i = 0; i< this.adjacentnodeslist.length ; i++){
@@ -598,6 +658,20 @@
           this.isbipartite = this.computeisgraphbipartite();
           this.hasgoodpartition = this.computegraphhasgoodpartition();
           this.adjmatrix = this.computeadjacencymatrix();
+          // compute if hamiltonian path existat staing at each node in the graph. 
+          this.hashamiltonianpath = false;
+          this.ahamiltonianpath = [];
+          for(let i = 0; i < this.graphlist.length; i++){
+            var currpath = [];
+            var visited = new Array(this.graphlist.length).fill(false);
+            var result = [];
+            var tempresult = this.computedoesgraphhashamiltonianpath(currpath, visited, this.graphlist[i],result);
+            if(tempresult){
+              this.hashamiltonianpath = tempresult;
+              this.ahamiltonianpath = result[0];
+              break;
+            }
+          }
         }
         computeadjacencymatrix(){
           var tempmatrix = Array.from(Array(this.graphlist.length), () => Array(this.graphlist.length).fill(0));
@@ -611,9 +685,22 @@
               }
             }
           }
-          console.log(tempmatrix);
           return tempmatrix;
         }
+        // computetuttematrix(){
+        //   var tempmatrix = Array.from(Array(this.graphlist.length), () => Array(this.graphlist.length).fill(0));
+        //   for (let i = 0 ; i < this.graphlist.length; i++){
+        //     for (let j = 0 ; j < this.graphlist.length; j++){
+        //       if(this.graphlist[i].isvadjacent(this.graphlist[j].label)){
+        //         tempmatrix[i][j]=1;
+        //       }
+        //       else{
+        //         tempmatrix[i][j]=0;
+        //       }
+        //     }
+        //   }
+        //   return tempmatrix;
+        // }
         computegraphhasgoodpartition(){
           var visited = new Array(this.graphlist.length);
           var numberofvisited = 0;
@@ -689,6 +776,26 @@
           else{
             return false;
           }
+        }
+        computedoesgraphhashamiltonianpath(currpath, visited, currnode,result){
+          if(currpath.length == this.graphlist.length){
+            result.push(currpath);
+            return true;
+          }
+          for(let i = 0 ; i< currnode.adjacentnodeslist.length; i++){
+            var adjnodeindex =  this.getnodeindexusingid(currnode.adjacentnodeslist[i].id);
+            if(!visited[adjnodeindex]){
+              visited[adjnodeindex] = true;
+              currpath.push(currnode.adjacentnodeslist[i].label);
+              
+              if(this.computedoesgraphhashamiltonianpath([...currpath], visited,currnode.adjacentnodeslist[i],result)){
+                return true;
+              }
+              visited[adjnodeindex] = false;
+              currpath.pop();
+            }
+          }
+          return false;
         }
         getmaxdegree(){
           var maxd = 0;        
@@ -1323,6 +1430,24 @@
       var combgraphstructureselectededgefromid; 
       var combgraphstructureselectededgetoid;
 
+      function clearTable(idstr){
+        var table = document.getElementById(idstr);
+        while(table.rows.length > 0) {
+          table.deleteRow(0);
+        }
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
 
 
 
@@ -1464,6 +1589,15 @@
                 },
               },
             },
+            edges:{
+              chosen:{
+                edge:  function(values, id, selected, hovering) {
+                  combgraphstructureselectededgefromid = combedges.get(id).from;
+                  combgraphstructureselectededgetoid = combedges.get(id).to;
+                  document.getElementById("combselectededgelabel").innerHTML= "("+thegraph.getnodeusingid(combgraphstructureselectededgefromid).label+" , "+thegraph.getnodeusingid(combgraphstructureselectededgetoid).label+")";
+                }
+              }
+            }
           };
           combnetwork = new vis.Network(container, data, options);
         }
@@ -1477,61 +1611,30 @@
           document.getElementById("isbasicodd").innerHTML= thegraph.isbasicodd+"";
           document.getElementById("isbipartite").innerHTML= thegraph.isbipartite +"";
           document.getElementById("hasgoodpartition").innerHTML= thegraph.hasgoodpartition +"";
+          document.getElementById("hashamiltonianpath").innerHTML = thegraph.hashamiltonianpath+"";
+          document.getElementById("ahamiltonianpath").innerHTML = thegraph.ahamiltonianpath+"";
 
-    //           var themakovMatrix = getMarkovM();
-    // var makovmList = themakovMatrix[0];
-    // console.log("in display() method");
-    // console.log(makovmList);
-    var adjmatrixTable = document.getElementById("adjacentmatrixtableid")
-    // clearTable("mMatT");
-    // var tblBody = document.createElement("tbody");
-    // var headerRow = document.createElement("tr");
-    // var emptycell = document.createElement("td");
-    // var emptycellText = document.createTextNode("");
-    // emptycell.appendChild(emptycellText);
-    // headerRow.appendChild(emptycell);
-    // for(var i =0 ; i< makovmList.length; i++){
-    //   var emptycell = document.createElement("td");
-    //   var emptycellText = document.createTextNode(""+nodeNames[i]);
-    //   emptycell.appendChild(emptycellText);
-    //   headerRow.appendChild(emptycell);
-    // }
-    // console.log("header row append over");
-    // tblBody.appendChild(headerRow);
-    // if(themakovMatrix[2] === 1){
-    //   if(makovmList.length === 1 ){
-    //     var headerRow = document.createElement("tr");
-    //     var emptycell1 = document.createElement("td");
-    //     var emptycellText1 = document.createTextNode(nodeNames[0]);
-    //     emptycell1.appendChild(emptycellText1);
-    //     headerRow.appendChild(emptycell1);
+          var adjmatrixTable = document.getElementById("adjacentmatrixtableid");
+          clearTable("adjacentmatrixtableid");
+          var tblBody = document.createElement("tbody");
+          tblBody.appendChild(createTitleRow("Ajacency Matrix"));
 
-    //     var emptycell = document.createElement("td");
-    //     var emptycellText = document.createTextNode(""+makovmList[0]);
-    //     emptycell.appendChild(emptycellText);
-    //     headerRow.appendChild(emptycell);
-    //     tblBody.appendChild(headerRow);
-    //   }
-    //   else{
-    //     for(var i = 0; i< makovmList.length ; i++){
-    //       var headerRow = document.createElement("tr");
-    //       var emptycell = document.createElement("td");
-    //       var emptycellText = document.createTextNode(nodeNames[i]);
-    //       emptycell.appendChild(emptycellText);
-    //       headerRow.appendChild(emptycell);
-    //       for(var j = 0; j< makovmList.length ; j++){
-    //         var emptycell = document.createElement("td");
-    //         var emptycellText = document.createTextNode(""+makovmList[i][j]);
-    //         emptycell.appendChild(emptycellText);
-    //         headerRow.appendChild(emptycell);
-    //       }
-    //       tblBody.appendChild(headerRow);
-    //     }
-    //   }
-    //   makovTable.append(tblBody);
-    // }
-
-          // document.getElementById("adjacentmatrixtableid").innerHTML = thegraph.adjmatrix.toString();
+          var headerRow = document.createElement("tr");
+          headerRow.appendChild(makecell(" "));
+          for(var i =0 ; i < thegraph.graphlist.length; i++){
+            headerRow.appendChild(makecell(" "+thegraph.graphlist[i].label));
+          }
+          // console.log("header row append over");
+          tblBody.appendChild(headerRow);
+          for(var i = 0; i< thegraph.adjmatrix.length ; i++){
+            var headerRow = document.createElement("tr");
+            headerRow.appendChild(makecell(" "+thegraph.graphlist[i].label+" "));
+            for(var j = 0; j< thegraph.adjmatrix.length ; j++){
+              headerRow.appendChild(makecell(" "+thegraph.adjmatrix[i][j]+" "));
+            }
+            tblBody.appendChild(headerRow);
+          }
+          adjmatrixTable.appendChild(tblBody);
         }
         if(canvasname=="n2mynetwork"){
           document.getElementById("n2maximumdegree").innerHTML= thegraph.maxdegree+"";
@@ -1540,6 +1643,62 @@
           document.getElementById("n2isbasicodd").innerHTML= thegraph.isbasicodd+"";
           document.getElementById("n2isbipartite").innerHTML= thegraph.isbipartite +"";
           document.getElementById("n2hasgoodpartition").innerHTML= thegraph.hasgoodpartition +"";
+          document.getElementById("n2hashamiltonianpath").innerHTML = thegraph.hashamiltonianpath+"";
+          document.getElementById("n2ahamiltonianpath").innerHTML = thegraph.ahamiltonianpath+"";
+
+          var adjmatrixTable = document.getElementById("n2adjacentmatrixtableid");
+          clearTable("n2adjacentmatrixtableid");
+          var tblBody = document.createElement("tbody");
+          tblBody.appendChild(createTitleRow("Ajacency Matrix"));
+
+          var headerRow = document.createElement("tr");
+          headerRow.appendChild(makecell(" "));
+          for(var i =0 ; i < thegraph.graphlist.length; i++){
+            headerRow.appendChild(makecell(" "+thegraph.graphlist[i].label));
+          }
+          // console.log("header row append over");
+          tblBody.appendChild(headerRow);
+          for(var i = 0; i< thegraph.adjmatrix.length ; i++){
+            var headerRow = document.createElement("tr");
+            headerRow.appendChild(makecell(" "+thegraph.graphlist[i].label+" "));
+            for(var j = 0; j< thegraph.adjmatrix.length ; j++){
+              headerRow.appendChild(makecell(" "+thegraph.adjmatrix[i][j]+" "));
+            }
+            tblBody.appendChild(headerRow);
+          }
+          adjmatrixTable.appendChild(tblBody);
+        }
+        if(canvasname=="combmynetwork"){
+          document.getElementById("combmaximumdegree").innerHTML= thegraph.maxdegree+"";
+          document.getElementById("combminimumdegree").innerHTML= thegraph.mindegree+"";
+          document.getElementById("combaveragedegree").innerHTML= thegraph.averagedegree+"";
+          document.getElementById("combisbasicodd").innerHTML= thegraph.isbasicodd+"";
+          document.getElementById("combisbipartite").innerHTML= thegraph.isbipartite +"";
+          document.getElementById("combhasgoodpartition").innerHTML= thegraph.hasgoodpartition +"";
+          document.getElementById("combhashamiltonianpath").innerHTML = thegraph.hashamiltonianpath+"";
+          document.getElementById("combahamiltonianpath").innerHTML = thegraph.ahamiltonianpath+"";
+
+          var adjmatrixTable = document.getElementById("combadjacentmatrixtableid");
+          clearTable("combadjacentmatrixtableid");
+          var tblBody = document.createElement("tbody");
+          tblBody.appendChild(createTitleRow("Ajacency Matrix"));
+
+          var headerRow = document.createElement("tr");
+          headerRow.appendChild(makecell(" "));
+          for(var i =0 ; i < thegraph.graphlist.length; i++){
+            headerRow.appendChild(makecell(" "+thegraph.graphlist[i].label));
+          }
+          // console.log("header row append over");
+          tblBody.appendChild(headerRow);
+          for(var i = 0; i< thegraph.adjmatrix.length ; i++){
+            var headerRow = document.createElement("tr");
+            headerRow.appendChild(makecell(" "+thegraph.graphlist[i].label+" "));
+            for(var j = 0; j< thegraph.adjmatrix.length ; j++){
+              headerRow.appendChild(makecell(" "+thegraph.adjmatrix[i][j]+" "));
+            }
+            tblBody.appendChild(headerRow);
+          }
+          adjmatrixTable.appendChild(tblBody);
         }
       }
 
@@ -1966,6 +2125,23 @@
           combgraphstructure =  n2graphstructure.getcomplementgraph();
         }
         updateGraph("combmynetwork", combgraphstructure);
+      }
+
+      function combdeleteselectednode(){
+        combgraphstructure.deletevertexbyid(combgraphstructureselectednodeid); // selected node's id in graph 1
+        updateGraph("combmynetwork",combgraphstructure);
+      }
+      function combdeleteselectededge(){
+        combgraphstructure.deleteedgebyfromtoids(combgraphstructureselectededgefromid,combgraphstructureselectededgetoid); // selected node's id in graph 1
+        updateGraph("combmynetwork",combgraphstructure);
+      }
+      function combsubdivideselectededge(){
+        combgraphstructure.subdivideedgebyfromtoids(combgraphstructureselectededgefromid,combgraphstructureselectededgetoid); 
+        updateGraph("combmynetwork",combgraphstructure);
+      }
+      function combcontractselectededge(){
+        combgraphstructure.contractedgebyfromtoids(combgraphstructureselectededgefromid,combgraphstructureselectededgetoid); 
+        updateGraph("combmynetwork",combgraphstructure);
       }
 
 
