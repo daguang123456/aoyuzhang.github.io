@@ -736,7 +736,6 @@
             numberofvisited = numberofvisited+ 1;
             while (queue.length != 0){
               var u = queue.shift();
-              console.log(this.graphlist[u].adjacentnodeslist);
               for(let j = 0; j < this.graphlist[u].adjacentnodeslist.length; j++){
                 if(typeof this.graphlist[u].adjacentnodeslist[j] === 'undefined'){
                   continue;
@@ -804,7 +803,6 @@
             result.push(currpath);
             return true;
           }
-          console.log(currnode.adjacentnodeslist.length);
           for(let i = 0 ; i< currnode.adjacentnodeslist.length; i++){
             var adjnodeindex =  this.getnodeindexusingid(currnode.adjacentnodeslist[i].id);
             if(!visited[adjnodeindex]){
@@ -1167,7 +1165,7 @@
             }
           }
           for(let i = 0; i< tempgraph.graphlist[nodeindex].adjacentnodeslist.length; i++){
-            for(let j = 0; j < tempgraph.graphlist[i].adjacentnodeslist.length; j++){
+            for(let j = 0; j < tempgraph.graphlist[nodeindex].adjacentnodeslist.length; j++){
               if(tempgraph.graphlist[nodeindex].adjacentnodeslist[i].adjacentnodeslist[j].label == nodelabel){
                 tempgraph.graphlist[nodeindex].adjacentnodeslist[i].adjacentnodeslist.splice(j,1);
                 break;
@@ -2360,23 +2358,32 @@
                 hselect_value = hselect[i].value;
             }
         }
+        var tempgraph =null;
         if(gselect_value == "g1"){
           if(hselect_value == "g1"){
-            combgraphstructure = graphstructure.getexponentialgraph(graphstructure);
+            tempgraph = graphstructurelist[currentgraphstructureindex].getexponentialgraph(graphstructurelist[currentgraphstructureindex]);
           }
           else{
-            combgraphstructure = graphstructure.getexponentialgraph(n2graphstructure);
+            tempgraph = graphstructurelist[currentgraphstructureindex].getexponentialgraph(n2graphstructurelist[n2currentgraphstructureindex]);
           }
         }
         else{
           if(hselect_value == "g1"){
-            combgraphstructure = n2graphstructure.getexponentialgraph(graphstructure);
+            tempgraph = n2graphstructurelist[n2currentgraphstructureindex].getexponentialgraph(graphstructurelist[currentgraphstructureindex]);
           }
           else{
-            combgraphstructure = n2graphstructure.getexponentialgraph(n2graphstructure);
+            tempgraph = n2graphstructurelist[n2currentgraphstructureindex].getexponentialgraph(n2graphstructurelist[n2currentgraphstructureindex]);
           }
         }
-        updateGraph("combmynetwork", combgraphstructure);
+        if(combcurrentgraphstructureindex < combgraphstructurelist.length-1){
+          combgraphstructurelist[combcurrentgraphstructureindex+1] = tempgraph;
+          combcurrentgraphstructureindex = 1 + combcurrentgraphstructureindex;
+        }
+        else{
+          combgraphstructurelist.push(tempgraph);
+          combcurrentgraphstructureindex = combcurrentgraphstructureindex + 1;
+        }
+        updateGraph("combmynetwork",combgraphstructurelist[combcurrentgraphstructureindex]); 
       }
       function generatestrongproduct(){
         // get input from user
@@ -2394,23 +2401,32 @@
                 hselect_value = hselect[i].value;
             }
         }
+        var  tempgrah = null;
         if(gselect_value == "g1"){
           if(hselect_value == "g1"){
-            combgraphstructure = graphstructure.getstrongproductgraph(graphstructure);
+            tempgraph = graphstructurelist[currentgraphstructureindex].getstrongproductgraph(graphstructurelist[currentgraphstructureindex]);
           }
           else{
-            combgraphstructure = graphstructure.getstrongproductgraph(n2graphstructure);
+            tempgraph = graphstructurelist[currentgraphstructureindex].getstrongproductgraph(n2graphstructurelist[n2currentgraphstructureindex]);
           }
         }
         else{
           if(hselect_value == "g1"){
-            combgraphstructure = n2graphstructure.getstrongproductgraph(graphstructure);
+            tempgraph = n2graphstructurelist[n2currentgraphstructureindex].getstrongproductgraph(graphstructurelist[currentgraphstructureindex]);
           }
           else{
-            combgraphstructure = n2graphstructure.getstrongproductgraph(n2graphstructure);
+            tempgraph = n2graphstructurelist[n2currentgraphstructureindex].getstrongproductgraph(n2graphstructurelist[n2currentgraphstructureindex]);
           }
         }
-        updateGraph("combmynetwork", combgraphstructure);
+        if(combcurrentgraphstructureindex < combgraphstructurelist.length-1){
+          combgraphstructurelist[combcurrentgraphstructureindex+1] = tempgraph;
+          combcurrentgraphstructureindex = 1 + combcurrentgraphstructureindex;
+        }
+        else{
+          combgraphstructurelist.push(tempgraph);
+          combcurrentgraphstructureindex = combcurrentgraphstructureindex + 1;
+        }
+        updateGraph("combmynetwork",combgraphstructurelist[combcurrentgraphstructureindex]); 
       }
       function generatecartesianproduct(){
          // get input from user
