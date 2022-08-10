@@ -16,18 +16,18 @@
     <!-- page speccifc css-->
     <style type="text/css">
       #mynetwork {
-        width: 600px;
-        height: 400px;
+        width: 800px;
+        height: 600px;
         border: 2px solid lightgray;
       }
       #n2mynetwork {
-        width: 600px;
-        height: 400px;
+        width: 800px;
+        height: 600px;
         border: 2px solid lightgray;
       }
       #combmynetwork {
-        width: 600px;
-        height: 400px;
+        width: 800px;
+        height: 600px;
         border: 2px solid lightgray;
       }
     </style>
@@ -154,6 +154,8 @@
           <button type="button" class="btn btn-primary" onclick="deleteselectededge()">Delete selected edge</button>
           <button type="button" class="btn btn-primary" onclick="subdivideselectededge()">Subdivide edge</button>
           <button type="button" class="btn btn-primary" onclick="contractselectededge()">Contract edge</button>  
+          <button type="button" class="btn btn-primary" onclick="undooperation()">Undo</button>  
+          <button type="button" class="btn btn-primary" onclick="redooperation()">Redo</button>  
         </div>
         <div class="col-sm-4">
           <div id="graphproperties"> 
@@ -188,8 +190,15 @@
                   <td></td>
                   <td></td>
                 </tr>
+                <tr>
+                  <td title="">Has Hamiltonian Path</td>
+                  <td id = "hashamiltonianpath"></td>
+                  <td>A hamiltonian path</td>
+                  <td id = "ahamiltonianpath"></td>
+                </tr>
               </tbody>
-            </table><table class= "table table-striped-columns">
+            </table>
+            <table class= "table table-striped-columns">
               <thead>
                 <tr>
                   <b>Inspection Properties</b>
@@ -208,13 +217,9 @@
                   <td></td>
                   <td></td>
                 </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
               </tbody>
+            </table>
+            <table id="adjacentmatrixtableid">
             </table>
           </div>
         </div>
@@ -337,7 +342,7 @@
           <button type="button" class="btn btn-primary" onclick="n2deleteselectednode()">Delete selected node</button>
           <button type="button" class="btn btn-primary" onclick="n2deleteselectededge()">Delete selected edge</button>
           <button type="button" class="btn btn-primary" onclick="n2subdivideselectededge()">Subdivide edge</button>
-          <button type="button" class="btn btn-primary" onclick="n2contractselectededge()">Contract edge</button>    
+          <button type="button" class="btn btn-primary" onclick="n2contractselectededge()">Contract edge</button>     
         </div>
         <div class="col-sm-4">
           <div id="n2graphproperties"> 
@@ -372,8 +377,15 @@
                   <td></td>
                   <td></td>
                 </tr>
+                <tr>
+                  <td title="">Has Hamiltonian Path</td>
+                  <td id = "n2hashamiltonianpath"></td>
+                  <td>A hamiltonian path</td>
+                  <td id = "n2ahamiltonianpath"></td>
+                </tr>
               </tbody>
-            </table><table class= "table table-striped-columns">
+            </table>
+            <table class= "table table-striped-columns">
               <thead>
                 <tr>
                   <b>Inspection Properties</b>
@@ -399,6 +411,8 @@
                   <td></td>
                 </tr>
               </tbody>
+            </table>
+            <table id="n2adjacentmatrixtableid">
             </table>
           </div>
         </div>
@@ -427,7 +441,64 @@
           <button type="button" class="btn btn-primary" onclick="generateexponentialgraph()">Compute exponential graph G^H</button>
         </div>
       </div>
-        <div class="row">
+      <div class="row">
+        <div class="col-sm-4">
+          Selecting graph G<br>
+          <input type="radio" id="categoricalproductGG1" name="categoricalproductGSelect" value="g1">
+          <label for="categoricalproductGG1">Graph #1</label><br>
+          <input type="radio" id="categoricalproductGG2" name="categoricalproductGSelect" value="g2">
+          <label for="categoricalproductGG2">Graph #2</label><br>
+        </div>
+        <div class="col-sm-4">
+          Selecting Graph H<br>
+          <input type="radio" id="categoricalproductHG1" name="categoricalproductHSelect" value="g1">
+          <label for="categoricalproductHG1">Graph #1</label><br>
+          <input type="radio" id="categoricalproductHG2" name="categoricalproductHSelect" value="g2">
+          <label for="categoricalproductHG2">Graph #2</label><br>
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="generatecategoricalproduct()">Compute Categorical product GxH</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          Selecting graph G<br>
+          <input type="radio" id="cartesianproductGG1" name="cartesianproductGSelect" value="g1">
+          <label for="cartesianproductGG1">Graph #1</label><br>
+          <input type="radio" id="cartesianproductGG2" name="cartesianproductGSelect" value="g2">
+          <label for="cartesianproductGG2">Graph #2</label><br>
+        </div>
+        <div class="col-sm-4">
+          Selecting Graph H<br>
+          <input type="radio" id="cartesianproductHG1" name="cartesianproductHSelect" value="g1">
+          <label for="cartesianproductHG1">Graph #1</label><br>
+          <input type="radio" id="cartesianproductHG2" name="cartesianproductHSelect" value="g2">
+          <label for="cartesianproductHG2">Graph #2</label><br>
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="generatecartesianproduct()">Compute Cartesian product of G and H</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          Selecting graph G<br>
+          <input type="radio" id="strongproductGG1" name="strongproductGSelect" value="g1">
+          <label for="strongproductGG1">Graph #1</label><br>
+          <input type="radio" id="strongproductGG2" name="strongproductGSelect" value="g2">
+          <label for="strongproductGG2">Graph #2</label><br>
+        </div>
+        <div class="col-sm-4">
+          Selecting Graph H<br>
+          <input type="radio" id="strongproductHG1" name="strongproductHSelect" value="g1">
+          <label for="strongproductHG1">Graph #1</label><br>
+          <input type="radio" id="strongproductHG2" name="strongproductHSelect" value="g2">
+          <label for="strongproductHG2">Graph #2</label><br>
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="generatestrongproduct()">Compute strong product of G and H</button>
+        </div>
+      </div>
+      <div class="row">
         <div class="col-sm-8">
           Selecting graph G<br>
           <input type="radio" id="lineGG1" name="lineGSelect" value="g1">
@@ -451,7 +522,86 @@
           <button type="button" class="btn btn-primary" onclick="generatecomplementgraph()">Compute G's complement graph</button>
         </div>
       </div>
-      <div class="container" id="combmynetwork"></div>
+      <div class="row">
+        <div class="col-sm-8">
+          <div class="container" id="combmynetwork"></div>
+          <button type="button" class="btn btn-primary" onclick="combdeleteselectednode()">Delete selected node</button>
+          <button type="button" class="btn btn-primary" onclick="combdeleteselectededge()">Delete selected edge</button>
+          <button type="button" class="btn btn-primary" onclick="combsubdivideselectededge()">Subdivide edge</button>
+          <button type="button" class="btn btn-primary" onclick="combcontractselectededge()">Contract edge</button> 
+        </div>
+        <div class="col-sm-4">
+          <table class= "table table-striped-columns">
+            <thead>
+              <tr>
+                <b>Global properties</b>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Maximum Degree</td>
+                <td id="combmaximumdegree"></td>
+                <td>Minimum Degree</td>
+                <td id="combminimumdegree"></td>
+              </tr>
+              <tr>
+                <td>Average Degree</td>
+                <td id="combaveragedegree"></td>
+                <td>Bipartite</td>
+                <td id="combisbipartite"></td>
+              </tr>
+              <tr>
+                <td title="Tree with all degree odd." >Is basic odd graph</td>
+                <td id="combisbasicodd"></td>
+                <td>f_i(G)</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td title="Vertex partition so that induced subgraph has all degree odd.">Has Good Partition</td>
+                <td id = "combhasgoodpartition"></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td title="">Has Hamiltonian Path</td>
+                <td id = "combhashamiltonianpath"></td>
+                <td>A hamiltonian path</td>
+                <td id = "combahamiltonianpath"></td>
+              </tr>
+            </tbody>
+          </table>
+          <table class= "table table-striped-columns">
+            <thead>
+              <tr>
+                <b>Inspection Properties</b>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Selected Vertex</td>
+                <td id="combselectedvertexlabel"></td>
+                <td>Selected Edge</td>
+                <td id ="combselectededgelabel"></td>
+              </tr>
+              <tr>
+                <td>Degree of Vertex</td>
+                <td id ="combdegofvertex"></td>
+                <td>Node function</td>
+                <td id ="combnodefunction"></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <table id="combadjacentmatrixtableid">
+          </table>
+        </div>
+      </div>
+      
       <p> 讯息:(Message) <span id = "combtagMessage"></span></p><br>
     </div>
 
@@ -462,17 +612,47 @@
     <script type="text/javascript">
       /*****************************************************************************************
        * 
-       * Graph Class Definition
+       * Graph Class Definition and graph helper functions
        * 
        * **************************************************************************************/
       var idgenerator = 1; // used to assign unique id to graph vertices
 
+
+      function getallfunctionsfromgtoh(curr,result, g,h,i){
+        if(i == h.length){
+          result.push(curr);
+          return;
+        }
+        for(let j = 0; j< g.length; j++){
+          curr[h[i]] = g[j];
+          getallfunctionsfromgtoh({...curr},result,g,h, i+1);
+        }
+      }
+      // function adapted from https://bobbyhadz.com/blog/javascript-check-if-two-sets-are-equal
+      function setsAreEqual(a, b) { 
+        if (a.size !== b.size) {
+          return false;
+        }
+        return Array.from(a).every(element => {
+          return b.has(element);
+        });
+      }
+
       class Node {
-        constructor(label, id,color,adjacentnodeslist) {
+        constructor(label, id,color,adjacentnodeslist,fonctionasdict) {
           this.label = label;
           this.id = id;
           this.color = color;
           this.adjacentnodeslist = adjacentnodeslist;
+          this.functionasdict = fonctionasdict;
+        }
+        isvadjacent(vlabel){
+          for(let i = 0; i< this.adjacentnodeslist.length ; i++){
+            if(vlabel == this.adjacentnodeslist[i].label){
+              return true;
+            }
+          }
+          return false;
         }
       }
 
@@ -488,7 +668,50 @@
           this.isbasicodd = this.computeisgraphbasicoddgraph();
           this.isbipartite = this.computeisgraphbipartite();
           this.hasgoodpartition = this.computegraphhasgoodpartition();
+          this.adjmatrix = this.computeadjacencymatrix();
+          // compute if hamiltonian path existat staing at each node in the graph. 
+          this.hashamiltonianpath = false;
+          this.ahamiltonianpath = [];
+          for(let i = 0; i < this.graphlist.length; i++){
+            var currpath = [];
+            var visited = new Array(this.graphlist.length).fill(false);
+            var result = [];
+            var tempresult = this.computedoesgraphhashamiltonianpath(currpath, visited, this.graphlist[i],result);
+            if(tempresult){
+              this.hashamiltonianpath = tempresult;
+              this.ahamiltonianpath = result[0];
+              break;
+            }
+          }
         }
+        computeadjacencymatrix(){
+          var tempmatrix = Array.from(Array(this.graphlist.length), () => Array(this.graphlist.length).fill(0));
+          for (let i = 0 ; i < this.graphlist.length; i++){
+            for (let j = 0 ; j < this.graphlist.length; j++){
+              if(this.graphlist[i].isvadjacent(this.graphlist[j].label)){
+                tempmatrix[i][j]=1;
+              }
+              else{
+                tempmatrix[i][j]=0;
+              }
+            }
+          }
+          return tempmatrix;
+        }
+        // computetuttematrix(){
+        //   var tempmatrix = Array.from(Array(this.graphlist.length), () => Array(this.graphlist.length).fill(0));
+        //   for (let i = 0 ; i < this.graphlist.length; i++){
+        //     for (let j = 0 ; j < this.graphlist.length; j++){
+        //       if(this.graphlist[i].isvadjacent(this.graphlist[j].label)){
+        //         tempmatrix[i][j]=1;
+        //       }
+        //       else{
+        //         tempmatrix[i][j]=0;
+        //       }
+        //     }
+        //   }
+        //   return tempmatrix;
+        // }
         computegraphhasgoodpartition(){
           var visited = new Array(this.graphlist.length);
           var numberofvisited = 0;
@@ -565,6 +788,30 @@
             return false;
           }
         }
+        computedoesgraphhashamiltonianpath(currpath, visited, currnode,result){
+          if(currpath.length == this.graphlist.length){
+            result.push(currpath);
+            return true;
+          }
+          for(let i = 0 ; i< currnode.adjacentnodeslist.length; i++){
+            var adjnodeindex =  this.getnodeindexusingid(currnode.adjacentnodeslist[i].id);
+            if(!visited[adjnodeindex]){
+              visited[adjnodeindex] = true;
+              currpath.push(currnode.adjacentnodeslist[i].label);
+              
+              if(this.computedoesgraphhashamiltonianpath([...currpath], visited,currnode.adjacentnodeslist[i],result)){
+                return true;
+              }
+              visited[adjnodeindex] = false;
+              currpath.pop();
+            }
+          }
+          return false;
+        }
+        computedoesgraphhasperfectmatching(){
+          var visited = new Array(this.graphlist.length).fill(false); // the check if a node is in a matching
+          // label the edges
+        }
         getmaxdegree(){
           var maxd = 0;        
           for (let i = 0; i < this.graphlist.length; i++) {
@@ -609,6 +856,14 @@
         getnodeindexusingid(nodeid){
           for (let i = 0; i < this.graphlist.length; i++) {
             if(this.graphlist[i].id == nodeid){
+              return i;
+            }
+          } 
+          return -1;
+        }
+        getnodeindexusingname(nodename){
+          for (let i = 0; i < this.graphlist.length; i++) {
+            if(this.graphlist[i].label == nodename){
               return i;
             }
           } 
@@ -677,13 +932,152 @@
           tempgraph.computegraphproperties();
           return tempgraph;
         }
+        getexponentialgraph(graphh){
+          var tempgraph = new Graph([]);
+          var allposiblefunctions = [];
+          var currftion = {};
+          var gg =[];
+          var hh = [];
+          // create all functions
+          for(let i = 0; i < graphh.graphlist.length ; i++){
+            hh.push(graphh.graphlist[i].label);
+          }
+          for(let i = 0; i < this.graphlist.length ; i++){
+            gg.push(this.graphlist[i].label);
+          }
+          //generate all nodes
+          getallfunctionsfromgtoh(currftion,allposiblefunctions, gg,hh,0);
+          for(let i = 0; i < allposiblefunctions.length ; i++){
+            var tempnode = new Node(i+"", idgenerator, null, [], allposiblefunctions[i]);
+            idgenerator++;
+            tempgraph.graphlist.push(tempnode);
+          }
+          // generate all edges
+          for(let i = 0; i< tempgraph.graphlist.length; i++){
+            for(let j = i ; j< tempgraph.graphlist.length; j++){
+              // check if there is edge between node i and node j
+              var canhaveedge = true;
+              //(u,v) in G^H if (u(x),v(y)) in E(G) for all (x,y) in V(H)
+              for(let k = 0; k< graphh.graphlist.length; k++){
+                if(!canhaveedge){
+                  break;
+                }
+                for(let m = 0; m < graphh.graphlist[k].adjacentnodeslist.length ; m++){
+                  var uofx = tempgraph.graphlist[i].functionasdict[graphh.graphlist[k].label];
+                  var vofy = tempgraph.graphlist[j].functionasdict[graphh.graphlist[k].adjacentnodeslist[m].label];
+                  // reverse
+                  var uofy = tempgraph.graphlist[i].functionasdict[graphh.graphlist[k].adjacentnodeslist[m].label];
+                  var vofx = tempgraph.graphlist[j].functionasdict[graphh.graphlist[k].label];
+                  var haveedge = false;
+                  // check if edge (u(x),v(y)) in G or (u(y),v(x)) in g , if not can not have edge
+                  //todo 
+                  for (let n = 0; n < this.getnodeusingname(uofx).adjacentnodeslist.length ; n++){
+                    if(this.getnodeusingname(uofx).adjacentnodeslist[n].label == vofy){
+                      haveedge = true;
+                    }
+                  }
+                  for (let n = 0; n < this.getnodeusingname(uofy).adjacentnodeslist.length ; n++){
+                    if(this.getnodeusingname(uofy).adjacentnodeslist[n].label == vofx){
+                      haveedge = true;
+                    }
+                  }
+                  if(!haveedge){
+                    canhaveedge = false;
+                  }
+                }
+              }
+              if(canhaveedge){
+                // add edge
+                tempgraph.graphlist[i].adjacentnodeslist.push( tempgraph.graphlist[j]);
+                tempgraph.graphlist[j].adjacentnodeslist.push( tempgraph.graphlist[i]);
+              }
+            }
+          }
+          tempgraph.computegraphproperties();
+          return tempgraph;
+        }
+        getcategoricalproductgraph(graphh){
+          var tempgraph = new Graph([]);
+          for(let i = 0; i < this.graphlist.length; i++){
+            for(let j = 0; j < graphh.graphlist.length; j++){
+              tempgraph.addvertextograph(this.graphlist[i].label+","+graphh.graphlist[j].label)
+            }
+          }
+          //((u,v),(x,y)) in GxH if (u,x) in G and (v,y) in H
+          for(let i = 0; i< tempgraph.graphlist.length-1; i++){
+            for(let j = i+1; j < tempgraph.graphlist.length; j++){
+              console.log(tempgraph.graphlist[i].label.split(",")[0]);
+              var nodeu = this.getnodeusingname(tempgraph.graphlist[i].label.split(",")[0]);
+              var nodex = this.getnodeusingname(tempgraph.graphlist[j].label.split(",")[0]);
+              var nodev = graphh.getnodeusingname(tempgraph.graphlist[i].label.split(",")[1]);
+              var nodey = graphh.getnodeusingname(tempgraph.graphlist[j].label.split(",")[1]);
+              if(nodeu.isvadjacent(nodex.label) && nodev.isvadjacent(nodey.label)){
+                tempgraph.graphlist[i].adjacentnodeslist.push(tempgraph.graphlist[j]);
+                tempgraph.graphlist[j].adjacentnodeslist.push(tempgraph.graphlist[i]);
+              }
+              // console.log(tempgraph.graphlist[i].label.split(","));
+            }
+          }
+          tempgraph.computegraphproperties();
+          return tempgraph;
+        }
+        getcartesianproductgraph(graphh){
+          var tempgraph = new Graph([]);
+          for(let i = 0; i < this.graphlist.length; i++){
+            for(let j = 0; j < graphh.graphlist.length; j++){
+              tempgraph.addvertextograph(this.graphlist[i].label+","+graphh.graphlist[j].label)
+            }
+          }
+          //((u,v),(x,y)) in GxH if (u,x) in G and (v,y) in H
+          for(let i = 0; i< tempgraph.graphlist.length-1; i++){
+            for(let j = i+1; j < tempgraph.graphlist.length; j++){
+              console.log(tempgraph.graphlist[i].label.split(",")[0]);
+              var nodeu = this.getnodeusingname(tempgraph.graphlist[i].label.split(",")[0]);
+              var nodex = this.getnodeusingname(tempgraph.graphlist[j].label.split(",")[0]);
+              var nodev = graphh.getnodeusingname(tempgraph.graphlist[i].label.split(",")[1]);
+              var nodey = graphh.getnodeusingname(tempgraph.graphlist[j].label.split(",")[1]);
+              if((nodeu.isvadjacent(nodex.label) && nodev.label == nodey.label) || (nodev.isvadjacent(nodey.label) && nodeu.label == nodex.label)){
+                tempgraph.graphlist[i].adjacentnodeslist.push(tempgraph.graphlist[j]);
+                tempgraph.graphlist[j].adjacentnodeslist.push(tempgraph.graphlist[i]);
+              }
+              // console.log(tempgraph.graphlist[i].label.split(","));
+            }
+          }
+          tempgraph.computegraphproperties();
+          return tempgraph;
+        }
+        getstrongproductgraph(graphh){
+          var tempgraph = new Graph([]);
+          for(let i = 0; i < this.graphlist.length; i++){
+            for(let j = 0; j < graphh.graphlist.length; j++){
+              tempgraph.addvertextograph(this.graphlist[i].label+","+graphh.graphlist[j].label)
+            }
+          }
+          //((u,v),(x,y)) in GxH if (u,x) in G and (v,y) in H
+          for(let i = 0; i< tempgraph.graphlist.length-1; i++){
+            for(let j = i+1; j < tempgraph.graphlist.length; j++){
+              console.log(tempgraph.graphlist[i].label.split(",")[0]);
+              var nodeu = this.getnodeusingname(tempgraph.graphlist[i].label.split(",")[0]);
+              var nodex = this.getnodeusingname(tempgraph.graphlist[j].label.split(",")[0]);
+              var nodev = graphh.getnodeusingname(tempgraph.graphlist[i].label.split(",")[1]);
+              var nodey = graphh.getnodeusingname(tempgraph.graphlist[j].label.split(",")[1]);
+              if((nodeu.isvadjacent(nodex.label) && nodev.label == nodey.label) || (nodev.isvadjacent(nodey.label) && nodeu.label == nodex.label) || (nodeu.isvadjacent(nodex.label) && nodev.isvadjacent(nodey.label))){
+                tempgraph.graphlist[i].adjacentnodeslist.push(tempgraph.graphlist[j]);
+                tempgraph.graphlist[j].adjacentnodeslist.push(tempgraph.graphlist[i]);
+              }
+              // console.log(tempgraph.graphlist[i].label.split(","));
+            }
+          }
+          tempgraph.computegraphproperties();
+          return tempgraph;
+        }
         /*
         *
         */
         addvertextograph(vertexname){
           var nodeingraph = this.getnodeusingname(vertexname);
           if(nodeingraph == null){
-            var tempNode = new Node(vertexname, idgenerator, null,[]);
+            var tempNode = new Node(vertexname, idgenerator, null,[],{});
             this.graphlist.push(tempNode);
             idgenerator = idgenerator +1;
             this.computegraphproperties();
@@ -699,9 +1093,9 @@
           // updating the nodesArray
           if(srcingraph === null && destingraph === null){ // if both node are not present in graph create both
             console.log("null null");
-            var tempnode1 = new Node(slabel, idgenerator, null, []);
+            var tempnode1 = new Node(slabel, idgenerator, null, [],{});
             idgenerator = idgenerator +1;
-            var tempnode2 = new Node(dlabel, idgenerator, null, []);
+            var tempnode2 = new Node(dlabel, idgenerator, null, [],{});
             idgenerator = idgenerator +1;
             tempnode2.adjacentnodeslist.push(tempnode1);
             tempnode1.adjacentnodeslist.push(tempnode2);
@@ -710,14 +1104,14 @@
           }
           else if(srcingraph === null){
             console.log("no null null");
-            var tempnode1 = new Node(slabel, idgenerator, null,[destingraph]);
+            var tempnode1 = new Node(slabel, idgenerator, null,[destingraph],{});
             idgenerator = idgenerator +1;
             destingraph.adjacentnodeslist.push(tempnode1);
             this.graphlist.push(tempnode1);
           }
           else if(destingraph === null){
             console.log("null nonull");
-            var tempnode1 = new Node(dlabel, idgenerator, null,[srcingraph]);
+            var tempnode1 = new Node(dlabel, idgenerator, null,[srcingraph],{});
             idgenerator = idgenerator +1;
             srcingraph.adjacentnodeslist.push(tempnode1);
             this.graphlist.push(tempnode1);
@@ -1051,6 +1445,24 @@
       var combgraphstructureselectededgefromid; 
       var combgraphstructureselectededgetoid;
 
+      function clearTable(idstr){
+        var table = document.getElementById(idstr);
+        while(table.rows.length > 0) {
+          table.deleteRow(0);
+        }
+      }
+      function createTitleRow(str){
+        var titleRow = document.createElement("tr");
+        var titleCellTextNode = document.createTextNode(str);
+        titleRow.appendChild(titleCellTextNode);
+        return titleRow;
+      }
+      function makecell(str){
+        var nameCell = document.createElement("td");
+        var nameCellTextNode = document.createTextNode(str);
+        nameCell.appendChild(nameCellTextNode);
+        return nameCell;
+      }
 
 
 
@@ -1179,7 +1591,29 @@
             nodes: combnodes,
             edges: combedges,
           };
-          var options = {};
+          var options = {
+            nodes: {
+              chosen: {
+                node: function(values, id, selected, hovering) {
+                  var degreemessage = thegraph.getnodeusingid(id).adjacentnodeslist.length+"";
+                  document.getElementById("combdegofvertex").innerHTML= degreemessage;
+                  document.getElementById("combselectedvertexlabel").innerHTML= thegraph.getnodeusingid(id).label+"";
+                  document.getElementById("combnodefunction").innerHTML= JSON.stringify(thegraph.getnodeusingid(id).functionasdict);
+                  combgraphstructureselectednodeid = id; // selected node's id in graph 1
+
+                },
+              },
+            },
+            edges:{
+              chosen:{
+                edge:  function(values, id, selected, hovering) {
+                  combgraphstructureselectededgefromid = combedges.get(id).from;
+                  combgraphstructureselectededgetoid = combedges.get(id).to;
+                  document.getElementById("combselectededgelabel").innerHTML= "("+thegraph.getnodeusingid(combgraphstructureselectededgefromid).label+" , "+thegraph.getnodeusingid(combgraphstructureselectededgetoid).label+")";
+                }
+              }
+            }
+          };
           combnetwork = new vis.Network(container, data, options);
         }
 
@@ -1192,6 +1626,30 @@
           document.getElementById("isbasicodd").innerHTML= thegraph.isbasicodd+"";
           document.getElementById("isbipartite").innerHTML= thegraph.isbipartite +"";
           document.getElementById("hasgoodpartition").innerHTML= thegraph.hasgoodpartition +"";
+          document.getElementById("hashamiltonianpath").innerHTML = thegraph.hashamiltonianpath+"";
+          document.getElementById("ahamiltonianpath").innerHTML = thegraph.ahamiltonianpath+"";
+
+          var adjmatrixTable = document.getElementById("adjacentmatrixtableid");
+          clearTable("adjacentmatrixtableid");
+          var tblBody = document.createElement("tbody");
+          tblBody.appendChild(createTitleRow("Ajacency Matrix"));
+
+          var headerRow = document.createElement("tr");
+          headerRow.appendChild(makecell(" "));
+          for(var i =0 ; i < thegraph.graphlist.length; i++){
+            headerRow.appendChild(makecell(" "+thegraph.graphlist[i].label));
+          }
+          // console.log("header row append over");
+          tblBody.appendChild(headerRow);
+          for(var i = 0; i< thegraph.adjmatrix.length ; i++){
+            var headerRow = document.createElement("tr");
+            headerRow.appendChild(makecell(" "+thegraph.graphlist[i].label+" "));
+            for(var j = 0; j< thegraph.adjmatrix.length ; j++){
+              headerRow.appendChild(makecell(" "+thegraph.adjmatrix[i][j]+" "));
+            }
+            tblBody.appendChild(headerRow);
+          }
+          adjmatrixTable.appendChild(tblBody);
         }
         if(canvasname=="n2mynetwork"){
           document.getElementById("n2maximumdegree").innerHTML= thegraph.maxdegree+"";
@@ -1200,6 +1658,62 @@
           document.getElementById("n2isbasicodd").innerHTML= thegraph.isbasicodd+"";
           document.getElementById("n2isbipartite").innerHTML= thegraph.isbipartite +"";
           document.getElementById("n2hasgoodpartition").innerHTML= thegraph.hasgoodpartition +"";
+          document.getElementById("n2hashamiltonianpath").innerHTML = thegraph.hashamiltonianpath+"";
+          document.getElementById("n2ahamiltonianpath").innerHTML = thegraph.ahamiltonianpath+"";
+
+          var adjmatrixTable = document.getElementById("n2adjacentmatrixtableid");
+          clearTable("n2adjacentmatrixtableid");
+          var tblBody = document.createElement("tbody");
+          tblBody.appendChild(createTitleRow("Ajacency Matrix"));
+
+          var headerRow = document.createElement("tr");
+          headerRow.appendChild(makecell(" "));
+          for(var i =0 ; i < thegraph.graphlist.length; i++){
+            headerRow.appendChild(makecell(" "+thegraph.graphlist[i].label));
+          }
+          // console.log("header row append over");
+          tblBody.appendChild(headerRow);
+          for(var i = 0; i< thegraph.adjmatrix.length ; i++){
+            var headerRow = document.createElement("tr");
+            headerRow.appendChild(makecell(" "+thegraph.graphlist[i].label+" "));
+            for(var j = 0; j< thegraph.adjmatrix.length ; j++){
+              headerRow.appendChild(makecell(" "+thegraph.adjmatrix[i][j]+" "));
+            }
+            tblBody.appendChild(headerRow);
+          }
+          adjmatrixTable.appendChild(tblBody);
+        }
+        if(canvasname=="combmynetwork"){
+          document.getElementById("combmaximumdegree").innerHTML= thegraph.maxdegree+"";
+          document.getElementById("combminimumdegree").innerHTML= thegraph.mindegree+"";
+          document.getElementById("combaveragedegree").innerHTML= thegraph.averagedegree+"";
+          document.getElementById("combisbasicodd").innerHTML= thegraph.isbasicodd+"";
+          document.getElementById("combisbipartite").innerHTML= thegraph.isbipartite +"";
+          document.getElementById("combhasgoodpartition").innerHTML= thegraph.hasgoodpartition +"";
+          document.getElementById("combhashamiltonianpath").innerHTML = thegraph.hashamiltonianpath+"";
+          document.getElementById("combahamiltonianpath").innerHTML = thegraph.ahamiltonianpath+"";
+
+          var adjmatrixTable = document.getElementById("combadjacentmatrixtableid");
+          clearTable("combadjacentmatrixtableid");
+          var tblBody = document.createElement("tbody");
+          tblBody.appendChild(createTitleRow("Ajacency Matrix"));
+
+          var headerRow = document.createElement("tr");
+          headerRow.appendChild(makecell(" "));
+          for(var i =0 ; i < thegraph.graphlist.length; i++){
+            headerRow.appendChild(makecell(" "+thegraph.graphlist[i].label));
+          }
+          // console.log("header row append over");
+          tblBody.appendChild(headerRow);
+          for(var i = 0; i< thegraph.adjmatrix.length ; i++){
+            var headerRow = document.createElement("tr");
+            headerRow.appendChild(makecell(" "+thegraph.graphlist[i].label+" "));
+            for(var j = 0; j< thegraph.adjmatrix.length ; j++){
+              headerRow.appendChild(makecell(" "+thegraph.adjmatrix[i][j]+" "));
+            }
+            tblBody.appendChild(headerRow);
+          }
+          adjmatrixTable.appendChild(tblBody);
         }
       }
 
@@ -1327,6 +1841,7 @@
         graphstructure.contractedgebyfromtoids(graphstructureselectededgefromid,graphstructureselectededgetoid); 
         updateGraph("mynetwork",graphstructure);
       }
+      function undooperation(){}
 
 
    
@@ -1473,7 +1988,125 @@
                 hselect_value = hselect[i].value;
             }
         }
-        console.log(hselect_value);
+        if(gselect_value == "g1"){
+          if(hselect_value == "g1"){
+            combgraphstructure = graphstructure.getexponentialgraph(graphstructure);
+          }
+          else{
+            combgraphstructure = graphstructure.getexponentialgraph(n2graphstructure);
+          }
+        }
+        else{
+          if(hselect_value == "g1"){
+            combgraphstructure = n2graphstructure.getexponentialgraph(graphstructure);
+          }
+          else{
+            combgraphstructure = n2graphstructure.getexponentialgraph(n2graphstructure);
+          }
+        }
+        updateGraph("combmynetwork", combgraphstructure);
+      }
+      function generatestrongproduct(){
+        // get input from user
+        var gselect = document.getElementsByName('strongproductGSelect');
+        var gselect_value;
+        for(var i = 0; i < gselect.length; i++){
+            if(gselect[i].checked){
+                gselect_value = gselect[i].value;
+            }
+        }
+        var hselect = document.getElementsByName('strongproductHSelect');
+        var hselect_value;
+        for(var i = 0; i < hselect.length; i++){
+            if(hselect[i].checked){
+                hselect_value = hselect[i].value;
+            }
+        }
+        if(gselect_value == "g1"){
+          if(hselect_value == "g1"){
+            combgraphstructure = graphstructure.getstrongproductgraph(graphstructure);
+          }
+          else{
+            combgraphstructure = graphstructure.getstrongproductgraph(n2graphstructure);
+          }
+        }
+        else{
+          if(hselect_value == "g1"){
+            combgraphstructure = n2graphstructure.getstrongproductgraph(graphstructure);
+          }
+          else{
+            combgraphstructure = n2graphstructure.getstrongproductgraph(n2graphstructure);
+          }
+        }
+        updateGraph("combmynetwork", combgraphstructure);
+      }
+      function generatecartesianproduct(){
+         // get input from user
+        var gselect = document.getElementsByName('cartesianproductGSelect');
+        var gselect_value;
+        for(var i = 0; i < gselect.length; i++){
+            if(gselect[i].checked){
+                gselect_value = gselect[i].value;
+            }
+        }
+        var hselect = document.getElementsByName('cartesianproductHSelect');
+        var hselect_value;
+        for(var i = 0; i < hselect.length; i++){
+            if(hselect[i].checked){
+                hselect_value = hselect[i].value;
+            }
+        }
+        if(gselect_value == "g1"){
+          if(hselect_value == "g1"){
+            combgraphstructure = graphstructure.getcartesianproductgraph(graphstructure);
+          }
+          else{
+            combgraphstructure = graphstructure.getcartesianproductgraph(n2graphstructure);
+          }
+        }
+        else{
+          if(hselect_value == "g1"){
+            combgraphstructure = n2graphstructure.getcartesianproductgraph(graphstructure);
+          }
+          else{
+            combgraphstructure = n2graphstructure.getcartesianproductgraph(n2graphstructure);
+          }
+        }
+        updateGraph("combmynetwork", combgraphstructure);
+      }
+      function generatecategoricalproduct(){
+        // get input from user
+        var gselect = document.getElementsByName('categoricalproductGSelect');
+        var gselect_value;
+        for(var i = 0; i < gselect.length; i++){
+            if(gselect[i].checked){
+                gselect_value = gselect[i].value;
+            }
+        }
+        var hselect = document.getElementsByName('categoricalproductHSelect');
+        var hselect_value;
+        for(var i = 0; i < hselect.length; i++){
+            if(hselect[i].checked){
+                hselect_value = hselect[i].value;
+            }
+        }
+        if(gselect_value == "g1"){
+          if(hselect_value == "g1"){
+            combgraphstructure = graphstructure.getcategoricalproductgraph(graphstructure);
+          }
+          else{
+            combgraphstructure = graphstructure.getcategoricalproductgraph(n2graphstructure);
+          }
+        }
+        else{
+          if(hselect_value == "g1"){
+            combgraphstructure = n2graphstructure.getcategoricalproductgraph(graphstructure);
+          }
+          else{
+            combgraphstructure = n2graphstructure.getcategoricalproductgraph(n2graphstructure);
+          }
+        }
+        updateGraph("combmynetwork", combgraphstructure);
       }
 
       function generatelinegraph(){
@@ -1510,6 +2143,23 @@
         updateGraph("combmynetwork", combgraphstructure);
       }
 
+      function combdeleteselectednode(){
+        combgraphstructure.deletevertexbyid(combgraphstructureselectednodeid); // selected node's id in graph 1
+        updateGraph("combmynetwork",combgraphstructure);
+      }
+      function combdeleteselectededge(){
+        combgraphstructure.deleteedgebyfromtoids(combgraphstructureselectededgefromid,combgraphstructureselectededgetoid); // selected node's id in graph 1
+        updateGraph("combmynetwork",combgraphstructure);
+      }
+      function combsubdivideselectededge(){
+        combgraphstructure.subdivideedgebyfromtoids(combgraphstructureselectededgefromid,combgraphstructureselectededgetoid); 
+        updateGraph("combmynetwork",combgraphstructure);
+      }
+      function combcontractselectededge(){
+        combgraphstructure.contractedgebyfromtoids(combgraphstructureselectededgefromid,combgraphstructureselectededgetoid); 
+        updateGraph("combmynetwork",combgraphstructure);
+      }
+
 
 
       // Methods to manupulate graph
@@ -1519,6 +2169,7 @@
       // 1) update the code so that compatible to graph class
       // 2) fix edge no label problem
       // fix graph cbnation html
+      // improve efficiency of adjacencny matrix computation
 
       //bug
       // after creating a second graph in new canvas, clicing on first graph edge dosen't work.
