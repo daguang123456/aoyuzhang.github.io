@@ -892,7 +892,9 @@
         getcomplementgraph(){
           var tempgraph = new Graph([]);
           for(let i = 0; i< this.graphlist.length ; i++){
-            tempgraph.addvertextograph(this.graphlist[i].label);
+            var tempnode = new Node(this.graphlist[i].label, idgenerator,null,[],{});
+            idgenerator = idgenerator +1;
+            tempgraph.graphlist.push(tempnode);
           }
           for(let i = 0; i< this.graphlist.length ; i++){
             for(let j = 0; j< this.graphlist.length; j++){
@@ -2560,13 +2562,22 @@
                 gselect_value = gselect[i].value;
             }
         }
+        var tempgraph = null;
         if(gselect_value =="g1"){
-          combgraphstructure =  graphstructure.getcomplementgraph();
+          tempgraph = graphstructurelist[currentgraphstructureindex].getcomplementgraph();
         }
         else{
-          combgraphstructure =  n2graphstructure.getcomplementgraph();
+          tempgraph = n2graphstructurelist[n2currentgraphstructureindex].getcomplementgraph();
         }
-        updateGraph("combmynetwork", combgraphstructure);
+        if(combcurrentgraphstructureindex < combgraphstructurelist.length-1){
+          combgraphstructurelist[combcurrentgraphstructureindex+1] = tempgraph;
+          combcurrentgraphstructureindex = 1 + combcurrentgraphstructureindex;
+        }
+        else{
+          combgraphstructurelist.push(tempgraph);
+          combcurrentgraphstructureindex = combcurrentgraphstructureindex + 1;
+        }
+        updateGraph("combmynetwork",combgraphstructurelist[combcurrentgraphstructureindex]); 
       }
 
       function combdeleteselectednode(){
