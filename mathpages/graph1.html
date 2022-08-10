@@ -936,18 +936,18 @@
                 var node2existreversed = tempgraph.getnodeusingname(this.graphlist[i].adjacentnodeslist[k].label+","+this.graphlist[i].label);
                 if(nodeexist != null){
                   if(node2exist != null){
-                    tempgraph.addedgetograph(nodeexist.label,node2exist.label);
+                    tempgraph.addedgetoself(nodeexist.label,node2exist.label);
                   }
                   else{
-                    tempgraph.addedgetograph(nodeexist.label,node2existreversed.label);
+                    tempgraph.addedgetoself(nodeexist.label,node2existreversed.label);
                   }
                 }
                 else{
                   if(node2exist != null){
-                    tempgraph.addedgetograph(nodeexistreversed.label,node2exist.label);
+                    tempgraph.addedgetoself(nodeexistreversed.label,node2exist.label);
                   }
                   else{
-                    tempgraph.addedgetograph(nodeexistreversed.label,node2existreversed.label);
+                    tempgraph.addedgetoself(nodeexistreversed.label,node2existreversed.label);
                   }
                 }
               }
@@ -1118,11 +1118,9 @@
           return [tempgraph,nodeingraph];
           // history proof
         }
-        addedgetograph(slabel, dlabel){
-          // check if the nodes is already in graph
-          var tempgraph = this.makeaselfcopy();
-          var srcingraph = tempgraph.getnodeusingname(slabel);
-          var destingraph = tempgraph.getnodeusingname(dlabel);
+        addedgetoself(slabel,dlabel){
+          var srcingraph = this.getnodeusingname(slabel);
+          var destingraph = this.getnodeusingname(dlabel);
 
           // updating the nodesArray
           if(srcingraph === null && destingraph === null){ // if both node are not present in graph create both
@@ -1133,22 +1131,22 @@
             idgenerator = idgenerator +1;
             tempnode2.adjacentnodeslist.push(tempnode1);
             tempnode1.adjacentnodeslist.push(tempnode2);
-            tempgraph.graphlist.push(tempnode1);
-            tempgraph.graphlist.push(tempnode2);
+            this.graphlist.push(tempnode1);
+            this.graphlist.push(tempnode2);
           }
           else if(srcingraph === null){
             console.log("no null null");
             var tempnode1 = new Node(slabel, idgenerator, null,[destingraph],{});
             idgenerator = idgenerator +1;
             destingraph.adjacentnodeslist.push(tempnode1);
-            tempgraph.graphlist.push(tempnode1);
+            this.graphlist.push(tempnode1);
           }
           else if(destingraph === null){
             console.log("null nonull");
             var tempnode1 = new Node(dlabel, idgenerator, null,[srcingraph],{});
             idgenerator = idgenerator +1;
             srcingraph.adjacentnodeslist.push(tempnode1);
-            tempgraph.graphlist.push(tempnode1);
+            this.graphlist.push(tempnode1);
           }
           else{
             console.log("nonull null");
@@ -1161,6 +1159,11 @@
             srcingraph.adjacentnodeslist.push(destingraph);
             destingraph.adjacentnodeslist.push(srcingraph);
           }
+        }
+        addedgetograph(slabel, dlabel){
+          // check if the nodes is already in graph
+          var tempgraph = this.makeaselfcopy();
+          tempgraph.addedgetoself(slabel,dlabel)
           tempgraph.computegraphproperties();
           return tempgraph;
           // historyproof
