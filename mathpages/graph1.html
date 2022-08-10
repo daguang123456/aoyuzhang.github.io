@@ -1068,7 +1068,9 @@
           var tempgraph = new Graph([]);
           for(let i = 0; i < this.graphlist.length; i++){
             for(let j = 0; j < graphh.graphlist.length; j++){
-              tempgraph.addvertextograph(this.graphlist[i].label+","+graphh.graphlist[j].label)
+              var tempnodee = new Node(this.graphlist[i].label+","+graphh.graphlist[j].label, idgenerator,null, [] , {});
+              idgenerator = idgenerator + 1;
+              tempgraph.graphlist.push(tempnodee);
             }
           }
           //((u,v),(x,y)) in GxH if (u,x) in G and (v,y) in H
@@ -2386,6 +2388,7 @@
         updateGraph("combmynetwork",combgraphstructurelist[combcurrentgraphstructureindex]); 
       }
       function generatestrongproduct(){
+        console.log("strong product");
         // get input from user
         var gselect = document.getElementsByName('strongproductGSelect');
         var gselect_value;
