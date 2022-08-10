@@ -531,6 +531,8 @@
           <button type="button" class="btn btn-primary" onclick="combdeleteselectededge()">Delete selected edge</button>
           <button type="button" class="btn btn-primary" onclick="combsubdivideselectededge()">Subdivide edge</button>
           <button type="button" class="btn btn-primary" onclick="combcontractselectededge()">Contract edge</button> 
+          <button type="button" class="btn btn-primary" onclick="combundooperation()">Undo</button>  
+          <button type="button" class="btn btn-primary" onclick="combredooperation()">Redo</button>  
         </div>
         <div class="col-sm-4">
           <table class= "table table-striped-columns">
@@ -918,7 +920,9 @@
               var nodeexistreversed = tempgraph.getnodeusingname(this.graphlist[i].adjacentnodeslist[j].label+","+this.graphlist[i].label);
               // if node not added
               if(nodeexist == null && nodeexistreversed == null){
-                tempgraph.addvertextograph(this.graphlist[i].label+","+this.graphlist[i].adjacentnodeslist[j].label);
+                var tempnode = new Node(this.graphlist[i].label+","+this.graphlist[i].adjacentnodeslist[j].label,idgenerator,null,[],{});
+                idgenerator = idgenerator + 1;
+                tempgraph.graphlist.push(tempnode);
               }
             }
             // add edges
@@ -1018,7 +1022,9 @@
           var tempgraph = new Graph([]);
           for(let i = 0; i < this.graphlist.length; i++){
             for(let j = 0; j < graphh.graphlist.length; j++){
-              tempgraph.addvertextograph(this.graphlist[i].label+","+graphh.graphlist[j].label)
+              var tempnode = new Node(this.graphlist[i].label+","+graphh.graphlist[j].label, idgenerator, null, [],{});
+              tempgraph.graphlist.push(tempnode);
+              idgenerator = idgenerator + 1;
             }
           }
           //((u,v),(x,y)) in GxH if (u,x) in G and (v,y) in H
@@ -2492,23 +2498,32 @@
                 hselect_value = hselect[i].value;
             }
         }
+        var tempgraph = null;
         if(gselect_value == "g1"){
           if(hselect_value == "g1"){
-            combgraphstructure = graphstructure.getcategoricalproductgraph(graphstructure);
+            tempgraph = graphstructurelist[currentgraphstructureindex].getcategoricalproductgraph(graphstructurelist[currentgraphstructureindex]);
           }
           else{
-            combgraphstructure = graphstructure.getcategoricalproductgraph(n2graphstructure);
+            tempgraph = graphstructurelist[currentgraphstructureindex].getcategoricalproductgraph(n2graphstructurelist[n2currentgraphstructureindex]);
           }
         }
         else{
           if(hselect_value == "g1"){
-            combgraphstructure = n2graphstructure.getcategoricalproductgraph(graphstructure);
+            tempgraph = n2graphstructurelist[n2currentgraphstructureindex].getcategoricalproductgraph(graphstructurelist[currentgraphstructureindex]);
           }
           else{
-            combgraphstructure = n2graphstructure.getcategoricalproductgraph(n2graphstructure);
+            tempgraph = n2graphstructurelist[n2currentgraphstructureindex].getcategoricalproductgraph(n2graphstructurelist[n2currentgraphstructureindex]);
           }
         }
-        updateGraph("combmynetwork", combgraphstructure);
+        if(combcurrentgraphstructureindex < combgraphstructurelist.length-1){
+          combgraphstructurelist[combcurrentgraphstructureindex+1] = tempgraph;
+          combcurrentgraphstructureindex = 1 + combcurrentgraphstructureindex;
+        }
+        else{
+          combgraphstructurelist.push(tempgraph);
+          combcurrentgraphstructureindex = combcurrentgraphstructureindex + 1;
+        }
+        updateGraph("combmynetwork",combgraphstructurelist[combcurrentgraphstructureindex]); 
       }
 
       function generatelinegraph(){
@@ -2519,13 +2534,22 @@
                 gselect_value = gselect[i].value;
             }
         }
+        var tempgraph = null;
         if(gselect_value =="g1"){
-          combgraphstructure =  graphstructure.getlinegraph();
+          tempgraph = graphstructurelist[currentgraphstructureindex].getlinegraph();
         }
         else{
-          combgraphstructure =  n2graphstructure.getlinegraph();
+          tempgraph = n2graphstructurelist[n2currentgraphstructureindex].getlinegraph();
         }
-        updateGraph("combmynetwork", combgraphstructure);
+        if(combcurrentgraphstructureindex < combgraphstructurelist.length-1){
+          combgraphstructurelist[combcurrentgraphstructureindex+1] = tempgraph;
+          combcurrentgraphstructureindex = 1 + combcurrentgraphstructureindex;
+        }
+        else{
+          combgraphstructurelist.push(tempgraph);
+          combcurrentgraphstructureindex = combcurrentgraphstructureindex + 1;
+        }
+        updateGraph("combmynetwork",combgraphstructurelist[combcurrentgraphstructureindex]); 
       }
 
       function generatecomplementgraph(){
@@ -2546,20 +2570,64 @@
       }
 
       function combdeleteselectednode(){
-        combgraphstructure.deletevertexbyid(combgraphstructureselectednodeid); // selected node's id in graph 1
-        updateGraph("combmynetwork",combgraphstructure);
+        var tempgraph = combgraphstructurelist[combcurrentgraphstructureindex].deletevertexbyid(combgraphstructureselectednodeid); 
+        if(combcurrentgraphstructureindex < combgraphstructurelist.length-1){
+          combgraphstructurelist[combcurrentgraphstructureindex+1] = tempgraph;
+          combcurrentgraphstructureindex = 1 + combcurrentgraphstructureindex;
+        }
+        else{
+          combgraphstructurelist.push(tempgraph);
+          combcurrentgraphstructureindex = combcurrentgraphstructureindex + 1;
+        }
+        updateGraph("combmynetwork",combgraphstructurelist[combcurrentgraphstructureindex]); 
       }
       function combdeleteselectededge(){
-        combgraphstructure.deleteedgebyfromtoids(combgraphstructureselectededgefromid,combgraphstructureselectededgetoid); // selected node's id in graph 1
-        updateGraph("combmynetwork",combgraphstructure);
+        var tempgraph = combgraphstructurelist[combcurrentgraphstructureindex].deleteedgebyfromtoids(combgraphstructureselectededgefromid,combgraphstructureselectededgetoid); 
+        if(combcurrentgraphstructureindex < combgraphstructurelist.length-1){
+          combgraphstructurelist[combcurrentgraphstructureindex+1] = tempgraph;
+          combcurrentgraphstructureindex = 1 + combcurrentgraphstructureindex;
+        }
+        else{
+          combgraphstructurelist.push(tempgraph);
+          combcurrentgraphstructureindex = combcurrentgraphstructureindex + 1;
+        }
+        updateGraph("combmynetwork",combgraphstructurelist[combcurrentgraphstructureindex]); 
       }
       function combsubdivideselectededge(){
-        combgraphstructure.subdivideedgebyfromtoids(combgraphstructureselectededgefromid,combgraphstructureselectededgetoid); 
-        updateGraph("combmynetwork",combgraphstructure);
+        var tempgraph = combgraphstructurelist[combcurrentgraphstructureindex].subdivideedgebyfromtoids(combgraphstructureselectededgefromid,combgraphstructureselectededgetoid); 
+        if(combcurrentgraphstructureindex < combgraphstructurelist.length-1){
+          combgraphstructurelist[combcurrentgraphstructureindex+1] = tempgraph;
+          combcurrentgraphstructureindex = 1 + combcurrentgraphstructureindex;
+        }
+        else{
+          combgraphstructurelist.push(tempgraph);
+          combcurrentgraphstructureindex = combcurrentgraphstructureindex + 1;
+        }
+        updateGraph("combmynetwork",combgraphstructurelist[combcurrentgraphstructureindex]); 
       }
       function combcontractselectededge(){
-        combgraphstructure.contractedgebyfromtoids(combgraphstructureselectededgefromid,combgraphstructureselectededgetoid); 
-        updateGraph("combmynetwork",combgraphstructure);
+        var tempgraph = combgraphstructurelist[combcurrentgraphstructureindex].contractedgebyfromtoids(combgraphstructureselectededgefromid,combgraphstructureselectededgetoid);
+        if(combcurrentgraphstructureindex < combgraphstructurelist.length-1){
+          combgraphstructurelist[combcurrentgraphstructureindex+1] = tempgraph;
+          combcurrentgraphstructureindex = 1 + combcurrentgraphstructureindex;
+        }
+        else{
+          combgraphstructurelist.push(tempgraph);
+          combcurrentgraphstructureindex = combcurrentgraphstructureindex + 1;
+        }
+        updateGraph("combmynetwork",combgraphstructurelist[combcurrentgraphstructureindex]); 
+      }
+      function combundooperation(){
+        if(combcurrentgraphstructureindex -1 >= 0){
+          combcurrentgraphstructureindex = combcurrentgraphstructureindex -1;
+        }
+        updateGraph("combmynetwork",combgraphstructurelist[combcurrentgraphstructureindex]);
+      }
+      function combredooperation(){
+        if(combcurrentgraphstructureindex +1 < combgraphstructurelist.length){
+          combcurrentgraphstructureindex = combcurrentgraphstructureindex +1;
+        }
+        updateGraph("combmynetwork",combgraphstructurelist[combcurrentgraphstructureindex]);
       }
 
 
