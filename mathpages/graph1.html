@@ -187,8 +187,14 @@
                 <tr>
                   <td title="Vertex partition so that induced subgraph has all degree odd.">Has Good Partition</td>
                   <td id = "hasgoodpartition"></td>
-                  <td></td>
-                  <td></td>
+                  <td>Has perfect matching</td>
+                  <td id = "hasperfectmatching"></td>
+                </tr>
+                <tr>
+                  <td title="">Size of maximum matching</td>
+                  <td id = "sizeofmaximummatching"></td>
+                  <td>A maximum matching</td>
+                  <td id = "amaximummatching"></td>
                 </tr>
                 <tr>
                   <td title="">Has Hamiltonian Path</td>
@@ -376,8 +382,14 @@
                 <tr>
                   <td title="Vertex partition so that induced subgraph has all degree odd.">Has Good Partition</td>
                   <td id = "n2hasgoodpartition"></td>
-                  <td></td>
-                  <td></td>
+                  <td>Has perfect matching</td>
+                  <td id = "n2hasperfectmatching"></td>
+                </tr>
+                <tr>
+                  <td title="">Size of maximum matching</td>
+                  <td id = "n2sizeofmaximummatching"></td>
+                  <td>A maximum matching</td>
+                  <td id = "n2amaximummatching"></td>
                 </tr>
                 <tr>
                   <td title="">Has Hamiltonian Path</td>
@@ -533,6 +545,8 @@
           <button type="button" class="btn btn-primary" onclick="combcontractselectededge()">Contract edge</button> 
           <button type="button" class="btn btn-primary" onclick="combundooperation()">Undo</button>  
           <button type="button" class="btn btn-primary" onclick="combredooperation()">Redo</button>  
+          <button type="button" class="btn btn-primary" onclick="combcopytograph1()">Copy to graph1</button>  
+          <button type="button" class="btn btn-primary" onclick="combcopytograph2()">Copy to graph2</button> 
         </div>
         <div class="col-sm-4">
           <table class= "table table-striped-columns">
@@ -563,8 +577,14 @@
               <tr>
                 <td title="Vertex partition so that induced subgraph has all degree odd.">Has Good Partition</td>
                 <td id = "combhasgoodpartition"></td>
-                <td></td>
-                <td></td>
+                <td>Has perfect matching</td>
+                <td id = "combhasperfectmatching"></td>
+              </tr>
+              <tr>
+                <td title="">Size of maximum matching</td>
+                <td id = "combsizeofmaximummatching"></td>
+                <td>A maximum matching</td>
+                <td id = "combamaximummatching"></td>
               </tr>
               <tr>
                 <td title="">Has Hamiltonian Path</td>
@@ -682,14 +702,20 @@
             var currpath = [];
             var visited = new Array(this.graphlist.length).fill(false);
             var result = [];
-            console.log(this.graphlist[i].label);
             var tempresult = this.computedoesgraphhashamiltonianpath(currpath, visited, this.graphlist[i],result);
             if(tempresult){
               this.hashamiltonianpath = tempresult;
-              this.ahamiltonianpath = result[0];
+              var ahamiltonianpathstring = "";
+              for(let j = 0; j < result[0].length; j++){
+                ahamiltonianpathstring = ahamiltonianpathstring + result[0][j]+"-";
+              }
+              this.ahamiltonianpath = ahamiltonianpathstring;
               break;
             }
           }
+          this.maxmatching = this.computemaximummatching();
+          // this.sizemaxmatching = maxma.length;
+          // this.hasperfectmatching = (maxma.length == Math.ceil(this.graphlist.length/2));
         }
         computeadjacencymatrix(){
           var tempmatrix = Array.from(Array(this.graphlist.length), () => Array(this.graphlist.length).fill(0));
@@ -820,9 +846,130 @@
           }
           return false;
         }
-        computedoesgraphhasperfectmatching(){
-          var visited = new Array(this.graphlist.length).fill(false); // the check if a node is in a matching
+        ispartialaugmentingpath(path,edges){
+          if(path.length == 1){
+            return true;
+          }
+          for(let i = 0; i< path.length-1 ; i++){ // for each edge in the path
+            if(i % 2 == 0){ // need to check for an munmatched edge
+              var allgood = true; // all good for current edge in the path
+              for(let k = 0 ; k< edges.length ; k++){
+                if((path[i] == edges[k][0] && path[i+1] == edges[k][1]) || (path[i] == edges[k][1] && path[i+1] == edges[k][0])){
+                  allgood = false;
+                  break;
+                }
+              }
+            }
+            else{ // need to check for a matched edge
+              var allgood = false;
+              for(let k = 0 ; k< edges.length ; k++){
+                if((path[i] == edges[k][0] && path[i+1] == edges[k][1]) || (path[i] == edges[k][1] && path[i+1] == edges[k][0])){
+                  allgood = true;
+                  break;
+                }
+              }
+            }
+            if(allgood == false){
+              return false;
+            }
+          }
+          return true;
+        }
+        findaugpathdfsutil(v, visited,anaugmentpath,edges,visitedvertices ){ //https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/
+          visited[v] = true;
+          anaugmentpath.push(v);
+          var augpathlength = anaugmentpath.length;
+          var augpathlenlargerthan1 = (augpathlength > 1);
+          if(augpathlenlargerthan1){
+            var lastedgeinpathisanedge = this.graphlist[anaugmentpath[anaugmentpath.length -1]].isvadjacent(this.graphlist[anaugmentpath[anaugmentpath.length -2]].label);
+            if(!lastedgeinpathisanedge){
+              anaugmentpath.pop(v);
+              return false;
+            }
+          }
+          if(!this.ispartialaugmentingpath(anaugmentpath,edges)){
+            anaugmentpath.pop(v);
+            return false;
+          }
+          if(this.ispartialaugmentingpath(anaugmentpath,edges) && anaugmentpath.length % 2 == 0 && !visitedvertices[anaugmentpath[anaugmentpath.length -1]]){
+            return true;
+          }
+          for(let i = 0 ; i< this.graphlist[v].adjacentnodeslist.length; i++){
+            var tempindex  = this.getnodeindexusingid(this.graphlist[v].adjacentnodeslist[i].id);
+            if (!visited[tempindex]){
+              if(this.findaugpathdfsutil(tempindex, visited,anaugmentpath,edges,visitedvertices )){
+                // console.log(anaugmentpath);
+                return true;
+              }
+            }
+          }
+          return false;
+        }
+        findaugmentingpath(edges,startindex,machedvertices){
+          var anaugmentingpath = [];
+          var visitedfindaugmentingpath = new Array(this.graphlist.length).fill(false);
+
+          if(this.findaugpathdfsutil(startindex, visitedfindaugmentingpath,anaugmentingpath,edges,machedvertices)){
+            console.log(anaugmentingpath);
+            return anaugmentingpath
+          }
+          return [];
+        }
+        augmentaugmentingpath(matching,path){
+          var result = [...matching];
+          // iterate over the path
+          for(let i = 0 ; i< path.length-1 ; i++){
+            if(i % 2 == 0){
+              result.push([path[i], path[i+1]]);
+            }
+            else{
+              for(let j = 0 ; j< result.length; j++){
+                if((result[j][0] == path[i] && result[j][1] == path[i+1]) || (result[j][1] == path[i] && result[j][0] == path[i+1])){
+                  result.splice(j,1);
+                }
+              }
+            }
+          }
+          return result;
+        }
+        computemaximummatching(){
+          var visitedcomputemaximummatching = new Array(this.graphlist.length).fill(false); // to check if a node is in a matching
           // label the edges
+          var matchededges = [];
+          while(true){
+            // find an unmatched node
+            var anunvisitednodeindex = -1;
+            for(let i = 0 ; i < visitedcomputemaximummatching.length; i++){
+              if(! visitedcomputemaximummatching[i]){
+                anunvisitednodeindex = i;
+                break;
+              }
+            }
+            // if all nodes are visited, found a perfect matching
+            if(anunvisitednodeindex == -1){
+              break; 
+            }
+            // find an augmenting path starting from the unvisited node
+            var anaugpath = this.findaugmentingpath(matchededges,anunvisitednodeindex,visitedcomputemaximummatching);
+            // if no augment path
+            if(anaugpath.length == 0){
+              visitedcomputemaximummatching[anunvisitednodeindex] = true;
+              continue;
+            }
+            matchededges = this.augmentaugmentingpath(matchededges,anaugpath);
+            visitedcomputemaximummatching[anaugpath[0]] = true;
+            visitedcomputemaximummatching[anaugpath[anaugpath.length -1]] = true;
+            console.log(matchededges);
+            console.log(visitedcomputemaximummatching);
+            // break;
+          }
+          var matchinglabesl = []
+          for(let i = 0; i < matchededges.length; i++){
+            var temps = this.graphlist[matchededges[i][0]].label;
+            var tempt = this.graphlist[matchededges[i][1]].label;
+            matchinglabesl.push("("+temps+","+tempt+")");
+          }
+          return matchinglabesl;
         }
         getmaxdegree(){
           var maxd = 0;        
@@ -1766,6 +1913,10 @@
           document.getElementById("hasgoodpartition").innerHTML= thegraph.hasgoodpartition +"";
           document.getElementById("hashamiltonianpath").innerHTML = thegraph.hashamiltonianpath+"";
           document.getElementById("ahamiltonianpath").innerHTML = thegraph.ahamiltonianpath+"";
+          var hasperfectmatching = thegraph.maxmatching.length == Math.ceil(thegraph.graphlist.length /2);
+          document.getElementById("hasperfectmatching").innerHTML= hasperfectmatching +"";
+          document.getElementById("sizeofmaximummatching").innerHTML = thegraph.maxmatching.length+"";
+          document.getElementById("amaximummatching").innerHTML = thegraph.maxmatching+"";
 
           var adjmatrixTable = document.getElementById("adjacentmatrixtableid");
           clearTable("adjacentmatrixtableid");
@@ -1798,6 +1949,10 @@
           document.getElementById("n2hasgoodpartition").innerHTML= thegraph.hasgoodpartition +"";
           document.getElementById("n2hashamiltonianpath").innerHTML = thegraph.hashamiltonianpath+"";
           document.getElementById("n2ahamiltonianpath").innerHTML = thegraph.ahamiltonianpath+"";
+          var hasperfectmatching = thegraph.maxmatching.length == Math.ceil(thegraph.graphlist.length /2);
+          document.getElementById("n2hasperfectmatching").innerHTML= hasperfectmatching +"";
+          document.getElementById("n2sizeofmaximummatching").innerHTML = thegraph.maxmatching.length+"";
+          document.getElementById("n2amaximummatching").innerHTML = thegraph.maxmatching+"";
 
           var adjmatrixTable = document.getElementById("n2adjacentmatrixtableid");
           clearTable("n2adjacentmatrixtableid");
@@ -1830,6 +1985,10 @@
           document.getElementById("combhasgoodpartition").innerHTML= thegraph.hasgoodpartition +"";
           document.getElementById("combhashamiltonianpath").innerHTML = thegraph.hashamiltonianpath+"";
           document.getElementById("combahamiltonianpath").innerHTML = thegraph.ahamiltonianpath+"";
+          var hasperfectmatching = thegraph.maxmatching.length == Math.ceil(thegraph.graphlist.length /2);
+          document.getElementById("combhasperfectmatching").innerHTML= hasperfectmatching +"";
+          document.getElementById("combsizeofmaximummatching").innerHTML = thegraph.maxmatching.length+"";
+          document.getElementById("combamaximummatching").innerHTML = thegraph.maxmatching+"";
 
           var adjmatrixTable = document.getElementById("combadjacentmatrixtableid");
           clearTable("combadjacentmatrixtableid");
@@ -2643,8 +2802,30 @@
         }
         updateGraph("combmynetwork",combgraphstructurelist[combcurrentgraphstructureindex]);
       }
-
-
+      function combcopytograph1(){
+        var tempgraph = combgraphstructurelist[combcurrentgraphstructureindex].makeaselfcopy();
+        if(currentgraphstructureindex < graphstructurelist.length-1){
+          graphstructurelist[currentgraphstructureindex+1] = tempgraph;
+          currentgraphstructureindex = 1 + currentgraphstructureindex;
+        }
+        else{
+          graphstructurelist.push(tempgraph);
+          currentgraphstructureindex = currentgraphstructureindex + 1;
+        }
+        updateGraph("mynetwork",graphstructurelist[currentgraphstructureindex]); 
+      }
+      function combcopytograph2(){
+        var tempgraph = combgraphstructurelist[combcurrentgraphstructureindex].makeaselfcopy();
+        if(n2currentgraphstructureindex < n2graphstructurelist.length-1){
+          n2graphstructurelist[n2currentgraphstructureindex+1] = tempgraph;
+          n2currentgraphstructureindex = 1 + n2currentgraphstructureindex;
+        }
+        else{
+          n2graphstructurelist.push(tempgraph);
+          n2currentgraphstructureindex = n2currentgraphstructureindex + 1;
+        }
+        updateGraph("n2mynetwork",n2graphstructurelist[n2currentgraphstructureindex]); 
+      }
 
       // Methods to manupulate graph
       startNetwork()
@@ -2654,6 +2835,7 @@
       // 2) fix edge no label problem
       // fix graph cbnation html
       // improve efficiency of adjacencny matrix computation
+      // 3) in computemaximummatching(){ after unsucessful search for an augmenting path starting from a vertex, can it ever be part of an augmenting path later on ?
 
       //bug
       // after creating a second graph in new canvas, clicing on first graph edge dosen't work.
