@@ -202,6 +202,12 @@
                   <td>A hamiltonian path</td>
                   <td id = "ahamiltonianpath"></td>
                 </tr>
+                <tr>
+                  <td title="">Burning number</td>
+                  <td id = "burningnumber"></td>
+                  <td>Burning Sequence</td>
+                  <td id = "burningnumbersequence"></td>
+                </tr>
               </tbody>
             </table>
             <table class= "table table-striped-columns">
@@ -396,6 +402,12 @@
                   <td id = "n2hashamiltonianpath"></td>
                   <td>A hamiltonian path</td>
                   <td id = "n2ahamiltonianpath"></td>
+                </tr>
+                <tr>
+                  <td title="">Burning number</td>
+                  <td id = "n2burningnumber"></td>
+                  <td>Burning Sequence</td>
+                  <td id = "n2burningnumbersequence"></td>
                 </tr>
               </tbody>
             </table>
@@ -592,6 +604,12 @@
                 <td>A hamiltonian path</td>
                 <td id = "combahamiltonianpath"></td>
               </tr>
+              <tr>
+                <td title="">Burning number</td>
+                <td id = "combburningnumber"></td>
+                <td>Burning Sequence</td>
+                <td id = "combburningnumbersequence"></td>
+              </tr>
             </tbody>
           </table>
           <table class= "table table-striped-columns">
@@ -685,6 +703,8 @@
       class Graph{
         constructor(glist){
           this.graphlist = glist;
+          this.minburnseqlen = Number.MAX_VALUE;
+          this.minburningsequence = [];
           this.computegraphproperties();
         }
         computegraphproperties(){
@@ -714,8 +734,16 @@
             }
           }
           this.maxmatching = this.computemaximummatching();
-          // this.sizemaxmatching = maxma.length;
-          // this.hasperfectmatching = (maxma.length == Math.ceil(this.graphlist.length/2));
+
+          // compute burning number
+          for(let i = 0; i< this.graphlist.length; i++){
+            // if(i<3){
+            //   continue;
+            // }
+            var theburntnodes = new Array(this.graphlist.length).fill(false);
+            theburntnodes[i] = true;
+            this.computeburningsequenceutil([i],theburntnodes);
+          }
         }
         computeadjacencymatrix(){
           var tempmatrix = Array.from(Array(this.graphlist.length), () => Array(this.graphlist.length).fill(0));
@@ -931,6 +959,90 @@
             }
           }
           return result;
+        }
+        computeburningsequenceutil(seq,burntnodes){
+          // check return condition
+          if(burntnodes.every(value => value === true)){
+            if(seq.length < this.minburnseqlen){
+              this.minburnseqlen = seq.length;
+              var tempstr = "";
+              for(let i = 0 ; i< seq.length; i++){
+                tempstr = tempstr +this.graphlist[seq[i]].label+"-";
+              }
+              this.minburningsequence = tempstr;
+              console.log(seq);
+              console.log(this.minburningsequence);
+              console.log(this.minburnseqlen);
+            }
+            return
+          }
+          // burt prev 
+          var newburntnodes = new Array(this.graphlist.length).fill(false);
+          for(let k = 0 ; k< burntnodes.length; k++){
+            if(burntnodes[k]){
+              newburntnodes[k] = true;
+              for(let i = 0; i< this.graphlist[k].adjacentnodeslist.length; i++){
+                var neighborindex = this.getnodeindexusingname(this.graphlist[k].adjacentnodeslist[i].label);
+                newburntnodes[neighborindex] = true;
+              }
+            }
+          }
+          // select new node
+          if(newburntnodes.every(value => value === true)){
+            seq.push(0);
+            this.computeburningsequenceutil([...seq],newburntnodes);
+            seq.pop();
+          }
+          else{
+            for(let i= 0; i< newburntnodes.length; i++){
+              if(newburntnodes[i] == false){
+                newburntnodes[i] = true;
+                seq.push(i);
+                this.computeburningsequenceutil([...seq],newburntnodes);
+                newburntnodes[i] = false;
+                seq.pop();
+              }
+            }
+          }
+
+
+          // // burt prev 
+          // var newburntnodes = new Array(this.graphlist.length).fill(false);
+          // for(let k = 0 ; k< burtnodes.length - 1; k++){
+          //   if(burtnodes[k]){
+          //     newburntnodes[k] = true;
+          //     for(let i = 0; i< this.graphlist[k].adjacentnodeslist.length; i++){
+          //       var neighborindex = this.getnodeindexusingname(this.graphlist[k].adjacentnodeslist[i].label);
+          //       newburntnodes[neighborindex] = true;
+          //     }
+          //   }
+          // }
+          // // burnt selected
+          // newburntnodes[currindex] = true;
+          // seq.push(currindex);
+          // // check if found burning sequence
+          // if(newburntnodes.every(value => value === true)){
+          //   if(seq.length < this.minburnseqlen){
+          //     this.minburnseqlen = seq.length;
+          //     var tempstr = "";
+          //     for(let i = 0 ; i< seq.length; i++){
+          //       tempstr = tempstr +this.graphlist[seq[i]].label+"-";
+          //     }
+          //     this.minburningsequence = tempstr;
+          //     console.log(seq);
+          //     console.log(this.minburningsequence);
+          //     console.log(this.minburnseqlen);
+          //   }
+          //   return
+          // }
+          // //recurse
+          // for(let i= 0; i< newburntnodes.length; i++){
+          //   if(newburntnodes[i] == false){
+          //     this.computeburningsequenceutil(seq,newburntnodes,i);
+          //   }
+          // }
+          // //back track
+          // seq.pop();
         }
         computemaximummatching(){
           var visitedcomputemaximummatching = new Array(this.graphlist.length).fill(false); // to check if a node is in a matching
@@ -1466,8 +1578,7 @@
         }
 
         becomecompletegraph(nnode){
-          var tempgraph = this.makeaselfcopy();
-          tempgraph.resetthegraph();
+          var tempgraph = new Graph([]);
           for (let i = 0; i < nnode; i++) {
             var tempnode = new Node(i+"", idgenerator, null,[],{});
             idgenerator = idgenerator + 1; 
@@ -1484,8 +1595,7 @@
           return tempgraph;
         }
         becomepathgraph(nnode){
-          var tempgraph = this.makeaselfcopy();
-          tempgraph.resetthegraph();
+          var tempgraph = new Graph([]);
           for (let i = 0; i < nnode; i++) {
             var tempnode = new Node(i+"", idgenerator, null,[],{});
             idgenerator = idgenerator + 1; 
@@ -1499,9 +1609,7 @@
           return tempgraph;
         }
         becomestargraph(nnode){
-          var tempgraph = this.makeaselfcopy();
-          tempgraph.resetthegraph();
-          tempgraph.resetthegraph();
+          var tempgraph = new Graph([]);
           for (let i = 0; i < nnode; i++) {
             var tempnode = new Node(i+"", idgenerator, null,[],{});
             idgenerator = idgenerator + 1; 
@@ -1515,10 +1623,9 @@
           return tempgraph;
         }
         becometurangraph(nnode, nparts){
-          var tempgraph = this.makeaselfcopy();
           var nmodr = nnode % nparts;
           var nbyr = Math.floor(nnode/nparts);
-          tempgraph.resetthegraph();  // reset graph
+          var tempgraph = new Graph([]);
           // create nodes
           for (let i = 0; i < nnode; i++) {
             var tempnode = new Node(i+"", idgenerator, null,[],{});
@@ -1544,9 +1651,8 @@
           return tempgraph;
         }
         becomecompletebipartitegraph(nnodea, nnodeb){
-          var tempgraph = this.makeaselfcopy();
+          var tempgraph = new Graph([]);
           var sumofnode = nnodea + nnodeb ; 
-          tempgraph.resetthegraph();  // reset graph
           // create nodes
           for (let i = 0; i < sumofnode; i++) {
             var tempnode = new Node(i+"", idgenerator, null,[],{});
@@ -1566,9 +1672,8 @@
           return tempgraph;
         }
         becomegridgraph(nr, nc){
-          var tempgraph = this.makeaselfcopy();
+          var tempgraph = new Graph([]);
           var nnode = nr*nc ; 
-          tempgraph.resetthegraph();  // reset graph
           // create nodes
           for (let i = 0; i < nnode; i++) {
             var tempnode = new Node(i+"", idgenerator, null,[],{});
@@ -1594,8 +1699,7 @@
           return tempgraph;
         }
         becomecyclicgraph(nnode){
-          var tempgraph = this.makeaselfcopy();
-          tempgraph.resetthegraph();  // reset graph
+          var tempgraph = new Graph([]);
           // create nodes
           for (let i = 0; i < nnode; i++) {
             var tempnode = new Node(i+"", idgenerator, null,[],{});
@@ -1610,8 +1714,7 @@
           return tempgraph
         }
         becomerandomtree(nnode){
-          var tempgraph = this.makeaselfcopy();
-          tempgraph.resetthegraph();  // reset graph
+          var tempgraph = new Graph([]);
           // if less than 3 nodes
           if(nnode <= 2){
             tempgraph = this.becomepathgraph(nnode);
@@ -1833,7 +1936,7 @@
                   document.getElementById("selectededgelabel").innerHTML= "("+thegraph.getnodeusingid(graphstructureselectededgefromid).label+","+thegraph.getnodeusingid(graphstructureselectededgetoid).label+")";
                 }
               }
-            }
+            },
           };
           network = new vis.Network(container, data, options);
         }
@@ -1917,6 +2020,9 @@
           document.getElementById("hasperfectmatching").innerHTML= hasperfectmatching +"";
           document.getElementById("sizeofmaximummatching").innerHTML = thegraph.maxmatching.length+"";
           document.getElementById("amaximummatching").innerHTML = thegraph.maxmatching+"";
+          document.getElementById("burningnumber").innerHTML = thegraph.minburnseqlen+"";
+          document.getElementById("burningnumbersequence").innerHTML = thegraph.minburningsequence+"";
+
 
           var adjmatrixTable = document.getElementById("adjacentmatrixtableid");
           clearTable("adjacentmatrixtableid");
@@ -1953,6 +2059,8 @@
           document.getElementById("n2hasperfectmatching").innerHTML= hasperfectmatching +"";
           document.getElementById("n2sizeofmaximummatching").innerHTML = thegraph.maxmatching.length+"";
           document.getElementById("n2amaximummatching").innerHTML = thegraph.maxmatching+"";
+          document.getElementById("n2burningnumber").innerHTML = thegraph.minburnseqlen+"";
+          document.getElementById("n2burningnumbersequence").innerHTML = thegraph.minburningsequence+"";
 
           var adjmatrixTable = document.getElementById("n2adjacentmatrixtableid");
           clearTable("n2adjacentmatrixtableid");
@@ -1989,6 +2097,8 @@
           document.getElementById("combhasperfectmatching").innerHTML= hasperfectmatching +"";
           document.getElementById("combsizeofmaximummatching").innerHTML = thegraph.maxmatching.length+"";
           document.getElementById("combamaximummatching").innerHTML = thegraph.maxmatching+"";
+          document.getElementById("combburningnumber").innerHTML = thegraph.minburnseqlen+"";
+          document.getElementById("combburningnumbersequence").innerHTML = thegraph.minburningsequence+"";
 
           var adjmatrixTable = document.getElementById("combadjacentmatrixtableid");
           clearTable("combadjacentmatrixtableid");
@@ -2836,6 +2946,7 @@
       // fix graph cbnation html
       // improve efficiency of adjacencny matrix computation
       // 3) in computemaximummatching(){ after unsucessful search for an augmenting path starting from a vertex, can it ever be part of an augmenting path later on ?
+      // bug in max matching, check turan n=6, r = 2.
 
       //bug
       // after creating a second graph in new canvas, clicing on first graph edge dosen't work.
