@@ -146,6 +146,15 @@
           <button type="button" class="btn btn-primary" onclick="createrandomtree()">Generate random tree</button>
         </div>
       </div>
+      <div class="row">
+        <div class="col-sm-8">
+          <label for="caterpillartreennode" >Number of vertices:</label>
+          <input type="number" step="1" id="caterpillartreennode" name="caterpillartreennode">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="createcaterpillartree()">Generate caterpillar tree</button>
+        </div>
+      </div>
       <br>
       <div class="row">
         <div class="col-sm-8">
@@ -201,6 +210,18 @@
                   <td id = "hashamiltonianpath"></td>
                   <td>A hamiltonian path</td>
                   <td id = "ahamiltonianpath"></td>
+                </tr>
+                <tr>
+                  <td title=""><a href="https://arxiv.org/abs/2009.10642">Burning number</a></td>
+                  <td id = "burningnumber"></td>
+                  <td>Burning Sequence</td>
+                  <td id = "burningnumbersequence"></td>
+                </tr>
+                <tr>
+                  <td title="A tree where removal of its leaves gives a path graph"><a href="https://mathworld.wolfram.com/CaterpillarGraph.html">Is caterpillar tree</a></td>
+                  <td id = "iscaterpillartree"></td>
+                  <td></td>
+                  <td></td>
                 </tr>
               </tbody>
             </table>
@@ -341,6 +362,15 @@
           <button type="button" class="btn btn-primary" onclick="n2createrandomtree()">Generate random tree</button>
         </div>
       </div>
+      <div class="row">
+        <div class="col-sm-8">
+          <label for="n2caterpillartreennode" >Number of vertices:</label>
+          <input type="number" step="1" id="n2caterpillartreennode" name="n2caterpillartreennode">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="n2createcaterpillartree()">Generate caterpillar tree</button>
+        </div>
+      </div>
       <br>
       <div class="row">
         <div class="col-sm-8">
@@ -396,6 +426,18 @@
                   <td id = "n2hashamiltonianpath"></td>
                   <td>A hamiltonian path</td>
                   <td id = "n2ahamiltonianpath"></td>
+                </tr>
+                <tr>
+                  <td title="A tree where removal of its leaves gives a path graph"><a href = "https://arxiv.org/pdf/2009.10642.pdf">Burning number</a></td>
+                  <td id = "n2burningnumber"></td>
+                  <td>Burning Sequence</td>
+                  <td id = "n2burningnumbersequence"></td>
+                </tr>
+                <tr>
+                  <td><a href="https://mathworld.wolfram.com/CaterpillarGraph.html">Is caterpillar tree</a></td>
+                  <td id = "n2iscaterpillartree"></td>
+                  <td></td>
+                  <td></td>
                 </tr>
               </tbody>
             </table>
@@ -592,6 +634,18 @@
                 <td>A hamiltonian path</td>
                 <td id = "combahamiltonianpath"></td>
               </tr>
+              <tr>
+                  <td title=""><a href = "https://arxiv.org/pdf/2009.10642.pdf">Burning number</a></td>
+                  <td id = "combburningnumber"></td>
+                  <td>Burning Sequence</td>
+                  <td id = "combburningnumbersequence"></td>
+                </tr>
+                <tr>
+                  <td title = "A tree where removal of its leaves gives a path graph"><a href="https://mathworld.wolfram.com/CaterpillarGraph.html">Is caterpillar tree</a></td>
+                  <td id = "combiscaterpillartree"></td>
+                  <td></td>
+                  <td></td>
+                </tr>
             </tbody>
           </table>
           <table class= "table table-striped-columns">
@@ -668,6 +722,7 @@
           this.color = color;
           this.adjacentnodeslist = adjacentnodeslist;
           this.functionasdict = fonctionasdict;
+          this.gracefullabel = -1;
         }
         isvadjacent(vlabel){
           for(let i = 0; i< this.adjacentnodeslist.length ; i++){
@@ -685,6 +740,8 @@
       class Graph{
         constructor(glist){
           this.graphlist = glist;
+          this.minburnseqlen = Number.MAX_VALUE;
+          this.minburningsequence = [];
           this.computegraphproperties();
         }
         computegraphproperties(){
@@ -702,7 +759,6 @@
             var currpath = [];
             var visited = new Array(this.graphlist.length).fill(false);
             var result = [];
-            console.log(this.graphlist[i].label);
             var tempresult = this.computedoesgraphhashamiltonianpath(currpath, visited, this.graphlist[i],result);
             if(tempresult){
               this.hashamiltonianpath = tempresult;
@@ -715,8 +771,36 @@
             }
           }
           this.maxmatching = this.computemaximummatching();
-          // this.sizemaxmatching = maxma.length;
-          // this.hasperfectmatching = (maxma.length == Math.ceil(this.graphlist.length/2));
+          this.iscaterpillar = this.computeisgraphcaterpillar();
+          // compute burning number
+          for(let i = 0; i< this.graphlist.length; i++){
+            // if(i<3){
+            //   continue;
+            // }
+            var theburntnodes = new Array(this.graphlist.length).fill(false);
+            theburntnodes[i] = true;
+            this.computeburningsequenceutil([i],theburntnodes);
+          }
+          // compute gracefullabelling
+          var nedges = 0
+          for(let i = 0 ; i < this.graphlist.length; i++){
+            nedges = nedges + this.graphlist[i].adjacentnodeslist.length;
+          }
+          nedges = nedges / 2;
+          var nodecolordict = {};
+          var edgecolordict = {};
+          for(let i = 0 ; i< nedges +1; i++){
+            nodecolordict[i] = 0;
+          }
+          for(let i = 1 ; i< nedges +1; i++){
+            edgecolordict[i] = 0;
+          }
+          var hasgracefullabelling = this.computehasgracefullabelling(0, nodecolordict, edgecolordict, nedges);
+          var gracefullabelstring="";
+          for(let i = 0 ; i< this.graphlist.length; i++){
+            gracefullabelstring = gracefullabelstring+this.graphlist[i].label+":"+this.graphlist[i].gracefullabel+"|";
+          }
+          console.log(gracefullabelstring);
         }
         computeadjacencymatrix(){
           var tempmatrix = Array.from(Array(this.graphlist.length), () => Array(this.graphlist.length).fill(0));
@@ -876,40 +960,43 @@
           }
           return true;
         }
-        findaugmentingpath(edges,startindex,machedvertices){
-          var anaugmentingpath = [];
-          var queue =[];
-          var visitedfindaugmentingpath = new Array(this.graphlist.length).fill(false);
-          queue.push(startindex);
-          var iter =0;
-          while(queue.length != 0){
-            var u = queue.pop();
-            // console.log(visitedfindaugmentingpath);
-            if(visitedfindaugmentingpath[u] == false){
-              visitedfindaugmentingpath[u] = true;
-              anaugmentingpath.push(u);
-              // console.log(anaugmentingpath);
-              var ispartialaugpath = this.ispartialaugmentingpath(anaugmentingpath,edges);
-              // console.log(ispartialaugpath);
-              if(!ispartialaugpath){
-                anaugmentingpath.pop();
-                visitedfindaugmentingpath[u] = false;
-                continue;
-              }
-              if(ispartialaugpath && anaugmentingpath.length % 2 == 0 && !machedvertices[anaugmentingpath[anaugmentingpath.length -1]]){
-                return anaugmentingpath;
-              }
-              for(let j = 0; j < this.graphlist[u].adjacentnodeslist.length; j++){
-                var tempindex  = this.getnodeindexusingid(this.graphlist[u].adjacentnodeslist[j].id);
-                if(! visitedfindaugmentingpath[tempindex]){
-                  queue.push(tempindex);
-                }
+        findaugpathdfsutil(v, visited,anaugmentpath,edges,visitedvertices ){ //https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/
+          visited[v] = true;
+          anaugmentpath.push(v);
+          var augpathlength = anaugmentpath.length;
+          var augpathlenlargerthan1 = (augpathlength > 1);
+          if(augpathlenlargerthan1){
+            var lastedgeinpathisanedge = this.graphlist[anaugmentpath[anaugmentpath.length -1]].isvadjacent(this.graphlist[anaugmentpath[anaugmentpath.length -2]].label);
+            if(!lastedgeinpathisanedge){
+              anaugmentpath.pop(v);
+              return false;
+            }
+          }
+          if(!this.ispartialaugmentingpath(anaugmentpath,edges)){
+            anaugmentpath.pop(v);
+            return false;
+          }
+          if(this.ispartialaugmentingpath(anaugmentpath,edges) && anaugmentpath.length % 2 == 0 && !visitedvertices[anaugmentpath[anaugmentpath.length -1]]){
+            return true;
+          }
+          for(let i = 0 ; i< this.graphlist[v].adjacentnodeslist.length; i++){
+            var tempindex  = this.getnodeindexusingid(this.graphlist[v].adjacentnodeslist[i].id);
+            if (!visited[tempindex]){
+              if(this.findaugpathdfsutil(tempindex, visited,anaugmentpath,edges,visitedvertices )){
+                // console.log(anaugmentpath);
+                return true;
               }
             }
-            // iter = iter+1;
-            // if(iter == 3){
-            //   break;
-            // }
+          }
+          return false;
+        }
+        findaugmentingpath(edges,startindex,machedvertices){
+          var anaugmentingpath = [];
+          var visitedfindaugmentingpath = new Array(this.graphlist.length).fill(false);
+
+          if(this.findaugpathdfsutil(startindex, visitedfindaugmentingpath,anaugmentingpath,edges,machedvertices)){
+            console.log(anaugmentingpath);
+            return anaugmentingpath
           }
           return [];
         }
@@ -929,6 +1016,51 @@
             }
           }
           return result;
+        }
+        computeburningsequenceutil(seq,burntnodes){
+          // check return condition
+          if(burntnodes.every(value => value === true)){
+            if(seq.length < this.minburnseqlen){
+              this.minburnseqlen = seq.length;
+              var tempstr = "";
+              for(let i = 0 ; i< seq.length; i++){
+                tempstr = tempstr +this.graphlist[seq[i]].label+"-";
+              }
+              this.minburningsequence = tempstr;
+              console.log(seq);
+              console.log(this.minburningsequence);
+              console.log(this.minburnseqlen);
+            }
+            return
+          }
+          // burt prev 
+          var newburntnodes = new Array(this.graphlist.length).fill(false);
+          for(let k = 0 ; k< burntnodes.length; k++){
+            if(burntnodes[k]){
+              newburntnodes[k] = true;
+              for(let i = 0; i< this.graphlist[k].adjacentnodeslist.length; i++){
+                var neighborindex = this.getnodeindexusingname(this.graphlist[k].adjacentnodeslist[i].label);
+                newburntnodes[neighborindex] = true;
+              }
+            }
+          }
+          // select new node
+          if(newburntnodes.every(value => value === true)){
+            seq.push(0);
+            this.computeburningsequenceutil([...seq],newburntnodes);
+            seq.pop();
+          }
+          else{
+            for(let i= 0; i< newburntnodes.length; i++){
+              if(newburntnodes[i] == false){
+                newburntnodes[i] = true;
+                seq.push(i);
+                this.computeburningsequenceutil([...seq],newburntnodes);
+                newburntnodes[i] = false;
+                seq.pop();
+              }
+            }
+          }
         }
         computemaximummatching(){
           var visitedcomputemaximummatching = new Array(this.graphlist.length).fill(false); // to check if a node is in a matching
@@ -951,7 +1083,8 @@
             var anaugpath = this.findaugmentingpath(matchededges,anunvisitednodeindex,visitedcomputemaximummatching);
             // if no augment path
             if(anaugpath.length == 0){
-              break;
+              visitedcomputemaximummatching[anunvisitednodeindex] = true;
+              continue;
             }
             matchededges = this.augmentaugmentingpath(matchededges,anaugpath);
             visitedcomputemaximummatching[anaugpath[0]] = true;
@@ -967,6 +1100,68 @@
             matchinglabesl.push("("+temps+","+tempt+")");
           }
           return matchinglabesl;
+        }
+        computeisgraphcaterpillar(){
+          var nedges = 0;
+          for(let i = 0 ; i< this.graphlist.length; i++){
+            nedges = nedges + this.graphlist[i].adjacentnodeslist.length;
+            if(this.graphlist[i].adjacentnodeslist.length >= 3){
+              var nofneighbordegtwoormore = 0;
+              for(let m = 0 ; m < this.graphlist[i].adjacentnodeslist.length; m++){
+                if(this.graphlist[i].adjacentnodeslist[m].adjacentnodeslist.length >= 2){
+                  nofneighbordegtwoormore = nofneighbordegtwoormore + 1;
+                }
+              }
+              if(nofneighbordegtwoormore >=3){
+                return false;
+              }
+            }
+          }
+          if(this.graphlist.length - (nedges/2) != 1){
+            return false; // not a tree
+          }
+          return true;
+        }
+        computehasgracefullabelling(currnodeindex, visitednodes, visitededges, nedges){
+          if(currnodeindex == this.graphlist.length){
+            return true;
+          }
+          for(let i = 0; i< nedges+1; i++){// iterate over possible colors for vertices
+            if(visitednodes[i] == 0){ // if color i is not used on any vertex
+              var edgelabelok = true; // check if can label node so that adjacent edge label is compatible
+              for(let m = 0 ; m < this.graphlist[currnodeindex].adjacentnodeslist.length; m++){
+                var neighbornodeindex = this.getnodeindexusingname(this.graphlist[currnodeindex].adjacentnodeslist[m].label);
+                if(this.graphlist[neighbornodeindex].gracefullabel != -1){ // if neighbor node has been labeld then we check for the corresponding edge label
+                  if(visitededges[Math.abs(this.graphlist[neighbornodeindex].gracefullabel - i)] != 0){// if compatible with edge coloring
+                    edgelabelok  = false;
+                    break;
+                  }
+                }
+              }
+              if(edgelabelok){
+                this.graphlist[currnodeindex].gracefullabel = i;
+                visitednodes[i] = visitednodes[i]+1;
+                for(let m = 0 ; m < this.graphlist[currnodeindex].adjacentnodeslist.length; m++){
+                  var neighbornodeindex = this.getnodeindexusingname(this.graphlist[currnodeindex].adjacentnodeslist[m].label);
+                  if(this.graphlist[neighbornodeindex].gracefullabel != -1){
+                    visitededges[Math.abs(this.graphlist[neighbornodeindex].gracefullabel - i)] =visitededges[Math.abs(this.graphlist[neighbornodeindex].gracefullabel - i)] + 1;
+                  }
+                }
+                if(this.computehasgracefullabelling(currnodeindex+1, {...visitednodes}, {...visitededges}, nedges)){
+                  return true;
+                }
+                for(let m = 0 ; m < this.graphlist[currnodeindex].adjacentnodeslist.length; m++){
+                  var neighbornodeindex = this.getnodeindexusingname(this.graphlist[currnodeindex].adjacentnodeslist[m].label);
+                  if(this.graphlist[neighbornodeindex].gracefullabel != -1){
+                    visitededges[Math.abs(this.graphlist[neighbornodeindex].gracefullabel - i)] =visitededges[Math.abs(this.graphlist[neighbornodeindex].gracefullabel - i)] - 1;
+                  }
+                }
+                visitednodes[i] = visitednodes[i]-1;
+                this.graphlist[currnodeindex].gracefullabel = -1;
+              }
+            }
+          }
+          return false;
         }
         getmaxdegree(){
           var maxd = 0;        
@@ -1463,8 +1658,7 @@
         }
 
         becomecompletegraph(nnode){
-          var tempgraph = this.makeaselfcopy();
-          tempgraph.resetthegraph();
+          var tempgraph = new Graph([]);
           for (let i = 0; i < nnode; i++) {
             var tempnode = new Node(i+"", idgenerator, null,[],{});
             idgenerator = idgenerator + 1; 
@@ -1481,8 +1675,7 @@
           return tempgraph;
         }
         becomepathgraph(nnode){
-          var tempgraph = this.makeaselfcopy();
-          tempgraph.resetthegraph();
+          var tempgraph = new Graph([]);
           for (let i = 0; i < nnode; i++) {
             var tempnode = new Node(i+"", idgenerator, null,[],{});
             idgenerator = idgenerator + 1; 
@@ -1496,9 +1689,7 @@
           return tempgraph;
         }
         becomestargraph(nnode){
-          var tempgraph = this.makeaselfcopy();
-          tempgraph.resetthegraph();
-          tempgraph.resetthegraph();
+          var tempgraph = new Graph([]);
           for (let i = 0; i < nnode; i++) {
             var tempnode = new Node(i+"", idgenerator, null,[],{});
             idgenerator = idgenerator + 1; 
@@ -1512,10 +1703,9 @@
           return tempgraph;
         }
         becometurangraph(nnode, nparts){
-          var tempgraph = this.makeaselfcopy();
           var nmodr = nnode % nparts;
           var nbyr = Math.floor(nnode/nparts);
-          tempgraph.resetthegraph();  // reset graph
+          var tempgraph = new Graph([]);
           // create nodes
           for (let i = 0; i < nnode; i++) {
             var tempnode = new Node(i+"", idgenerator, null,[],{});
@@ -1541,9 +1731,8 @@
           return tempgraph;
         }
         becomecompletebipartitegraph(nnodea, nnodeb){
-          var tempgraph = this.makeaselfcopy();
+          var tempgraph = new Graph([]);
           var sumofnode = nnodea + nnodeb ; 
-          tempgraph.resetthegraph();  // reset graph
           // create nodes
           for (let i = 0; i < sumofnode; i++) {
             var tempnode = new Node(i+"", idgenerator, null,[],{});
@@ -1563,9 +1752,8 @@
           return tempgraph;
         }
         becomegridgraph(nr, nc){
-          var tempgraph = this.makeaselfcopy();
+          var tempgraph = new Graph([]);
           var nnode = nr*nc ; 
-          tempgraph.resetthegraph();  // reset graph
           // create nodes
           for (let i = 0; i < nnode; i++) {
             var tempnode = new Node(i+"", idgenerator, null,[],{});
@@ -1591,8 +1779,7 @@
           return tempgraph;
         }
         becomecyclicgraph(nnode){
-          var tempgraph = this.makeaselfcopy();
-          tempgraph.resetthegraph();  // reset graph
+          var tempgraph = new Graph([]);
           // create nodes
           for (let i = 0; i < nnode; i++) {
             var tempnode = new Node(i+"", idgenerator, null,[],{});
@@ -1607,8 +1794,7 @@
           return tempgraph
         }
         becomerandomtree(nnode){
-          var tempgraph = this.makeaselfcopy();
-          tempgraph.resetthegraph();  // reset graph
+          var tempgraph = new Graph([]);
           // if less than 3 nodes
           if(nnode <= 2){
             tempgraph = this.becomepathgraph(nnode);
@@ -1666,6 +1852,15 @@
           tempgraph.computegraphproperties();
           return tempgraph;
         }
+        becomecaterpillartree(nnode){
+          while(true){
+            var tempgraph = this.becomerandomtree(nnode);
+            if(tempgraph.iscaterpillar == true){
+              return tempgraph;
+            }
+          }
+        }
+        
         makeaselfcopy(){
           var tempgraphmakeaselfcopy = new Graph([]);
           for(let i = 0 ; i< this.graphlist.length; i++){
@@ -1830,7 +2025,7 @@
                   document.getElementById("selectededgelabel").innerHTML= "("+thegraph.getnodeusingid(graphstructureselectededgefromid).label+","+thegraph.getnodeusingid(graphstructureselectededgetoid).label+")";
                 }
               }
-            }
+            },
           };
           network = new vis.Network(container, data, options);
         }
@@ -1914,6 +2109,9 @@
           document.getElementById("hasperfectmatching").innerHTML= hasperfectmatching +"";
           document.getElementById("sizeofmaximummatching").innerHTML = thegraph.maxmatching.length+"";
           document.getElementById("amaximummatching").innerHTML = thegraph.maxmatching+"";
+          document.getElementById("burningnumber").innerHTML = thegraph.minburnseqlen+"";
+          document.getElementById("burningnumbersequence").innerHTML = thegraph.minburningsequence+"";
+          document.getElementById("iscaterpillartree").innerHTML = thegraph.iscaterpillar+"";
 
           var adjmatrixTable = document.getElementById("adjacentmatrixtableid");
           clearTable("adjacentmatrixtableid");
@@ -1950,6 +2148,9 @@
           document.getElementById("n2hasperfectmatching").innerHTML= hasperfectmatching +"";
           document.getElementById("n2sizeofmaximummatching").innerHTML = thegraph.maxmatching.length+"";
           document.getElementById("n2amaximummatching").innerHTML = thegraph.maxmatching+"";
+          document.getElementById("n2burningnumber").innerHTML = thegraph.minburnseqlen+"";
+          document.getElementById("n2burningnumbersequence").innerHTML = thegraph.minburningsequence+"";
+          document.getElementById("n2iscaterpillartree").innerHTML = thegraph.iscaterpillar+"";
 
           var adjmatrixTable = document.getElementById("n2adjacentmatrixtableid");
           clearTable("n2adjacentmatrixtableid");
@@ -1986,6 +2187,9 @@
           document.getElementById("combhasperfectmatching").innerHTML= hasperfectmatching +"";
           document.getElementById("combsizeofmaximummatching").innerHTML = thegraph.maxmatching.length+"";
           document.getElementById("combamaximummatching").innerHTML = thegraph.maxmatching+"";
+          document.getElementById("combburningnumber").innerHTML = thegraph.minburnseqlen+"";
+          document.getElementById("combburningnumbersequence").innerHTML = thegraph.minburningsequence+"";
+          document.getElementById("combiscaterpillartree").innerHTML = thegraph.iscaterpillar+"";
 
           var adjmatrixTable = document.getElementById("combadjacentmatrixtableid");
           clearTable("combadjacentmatrixtableid");
@@ -2215,6 +2419,23 @@
           return false;
         }
         var tempgraph = graphstructurelist[currentgraphstructureindex].becomerandomtree(nnode);
+        if(currentgraphstructureindex < graphstructurelist.length-1){
+          graphstructurelist[currentgraphstructureindex+1] = tempgraph;
+          currentgraphstructureindex = 1 + currentgraphstructureindex;
+        }
+        else{
+          graphstructurelist.push(tempgraph);
+          currentgraphstructureindex = currentgraphstructureindex + 1;
+        }
+        updateGraph("mynetwork",graphstructurelist[currentgraphstructureindex]);
+      }
+      function createcaterpillartree(){
+        var nnode = parseInt(document.getElementById("caterpillartreennode").value);
+        if(isNaN(nnode)){ 
+          document.getElementById("tagMessage").innerHTML= "number of node must be integer";
+          return false;
+        }
+        var tempgraph = graphstructurelist[currentgraphstructureindex].becomecaterpillartree(nnode);
         if(currentgraphstructureindex < graphstructurelist.length-1){
           graphstructurelist[currentgraphstructureindex+1] = tempgraph;
           currentgraphstructureindex = 1 + currentgraphstructureindex;
@@ -2468,6 +2689,23 @@
           n2currentgraphstructureindex = n2currentgraphstructureindex + 1;
         }
         updateGraph("n2mynetwork",n2graphstructurelist[n2currentgraphstructureindex]); 
+      }
+      function n2createcaterpillartree(){
+        var nnode = parseInt(document.getElementById("n2caterpillartreennode").value);
+        if(isNaN(nnode)){ 
+          document.getElementById("tagMessage").innerHTML= "number of node must be integer";
+          return false;
+        }
+        var tempgraph = n2graphstructurelist[n2currentgraphstructureindex].becomecaterpillartree(nnode);
+        if(n2currentgraphstructureindex < n2graphstructurelist.length-1){
+          n2graphstructurelist[n2currentgraphstructureindex+1] = tempgraph;
+          n2currentgraphstructureindex = 1 + n2currentgraphstructureindex;
+        }
+        else{
+          n2graphstructurelist.push(tempgraph);
+          n2currentgraphstructureindex = n2currentgraphstructureindex + 1;
+        }
+        updateGraph("n2mynetwork",n2graphstructurelist[n2currentgraphstructureindex]);
       }
       function n2subdivideselectededge(){
         var tempgraph = n2graphstructurelist[n2currentgraphstructureindex].subdivideedgebyfromtoids(n2graphstructureselectededgefromid,n2graphstructureselectededgetoid); 
@@ -2832,6 +3070,8 @@
       // 2) fix edge no label problem
       // fix graph cbnation html
       // improve efficiency of adjacencny matrix computation
+      // 3) in computemaximummatching(){ after unsucessful search for an augmenting path starting from a vertex, can it ever be part of an augmenting path later on ?
+      // bug in max matching, check turan n=6, r = 2.
 
       //bug
       // after creating a second graph in new canvas, clicing on first graph edge dosen't work.

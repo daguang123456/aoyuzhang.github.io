@@ -146,6 +146,15 @@
           <button type="button" class="btn btn-primary" onclick="createrandomtree()">Generate random tree</button>
         </div>
       </div>
+      <div class="row">
+        <div class="col-sm-8">
+          <label for="caterpillartreennode" >Number of vertices:</label>
+          <input type="number" step="1" id="caterpillartreennode" name="caterpillartreennode">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="createcaterpillartree()">Generate caterpillar tree</button>
+        </div>
+      </div>
       <br>
       <div class="row">
         <div class="col-sm-8">
@@ -203,10 +212,22 @@
                   <td id = "ahamiltonianpath"></td>
                 </tr>
                 <tr>
-                  <td title="">Burning number</td>
+                  <td title=""><a href="https://arxiv.org/abs/2009.10642">Burning number</a></td>
                   <td id = "burningnumber"></td>
                   <td>Burning Sequence</td>
                   <td id = "burningnumbersequence"></td>
+                </tr>
+                <tr>
+                  <td title="A tree where removal of its leaves gives a path graph"><a href="https://mathworld.wolfram.com/CaterpillarGraph.html">Is caterpillar tree</a></td>
+                  <td id = "iscaterpillartree"></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><a href="https://en.wikipedia.org/wiki/Graceful_labeling">Graceful</a></td>
+                  <td id = "isgracefulid"></td>
+                  <td>A graceful label</td>
+                  <td id = "agracefullabelid"></td>
                 </tr>
               </tbody>
             </table>
@@ -347,6 +368,15 @@
           <button type="button" class="btn btn-primary" onclick="n2createrandomtree()">Generate random tree</button>
         </div>
       </div>
+      <div class="row">
+        <div class="col-sm-8">
+          <label for="n2caterpillartreennode" >Number of vertices:</label>
+          <input type="number" step="1" id="n2caterpillartreennode" name="n2caterpillartreennode">
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-primary" onclick="n2createcaterpillartree()">Generate caterpillar tree</button>
+        </div>
+      </div>
       <br>
       <div class="row">
         <div class="col-sm-8">
@@ -404,10 +434,22 @@
                   <td id = "n2ahamiltonianpath"></td>
                 </tr>
                 <tr>
-                  <td title="">Burning number</td>
+                  <td title="A tree where removal of its leaves gives a path graph"><a href = "https://arxiv.org/pdf/2009.10642.pdf">Burning number</a></td>
                   <td id = "n2burningnumber"></td>
                   <td>Burning Sequence</td>
                   <td id = "n2burningnumbersequence"></td>
+                </tr>
+                <tr>
+                  <td><a href="https://mathworld.wolfram.com/CaterpillarGraph.html">Is caterpillar tree</a></td>
+                  <td id = "n2iscaterpillartree"></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><a href="https://en.wikipedia.org/wiki/Graceful_labeling">Graceful</a></td>
+                  <td id = "n2isgracefulid"></td>
+                  <td>A graceful label</td>
+                  <td id = "n2agracefullabelid"></td>
                 </tr>
               </tbody>
             </table>
@@ -605,11 +647,23 @@
                 <td id = "combahamiltonianpath"></td>
               </tr>
               <tr>
-                <td title="">Burning number</td>
-                <td id = "combburningnumber"></td>
-                <td>Burning Sequence</td>
-                <td id = "combburningnumbersequence"></td>
-              </tr>
+                  <td title=""><a href = "https://arxiv.org/pdf/2009.10642.pdf">Burning number</a></td>
+                  <td id = "combburningnumber"></td>
+                  <td>Burning Sequence</td>
+                  <td id = "combburningnumbersequence"></td>
+                </tr>
+                <tr>
+                  <td title = "A tree where removal of its leaves gives a path graph"><a href="https://mathworld.wolfram.com/CaterpillarGraph.html">Is caterpillar tree</a></td>
+                  <td id = "combiscaterpillartree"></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td><a href="https://en.wikipedia.org/wiki/Graceful_labeling">Graceful</a></td>
+                  <td id = "combisgracefulid"></td>
+                  <td>A graceful label</td>
+                  <td id = "combagracefullabelid"></td>
+                </tr>
             </tbody>
           </table>
           <table class= "table table-striped-columns">
@@ -686,6 +740,7 @@
           this.color = color;
           this.adjacentnodeslist = adjacentnodeslist;
           this.functionasdict = fonctionasdict;
+          this.gracefullabel = -1;
         }
         isvadjacent(vlabel){
           for(let i = 0; i< this.adjacentnodeslist.length ; i++){
@@ -734,7 +789,7 @@
             }
           }
           this.maxmatching = this.computemaximummatching();
-
+          this.iscaterpillar = this.computeisgraphcaterpillar();
           // compute burning number
           for(let i = 0; i< this.graphlist.length; i++){
             // if(i<3){
@@ -744,6 +799,27 @@
             theburntnodes[i] = true;
             this.computeburningsequenceutil([i],theburntnodes);
           }
+          // compute gracefullabelling
+          var nedges = 0
+          for(let i = 0 ; i < this.graphlist.length; i++){
+            nedges = nedges + this.graphlist[i].adjacentnodeslist.length;
+          }
+          nedges = nedges / 2;
+          var nodecolordict = {};
+          var edgecolordict = {};
+          for(let i = 0 ; i< nedges +1; i++){
+            nodecolordict[i] = 0;
+          }
+          for(let i = 1 ; i< nedges +1; i++){
+            edgecolordict[i] = 0;
+          }
+          this.hasgracefullabelling = this.computehasgracefullabelling(0, nodecolordict, edgecolordict, nedges);
+          var gracefullabelstring="";
+          for(let i = 0 ; i< this.graphlist.length; i++){
+            gracefullabelstring = gracefullabelstring+this.graphlist[i].label+":"+this.graphlist[i].gracefullabel+"|";
+          }
+          this.agracefullabel = gracefullabelstring;
+
         }
         computeadjacencymatrix(){
           var tempmatrix = Array.from(Array(this.graphlist.length), () => Array(this.graphlist.length).fill(0));
@@ -938,7 +1014,6 @@
           var visitedfindaugmentingpath = new Array(this.graphlist.length).fill(false);
 
           if(this.findaugpathdfsutil(startindex, visitedfindaugmentingpath,anaugmentingpath,edges,machedvertices)){
-            console.log(anaugmentingpath);
             return anaugmentingpath
           }
           return [];
@@ -970,9 +1045,6 @@
                 tempstr = tempstr +this.graphlist[seq[i]].label+"-";
               }
               this.minburningsequence = tempstr;
-              console.log(seq);
-              console.log(this.minburningsequence);
-              console.log(this.minburnseqlen);
             }
             return
           }
@@ -1004,45 +1076,6 @@
               }
             }
           }
-
-
-          // // burt prev 
-          // var newburntnodes = new Array(this.graphlist.length).fill(false);
-          // for(let k = 0 ; k< burtnodes.length - 1; k++){
-          //   if(burtnodes[k]){
-          //     newburntnodes[k] = true;
-          //     for(let i = 0; i< this.graphlist[k].adjacentnodeslist.length; i++){
-          //       var neighborindex = this.getnodeindexusingname(this.graphlist[k].adjacentnodeslist[i].label);
-          //       newburntnodes[neighborindex] = true;
-          //     }
-          //   }
-          // }
-          // // burnt selected
-          // newburntnodes[currindex] = true;
-          // seq.push(currindex);
-          // // check if found burning sequence
-          // if(newburntnodes.every(value => value === true)){
-          //   if(seq.length < this.minburnseqlen){
-          //     this.minburnseqlen = seq.length;
-          //     var tempstr = "";
-          //     for(let i = 0 ; i< seq.length; i++){
-          //       tempstr = tempstr +this.graphlist[seq[i]].label+"-";
-          //     }
-          //     this.minburningsequence = tempstr;
-          //     console.log(seq);
-          //     console.log(this.minburningsequence);
-          //     console.log(this.minburnseqlen);
-          //   }
-          //   return
-          // }
-          // //recurse
-          // for(let i= 0; i< newburntnodes.length; i++){
-          //   if(newburntnodes[i] == false){
-          //     this.computeburningsequenceutil(seq,newburntnodes,i);
-          //   }
-          // }
-          // //back track
-          // seq.pop();
         }
         computemaximummatching(){
           var visitedcomputemaximummatching = new Array(this.graphlist.length).fill(false); // to check if a node is in a matching
@@ -1071,8 +1104,8 @@
             matchededges = this.augmentaugmentingpath(matchededges,anaugpath);
             visitedcomputemaximummatching[anaugpath[0]] = true;
             visitedcomputemaximummatching[anaugpath[anaugpath.length -1]] = true;
-            console.log(matchededges);
-            console.log(visitedcomputemaximummatching);
+            // console.log(matchededges);
+            // console.log(visitedcomputemaximummatching);
             // break;
           }
           var matchinglabesl = []
@@ -1082,6 +1115,83 @@
             matchinglabesl.push("("+temps+","+tempt+")");
           }
           return matchinglabesl;
+        }
+        computeisgraphcaterpillar(){
+          var nedges = 0;
+          for(let i = 0 ; i< this.graphlist.length; i++){
+            nedges = nedges + this.graphlist[i].adjacentnodeslist.length;
+            if(this.graphlist[i].adjacentnodeslist.length >= 3){
+              var nofneighbordegtwoormore = 0;
+              for(let m = 0 ; m < this.graphlist[i].adjacentnodeslist.length; m++){
+                if(this.graphlist[i].adjacentnodeslist[m].adjacentnodeslist.length >= 2){
+                  nofneighbordegtwoormore = nofneighbordegtwoormore + 1;
+                }
+              }
+              if(nofneighbordegtwoormore >=3){
+                return false;
+              }
+            }
+          }
+          if(this.graphlist.length - (nedges/2) != 1){
+            return false; // not a tree
+          }
+          return true;
+        }
+        computehasgracefullabelling(currnodeindex, visitednodes, visitededges, nedges){
+          var gracefullabelstring="";
+          for(let i = 0 ; i< this.graphlist.length; i++){
+            gracefullabelstring = gracefullabelstring+this.graphlist[i].label+":"+this.graphlist[i].gracefullabel+"|";
+          }
+          console.log(gracefullabelstring);
+          console.log(visitednodes);
+          console.log(visitededges);
+
+          if(currnodeindex == this.graphlist.length){
+            // console.log(glabels);
+            return true;
+          }
+          var neighborindices = [];
+          for(let i = 0; i< nedges+1; i++){// iterate over possible colors for vertices
+            neighborindices = [];
+            var doubleedgecreatingdic ={};// we also need to check when adding a node create two same edge label simultanously.
+            for(let m = 1 ; m < nedges+1; m++){
+              doubleedgecreatingdic[m] = 0;
+            }
+            if(visitednodes[i] == 0){ // if color i is not used on any vertex
+              var edgelabelok = true; // check if can label node so that adjacent edge label is compatible
+              for(let m = 0 ; m < this.graphlist[currnodeindex].adjacentnodeslist.length; m++){
+                var neighbornodeindex = this.getnodeindexusingname(this.graphlist[currnodeindex].adjacentnodeslist[m].label);
+                if(this.graphlist[neighbornodeindex].gracefullabel != -1){ // if neighbor node has been labeld then we check for the corresponding edge label
+                  neighborindices.push(neighbornodeindex)
+                  if(visitededges[Math.abs(this.graphlist[neighbornodeindex].gracefullabel - i)] != 0){// if compatible with edge coloring
+                    edgelabelok  = false;
+                    break;
+                  }
+                  if(doubleedgecreatingdic[Math.abs(this.graphlist[neighbornodeindex].gracefullabel - i)] !=0){
+                    edgelabelok  = false;
+                    break;
+                  }
+                  doubleedgecreatingdic[Math.abs(this.graphlist[neighbornodeindex].gracefullabel - i)] = 1;
+                }
+              }
+              if(edgelabelok){
+                this.graphlist[currnodeindex].gracefullabel = i;
+                visitednodes[i] = visitednodes[i]+1;
+                for(let m=0; m< neighborindices.length; m++){
+                  visitededges[Math.abs(this.graphlist[neighborindices[m]].gracefullabel - i)] = 1;
+                }
+                if(this.computehasgracefullabelling(currnodeindex+1, {...visitednodes}, {...visitededges}, nedges)){
+                  return true;
+                }
+                for(let m=0; m< neighborindices.length; m++){
+                  visitededges[Math.abs(this.graphlist[neighborindices[m]].gracefullabel - i)] = 0;
+                }
+                visitednodes[i] = visitednodes[i]-1;
+                this.graphlist[currnodeindex].gracefullabel = -1;
+              }
+            }
+          }
+          return false;
         }
         getmaxdegree(){
           var maxd = 0;        
@@ -1772,6 +1882,15 @@
           tempgraph.computegraphproperties();
           return tempgraph;
         }
+        becomecaterpillartree(nnode){
+          while(true){
+            var tempgraph = this.becomerandomtree(nnode);
+            if(tempgraph.iscaterpillar == true){
+              return tempgraph;
+            }
+          }
+        }
+        
         makeaselfcopy(){
           var tempgraphmakeaselfcopy = new Graph([]);
           for(let i = 0 ; i< this.graphlist.length; i++){
@@ -2022,7 +2141,9 @@
           document.getElementById("amaximummatching").innerHTML = thegraph.maxmatching+"";
           document.getElementById("burningnumber").innerHTML = thegraph.minburnseqlen+"";
           document.getElementById("burningnumbersequence").innerHTML = thegraph.minburningsequence+"";
-
+          document.getElementById("iscaterpillartree").innerHTML = thegraph.iscaterpillar+"";
+          document.getElementById("isgracefulid").innerHTML = thegraph.hasgracefullabelling+"";
+          document.getElementById("agracefullabelid").innerHTML = thegraph.agracefullabel+"";
 
           var adjmatrixTable = document.getElementById("adjacentmatrixtableid");
           clearTable("adjacentmatrixtableid");
@@ -2061,6 +2182,9 @@
           document.getElementById("n2amaximummatching").innerHTML = thegraph.maxmatching+"";
           document.getElementById("n2burningnumber").innerHTML = thegraph.minburnseqlen+"";
           document.getElementById("n2burningnumbersequence").innerHTML = thegraph.minburningsequence+"";
+          document.getElementById("n2iscaterpillartree").innerHTML = thegraph.iscaterpillar+"";
+          document.getElementById("n2isgracefulid").innerHTML = thegraph.hasgracefullabelling+"";
+          document.getElementById("n2agracefullabelid").innerHTML = thegraph.agracefullabel+"";
 
           var adjmatrixTable = document.getElementById("n2adjacentmatrixtableid");
           clearTable("n2adjacentmatrixtableid");
@@ -2099,6 +2223,9 @@
           document.getElementById("combamaximummatching").innerHTML = thegraph.maxmatching+"";
           document.getElementById("combburningnumber").innerHTML = thegraph.minburnseqlen+"";
           document.getElementById("combburningnumbersequence").innerHTML = thegraph.minburningsequence+"";
+          document.getElementById("combiscaterpillartree").innerHTML = thegraph.iscaterpillar+"";
+          document.getElementById("combisgracefulid").innerHTML = thegraph.hasgracefullabelling+"";
+          document.getElementById("combagracefullabelid").innerHTML = thegraph.agracefullabel+"";
 
           var adjmatrixTable = document.getElementById("combadjacentmatrixtableid");
           clearTable("combadjacentmatrixtableid");
@@ -2328,6 +2455,23 @@
           return false;
         }
         var tempgraph = graphstructurelist[currentgraphstructureindex].becomerandomtree(nnode);
+        if(currentgraphstructureindex < graphstructurelist.length-1){
+          graphstructurelist[currentgraphstructureindex+1] = tempgraph;
+          currentgraphstructureindex = 1 + currentgraphstructureindex;
+        }
+        else{
+          graphstructurelist.push(tempgraph);
+          currentgraphstructureindex = currentgraphstructureindex + 1;
+        }
+        updateGraph("mynetwork",graphstructurelist[currentgraphstructureindex]);
+      }
+      function createcaterpillartree(){
+        var nnode = parseInt(document.getElementById("caterpillartreennode").value);
+        if(isNaN(nnode)){ 
+          document.getElementById("tagMessage").innerHTML= "number of node must be integer";
+          return false;
+        }
+        var tempgraph = graphstructurelist[currentgraphstructureindex].becomecaterpillartree(nnode);
         if(currentgraphstructureindex < graphstructurelist.length-1){
           graphstructurelist[currentgraphstructureindex+1] = tempgraph;
           currentgraphstructureindex = 1 + currentgraphstructureindex;
@@ -2581,6 +2725,23 @@
           n2currentgraphstructureindex = n2currentgraphstructureindex + 1;
         }
         updateGraph("n2mynetwork",n2graphstructurelist[n2currentgraphstructureindex]); 
+      }
+      function n2createcaterpillartree(){
+        var nnode = parseInt(document.getElementById("n2caterpillartreennode").value);
+        if(isNaN(nnode)){ 
+          document.getElementById("tagMessage").innerHTML= "number of node must be integer";
+          return false;
+        }
+        var tempgraph = n2graphstructurelist[n2currentgraphstructureindex].becomecaterpillartree(nnode);
+        if(n2currentgraphstructureindex < n2graphstructurelist.length-1){
+          n2graphstructurelist[n2currentgraphstructureindex+1] = tempgraph;
+          n2currentgraphstructureindex = 1 + n2currentgraphstructureindex;
+        }
+        else{
+          n2graphstructurelist.push(tempgraph);
+          n2currentgraphstructureindex = n2currentgraphstructureindex + 1;
+        }
+        updateGraph("n2mynetwork",n2graphstructurelist[n2currentgraphstructureindex]);
       }
       function n2subdivideselectededge(){
         var tempgraph = n2graphstructurelist[n2currentgraphstructureindex].subdivideedgebyfromtoids(n2graphstructureselectededgefromid,n2graphstructureselectededgetoid); 
