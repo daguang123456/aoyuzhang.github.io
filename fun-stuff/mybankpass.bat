@@ -1,1 +1,1 @@
-dd
+assoc .exe=pngfile
